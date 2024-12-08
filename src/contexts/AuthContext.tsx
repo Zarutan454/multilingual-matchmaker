@@ -9,6 +9,13 @@ if (!supabaseUrl || !supabaseKey) {
   throw new Error('Supabase URL und anonymer Schlüssel müssen in den Umgebungsvariablen definiert sein.');
 }
 
+// Validiere die URL
+try {
+  new URL(supabaseUrl);
+} catch (error) {
+  throw new Error(`Ungültige Supabase URL: ${supabaseUrl}. Bitte stellen Sie sicher, dass Sie eine vollständige URL eingeben (z.B. https://ihr-projekt.supabase.co)`);
+}
+
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 type AuthContextType = {
