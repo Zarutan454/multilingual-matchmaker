@@ -18,7 +18,7 @@ export const GenderSelection = () => {
         <div 
           className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
           style={{
-            backgroundImage: 'url("https://images.unsplash.com/photo-1581091226825-a6a2a5aee158")',
+            backgroundImage: 'url("/lovable-uploads/2a2315eb-05c4-4c59-becf-4fe72a935b04.png")',
             filter: 'brightness(0.6)'
           }}
         />
@@ -41,7 +41,7 @@ export const GenderSelection = () => {
         <div 
           className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
           style={{
-            backgroundImage: 'url("https://images.unsplash.com/photo-1581092795360-fd1ca04f0952")',
+            backgroundImage: 'url("/lovable-uploads/c1824903-ff6e-47ec-8efc-6391ba0eaa80.png")',
             filter: 'brightness(0.6)'
           }}
         />
