@@ -29,6 +29,9 @@ export const Navbar = () => {
             <a href="/contact" className="text-white hover:text-[#c69963] transition-colors">
               {t("contact")}
             </a>
+            <a href="/register" className="text-white hover:text-[#c69963] transition-colors">
+              {t("register")}
+            </a>
           </div>
           
           <div className="flex items-center space-x-4">
@@ -69,6 +72,9 @@ export const Navbar = () => {
               </a>
               <a href="/contact" className="text-white hover:text-[#c69963] transition-colors">
                 {t("contact")}
+              </a>
+              <a href="/register" className="text-white hover:text-[#c69963] transition-colors">
+                {t("register")}
               </a>
             </div>
           </div>

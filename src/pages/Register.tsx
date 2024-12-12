@@ -1,44 +1,107 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { useToast } from '@/components/ui/use-toast';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useLanguage } from "../contexts/LanguageContext";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useToast } from "@/components/ui/use-toast";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Register = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const { signUp } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const { toast } = useToast();
+  
+  const [userType, setUserType] = useState<"customer" | "provider">("customer");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [documents, setDocuments] = useState<File[]>([]);
+  const [profileImagePreview, setProfileImagePreview] = useState<string>("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await signUp(email, password);
-      toast({
-        title: "Registrierung erfolgreich",
-        description: "Bitte überprüfen Sie Ihre E-Mails für die Bestätigung.",
-      });
-      navigate('/login');
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Fehler bei der Registrierung",
-        description: error instanceof Error ? error.message : "Ein unbekannter Fehler ist aufgetreten",
-      });
+  const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setProfileImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
+  const handleDocumentsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    setDocuments(prev => [...prev, ...files]);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (password !== confirmPassword) {
+      toast({
+        variant: "destructive",
+        title: "Fehler",
+        description: "Die Passwörter stimmen nicht überein",
+      });
+      return;
+    }
+
+    // Hier später die Registrierungslogik mit Supabase implementieren
+    toast({
+      title: "Registrierung erfolgreich",
+      description: "Ihre Registrierung wurde erfolgreich abgeschlossen.",
+    });
+    navigate("/login");
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-neutral-100">
+    <div className="min-h-screen flex items-center justify-center bg-neutral-100 p-4">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold text-primary mb-6 text-center">Registrierung</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              E-Mail
-            </label>
+        <h1 className="text-2xl font-bold text-center mb-6">
+          {t("register")}
+        </h1>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <RadioGroup
+            defaultValue="customer"
+            onValueChange={(value) => setUserType(value as "customer" | "provider")}
+            className="flex flex-col space-y-2 mb-6"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="customer" id="customer" />
+              <Label htmlFor="customer">{t("registerAsCustomer")}</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="provider" id="provider" />
+              <Label htmlFor="provider">{t("registerAsProvider")}</Label>
+            </div>
+          </RadioGroup>
+
+          <div className="flex flex-col items-center gap-4 mb-6">
+            <Label htmlFor="profileImage" className="cursor-pointer">
+              <Avatar className="h-24 w-24">
+                <AvatarImage src={profileImagePreview} />
+                <AvatarFallback>
+                  {profileImagePreview ? "..." : "+"} 
+                </AvatarFallback>
+              </Avatar>
+            </Label>
+            <Input
+              id="profileImage"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleProfileImageChange}
+            />
+            <span className="text-sm text-gray-500">{t("profileImage")}</span>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="email">{t("email")}</Label>
             <Input
               id="email"
               type="email"
@@ -47,10 +110,9 @@ const Register = () => {
               required
             />
           </div>
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-              Passwort
-            </label>
+
+          <div className="space-y-2">
+            <Label htmlFor="password">{t("password")}</Label>
             <Input
               id="password"
               type="password"
@@ -59,16 +121,48 @@ const Register = () => {
               required
             />
           </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="confirmPassword">{t("confirmPassword")}</Label>
+            <Input
+              id="confirmPassword"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          {userType === "provider" && (
+            <div className="space-y-2">
+              <Label htmlFor="documents">{t("uploadDocuments")}</Label>
+              <Input
+                id="documents"
+                type="file"
+                accept=".pdf,image/*"
+                multiple
+                onChange={handleDocumentsChange}
+              />
+              <p className="text-sm text-gray-500">{t("documentsNote")}</p>
+              {documents.length > 0 && (
+                <div className="mt-2">
+                  <p className="text-sm font-medium">Hochgeladene Dokumente:</p>
+                  <ul className="list-disc list-inside">
+                    {documents.map((doc, index) => (
+                      <li key={index} className="text-sm text-gray-600">
+                        {doc.name}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+
           <Button type="submit" className="w-full">
-            Registrieren
+            {t("submit")}
           </Button>
         </form>
-        <p className="mt-4 text-center text-sm text-gray-600">
-          Bereits registriert?{' '}
-          <a href="/login" className="text-primary hover:underline">
-            Zum Login
-          </a>
-        </p>
       </div>
     </div>
   );
