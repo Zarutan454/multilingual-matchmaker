@@ -14,6 +14,8 @@ export const languages = {
       about: "Über uns",
       services: "Dienstleistungen",
       contact: "Kontakt",
+      iAmAWoman: "Ich bin eine Frau",
+      iAmAMan: "Ich bin ein Mann"
     },
   },
   en: {
@@ -31,6 +33,8 @@ export const languages = {
       about: "About",
       services: "Services",
       contact: "Contact",
+      iAmAWoman: "I am a woman",
+      iAmAMan: "I am a man"
     },
   },
   ru: {
@@ -48,6 +52,8 @@ export const languages = {
       about: "О нас",
       services: "Услуги",
       contact: "Контакты",
+      iAmAWoman: "Я женщина",
+      iAmAMan: "Я мужчина"
     },
   },
   ro: {
@@ -65,6 +71,8 @@ export const languages = {
       about: "Despre noi",
       services: "Servicii",
       contact: "Contact",
+      iAmAWoman: "Sunt femeie",
+      iAmAMan: "Sunt bărbat"
     },
   },
   it: {
@@ -82,6 +90,8 @@ export const languages = {
       about: "Chi siamo",
       services: "Servizi",
       contact: "Contatti",
+      iAmAWoman: "Sono una donna",
+      iAmAMan: "Sono un uomo"
     },
   },
   es: {
@@ -99,6 +109,8 @@ export const languages = {
       about: "Sobre nosotros",
       services: "Servicios",
       contact: "Contacto",
+      iAmAWoman: "Soy una mujer",
+      iAmAMan: "Soy un hombre"
     },
   },
   fr: {
@@ -116,6 +128,8 @@ export const languages = {
       about: "À propos",
       services: "Services",
       contact: "Contact",
+      iAmAWoman: "Je suis une femme",
+      iAmAMan: "Je suis un homme"
     },
   },
 };
