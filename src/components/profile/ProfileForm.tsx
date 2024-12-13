@@ -34,7 +34,10 @@ export const ProfileForm = () => {
       weight: user?.user_metadata?.weight || "",
       availability: user?.user_metadata?.availability || [],
       serviceCategories: user?.user_metadata?.service_categories || [],
-      priceRange: user?.user_metadata?.price_range || { min: 0, max: 0 },
+      priceRange: {
+        min: user?.user_metadata?.price_range?.min || 0,
+        max: user?.user_metadata?.price_range?.max || 0
+      },
       availabilityStatus: user?.user_metadata?.availability_status || "offline",
       gallery: user?.user_metadata?.gallery || [],
     },
