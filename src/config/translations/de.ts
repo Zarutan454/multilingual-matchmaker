@@ -40,5 +40,11 @@ export const deTranslations: Record<TranslationKey, string> = {
   loginError: "Fehler bei der Anmeldung",
   loginButton: "Anmelden",
   noAccount: "Noch kein Konto?",
-  registerNow: "Jetzt registrieren"
+  registerNow: "Jetzt registrieren",
+  fillAllFields: "Bitte füllen Sie alle Felder aus",
+  passwordsDoNotMatch: "Die Passwörter stimmen nicht überein",
+  passwordTooShort: "Das Passwort muss mindestens 6 Zeichen lang sein",
+  registrationSuccess: "Registrierung erfolgreich! Sie können sich jetzt anmelden.",
+  registrationError: "Bei der Registrierung ist ein Fehler aufgetreten",
+  registering: "Registrierung läuft..."
 };

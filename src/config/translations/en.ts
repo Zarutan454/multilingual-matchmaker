@@ -40,5 +40,11 @@ export const enTranslations: Record<TranslationKey, string> = {
   loginError: "Login error",
   loginButton: "Login",
   noAccount: "Don't have an account?",
-  registerNow: "Register now"
+  registerNow: "Register now",
+  fillAllFields: "Please fill in all fields",
+  passwordsDoNotMatch: "Passwords do not match",
+  passwordTooShort: "Password must be at least 6 characters long",
+  registrationSuccess: "Registration successful! You can now log in.",
+  registrationError: "An error occurred during registration",
+  registering: "Registering..."
 };

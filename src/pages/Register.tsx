@@ -5,13 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAuth } from "../contexts/AuthContext";
 
 const Register = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { signUp } = useAuth();
   
   const [userType, setUserType] = useState<"customer" | "provider">("customer");
   const [email, setEmail] = useState("");
@@ -20,6 +21,7 @@ const Register = () => {
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [documents, setDocuments] = useState<File[]>([]);
   const [profileImagePreview, setProfileImagePreview] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -38,24 +40,40 @@ const Register = () => {
     setDocuments(prev => [...prev, ...files]);
   };
 
+  const validateForm = () => {
+    if (!email || !password || !confirmPassword) {
+      toast.error(t("fillAllFields"));
+      return false;
+    }
+    if (password !== confirmPassword) {
+      toast.error(t("passwordsDoNotMatch"));
+      return false;
+    }
+    if (password.length < 6) {
+      toast.error(t("passwordTooShort"));
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (password !== confirmPassword) {
-      toast({
-        variant: "destructive",
-        title: "Fehler",
-        description: "Die Passwörter stimmen nicht überein",
-      });
-      return;
-    }
+    if (!validateForm()) return;
 
-    // Hier später die Registrierungslogik mit Supabase implementieren
-    toast({
-      title: "Registrierung erfolgreich",
-      description: "Ihre Registrierung wurde erfolgreich abgeschlossen.",
-    });
-    navigate("/login");
+    try {
+      setIsLoading(true);
+      await signUp(email, password);
+      
+      // Erfolgreiche Registrierung
+      toast.success(t("registrationSuccess"));
+      navigate("/login");
+    } catch (error) {
+      console.error("Registration error:", error);
+      toast.error(t("registrationError"));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -108,6 +126,7 @@ const Register = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              className="w-full"
             />
           </div>
 
@@ -119,6 +138,7 @@ const Register = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              className="w-full"
             />
           </div>
 
@@ -130,6 +150,7 @@ const Register = () => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
+              className="w-full"
             />
           </div>
 
@@ -159,8 +180,12 @@ const Register = () => {
             </div>
           )}
 
-          <Button type="submit" className="w-full">
-            {t("submit")}
+          <Button 
+            type="submit" 
+            className="w-full"
+            disabled={isLoading}
+          >
+            {isLoading ? t("registering") : t("submit")}
           </Button>
         </form>
       </div>

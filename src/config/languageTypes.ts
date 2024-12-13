@@ -40,4 +40,10 @@ export type TranslationKey =
   | "loginError"
   | "loginButton"
   | "noAccount"
-  | "registerNow";
+  | "registerNow"
+  | "fillAllFields"
+  | "passwordsDoNotMatch"
+  | "passwordTooShort"
+  | "registrationSuccess"
+  | "registrationError"
+  | "registering";
