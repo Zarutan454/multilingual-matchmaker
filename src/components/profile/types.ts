@@ -25,7 +25,7 @@ export const profileSchema = z.object({
   priceRange: z.object({
     min: z.number(),
     max: z.number()
-  }).optional(),
+  }),
   gallery: z.array(z.any())
     .refine(
       (files) => files.length <= MAX_GALLERY_IMAGES,
@@ -48,7 +48,7 @@ export interface UserMetadata {
   weight?: string;
   availability?: string[];
   service_categories?: string[];
-  price_range?: {
+  price_range: {
     min: number;
     max: number;
   };

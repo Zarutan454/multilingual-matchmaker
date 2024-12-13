@@ -35,8 +35,8 @@ export const ProfileForm = () => {
       availability: user?.user_metadata?.availability || [],
       serviceCategories: user?.user_metadata?.service_categories || [],
       priceRange: {
-        min: user?.user_metadata?.price_range?.min ?? 0,
-        max: user?.user_metadata?.price_range?.max ?? 0
+        min: Number(user?.user_metadata?.price_range?.min || 0),
+        max: Number(user?.user_metadata?.price_range?.max || 0)
       },
       availabilityStatus: user?.user_metadata?.availability_status || "offline",
       gallery: user?.user_metadata?.gallery || [],
