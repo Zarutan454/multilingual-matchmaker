@@ -12,7 +12,6 @@ export default function ProviderProfile() {
   const { id } = useParams();
   const { t } = useLanguage();
   
-  // Beispieldaten - später durch echte Daten ersetzen
   const mockProvider = {
     id: id,
     full_name: "Sophia Müller",
@@ -38,23 +37,18 @@ export default function ProviderProfile() {
   return (
     <div className="min-h-screen bg-neutral-100">
       <div className="container mx-auto py-8 px-4 space-y-8">
-        {/* Hero Section mit Profilinfo */}
         <ProviderInfo provider={mockProvider} />
 
-        {/* Hauptbereich mit Grid-Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Linke Spalte */}
           <div className="lg:col-span-2 space-y-8">
             <ProviderGallery providerId={id!} />
             <ProviderRatings providerId={id!} />
           </div>
 
-          {/* Rechte Spalte */}
           <div className="space-y-8">
             <ProviderServices services={mockProvider.services} providerId={id!} />
             <ProviderAvailability providerId={id!} />
             
-            {/* Kontaktbereich */}
             <div className="bg-white rounded-lg shadow-md p-6 space-y-4">
               <h2 className="text-xl font-semibold">{t("contact")}</h2>
               <div className="space-y-4">

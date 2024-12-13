@@ -1,5 +1,4 @@
 export type Language = "de" | "en" | "ru" | "ro" | "it" | "es" | "fr";
-
 export type TranslationKey =
   | "home"
   | "about"
@@ -151,6 +150,10 @@ export type TranslationKey =
   | "startChat"
   | "messageDeleted"
   | "messageError"
+  | "viewAllPhotos"
+  | "reviews"
+  | "requestCall"
+  | "bookAppointment"
   | "invalidCredentials";
 
 export type Translations = {

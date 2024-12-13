@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { useLanguage } from "../../contexts/LanguageContext";
-import { Wine, Plane, Theater, Hotel, Spa } from "lucide-react";
+import { Wine, Plane, Theater, Hotel, Heart } from "lucide-react";
 
 export interface ProviderServicesProps {
   services: string[];
@@ -13,7 +13,7 @@ const serviceIcons: Record<string, any> = {
   "Geschäftsreisen": Plane,
   "Kulturelle Veranstaltungen": Theater,
   "Private Treffen": Hotel,
-  "Wellness & Spa": Spa,
+  "Wellness & Spa": Heart,
 };
 
 export const ProviderServices = ({ services }: ProviderServicesProps) => {

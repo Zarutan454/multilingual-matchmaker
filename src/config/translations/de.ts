@@ -151,5 +151,9 @@ export const deTranslations: Translations = {
   startChat: "Chat starten",
   messageDeleted: "Nachricht gelöscht",
   messageError: "Fehler beim Senden der Nachricht",
+  viewAllPhotos: "Alle Fotos anzeigen",
+  reviews: "Bewertungen",
+  requestCall: "Anruf anfordern",
+  bookAppointment: "Termin buchen",
   invalidCredentials: "Ungültige Anmeldedaten"
 };
