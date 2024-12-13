@@ -30,6 +30,7 @@ const ProviderProfile = () => {
       if (error) throw error;
       return data;
     },
+    enabled: !!id, // Only run query if id exists
   });
 
   if (isLoading) {
