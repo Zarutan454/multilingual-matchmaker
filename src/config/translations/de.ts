@@ -78,5 +78,18 @@ export const deTranslations = {
   occupation: "Beruf",
   saveProfile: "Profil speichern",
   memberSince: "Mitglied seit",
-  pleaseLoginFirst: "Bitte melden Sie sich zuerst an"
+  height: "Größe",
+  weight: "Gewicht",
+  availabilityStatus: "Verfügbarkeitsstatus",
+  selectAvailability: "Verfügbarkeit auswählen",
+  available: "Verfügbar",
+  busy: "Beschäftigt",
+  offline: "Offline",
+  serviceCategories: "Dienstleistungskategorien",
+  selectServices: "Dienste auswählen",
+  gallery: "Galerie",
+  addImage: "Bild hinzufügen",
+  priceRange: "Preisbereich",
+  from: "Von",
+  to: "Bis"
 };
