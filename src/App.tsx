@@ -18,10 +18,10 @@ const App = () => (
     <AuthProvider>
       <LanguageProvider>
         <TooltipProvider>
-          <LanguageSelector />
-          <Toaster />
-          <Sonner />
           <BrowserRouter>
+            <LanguageSelector />
+            <Toaster />
+            <Sonner />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
