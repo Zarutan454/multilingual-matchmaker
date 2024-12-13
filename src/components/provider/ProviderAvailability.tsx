@@ -2,7 +2,6 @@ import { Card } from "@/components/ui/card";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Clock } from "lucide-react";
-import { TranslationKey } from "@/config/languageTypes";
 
 export interface ProviderAvailabilityProps {
   providerId: string;
@@ -11,15 +10,17 @@ export interface ProviderAvailabilityProps {
 export const ProviderAvailability = ({ providerId }: ProviderAvailabilityProps) => {
   const { t } = useLanguage();
 
-  // Example availability data - replace with real data later
+  // Beispiel-Verfügbarkeitsdaten - später durch echte Daten ersetzen
   const availabilityData = {
-    status: "available" as TranslationKey,
+    status: "available",
     schedule: [
-      { day: "Monday", hours: "9:00 - 17:00" },
-      { day: "Tuesday", hours: "9:00 - 17:00" },
-      { day: "Wednesday", hours: "9:00 - 17:00" },
-      { day: "Thursday", hours: "9:00 - 17:00" },
-      { day: "Friday", hours: "9:00 - 15:00" },
+      { day: "Montag", hours: "10:00 - 22:00" },
+      { day: "Dienstag", hours: "10:00 - 22:00" },
+      { day: "Mittwoch", hours: "10:00 - 22:00" },
+      { day: "Donnerstag", hours: "10:00 - 22:00" },
+      { day: "Freitag", hours: "10:00 - 23:00" },
+      { day: "Samstag", hours: "12:00 - 23:00" },
+      { day: "Sonntag", hours: "12:00 - 22:00" },
     ],
   };
 
