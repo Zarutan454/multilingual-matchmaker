@@ -1,4 +1,4 @@
-export const de = {
+export const deTranslations = {
   home: "Startseite",
   about: "Über uns",
   services: "Dienstleistungen",
@@ -117,5 +117,5 @@ export const de = {
   kycRequired: "KYC erforderlich",
   errorLoadingProfile: "Fehler beim Laden des Profils",
   profileNotFound: "Profil nicht gefunden",
-  noProfilesYet: "Es wurden noch keine Profile angelegt",
+  noProfilesYet: "Es wurden noch keine Profile angelegt"
 } as const;
