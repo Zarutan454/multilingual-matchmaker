@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useAuth } from "../../contexts/AuthContext";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, UserAttributes } from "@supabase/supabase-js";
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -36,6 +36,15 @@ const profileSchema = z.object({
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
 
+interface UserMetadata {
+  full_name: string;
+  bio: string;
+  location: string;
+  interests: string;
+  occupation: string;
+  avatar_url?: string;
+}
+
 export const ProfileForm = () => {
   const { t } = useLanguage();
   const { user } = useAuth();
@@ -53,14 +62,12 @@ export const ProfileForm = () => {
 
   const onSubmit = async (data: ProfileFormValues) => {
     try {
-      const updates = {
-        user_metadata: {
-          full_name: data.fullName,
-          bio: data.bio,
-          location: data.location,
-          interests: data.interests,
-          occupation: data.occupation,
-        },
+      const metadata: UserMetadata = {
+        full_name: data.fullName,
+        bio: data.bio,
+        location: data.location,
+        interests: data.interests,
+        occupation: data.occupation,
       };
 
       if (data.avatar instanceof File) {
@@ -79,8 +86,12 @@ export const ProfileForm = () => {
           .from('avatars')
           .getPublicUrl(filePath);
 
-        updates.user_metadata.avatar_url = publicUrl;
+        metadata.avatar_url = publicUrl;
       }
+
+      const updates: UserAttributes = {
+        data: metadata
+      };
 
       const { error } = await supabase.auth.updateUser(updates);
 
