@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Clock } from "lucide-react";
+import { TranslationKey } from "@/config/languageTypes";
 
 export interface ProviderAvailabilityProps {
   providerId: string;
@@ -12,7 +13,7 @@ export const ProviderAvailability = ({ providerId }: ProviderAvailabilityProps) 
 
   // Example availability data - replace with real data later
   const availabilityData = {
-    status: "available",
+    status: "available" as TranslationKey,
     schedule: [
       { day: "Monday", hours: "9:00 - 17:00" },
       { day: "Tuesday", hours: "9:00 - 17:00" },
