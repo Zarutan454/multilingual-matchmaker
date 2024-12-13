@@ -8,6 +8,16 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "../contexts/AuthContext";
+import { Auth } from '@supabase/auth-ui-react';
+import { ThemeSupa } from '@supabase/auth-ui-shared';
+import { createClient } from '@supabase/supabase-js';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
+import { Separator } from "@/components/ui/separator";
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 
 const Register = () => {
   const { t } = useLanguage();
@@ -18,10 +28,14 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [documents, setDocuments] = useState<File[]>([]);
   const [profileImagePreview, setProfileImagePreview] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+  const [interests, setInterests] = useState<string[]>([]);
+  const [age, setAge] = useState("");
+  const [country, setCountry] = useState("");
 
   const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -40,6 +54,11 @@ const Register = () => {
     setDocuments(prev => [...prev, ...files]);
   };
 
+  const validatePhoneNumber = (number: string) => {
+    const phoneNumber = parsePhoneNumberFromString(number);
+    return phoneNumber?.isValid() || false;
+  };
+
   const validateForm = () => {
     if (!email || !password || !confirmPassword) {
       toast.error(t("fillAllFields"));
@@ -53,6 +72,18 @@ const Register = () => {
       toast.error(t("passwordTooShort"));
       return false;
     }
+    if (phoneNumber && !validatePhoneNumber(phoneNumber)) {
+      toast.error(t("invalidPhoneNumber"));
+      return false;
+    }
+    if (userType === "provider" && !documents.length) {
+      toast.error(t("documentsRequired"));
+      return false;
+    }
+    if (!age || parseInt(age) < 18) {
+      toast.error(t("mustBe18"));
+      return false;
+    }
     return true;
   };
 
@@ -63,9 +94,37 @@ const Register = () => {
 
     try {
       setIsLoading(true);
+      
+      // Register with email
       await signUp(email, password);
       
-      // Erfolgreiche Registrierung
+      // Upload documents if provider
+      if (userType === "provider" && documents.length > 0) {
+        for (const doc of documents) {
+          const fileExt = doc.name.split('.').pop();
+          const fileName = `${Date.now()}-${Math.random()}.${fileExt}`;
+          const filePath = `kyc/${fileName}`;
+          
+          await supabase.storage
+            .from('documents')
+            .upload(filePath, doc);
+        }
+      }
+
+      // Update profile with additional information
+      const { error: updateError } = await supabase.auth.updateUser({
+        data: {
+          user_type: userType,
+          phone: phoneNumber,
+          interests,
+          age,
+          country,
+          kyc_status: userType === "provider" ? "pending" : "not_required"
+        }
+      });
+
+      if (updateError) throw updateError;
+      
       toast.success(t("registrationSuccess"));
       navigate("/login");
     } catch (error) {
@@ -131,6 +190,43 @@ const Register = () => {
           </div>
 
           <div className="space-y-2">
+            <Label htmlFor="phoneNumber">{t("phoneNumber")}</Label>
+            <Input
+              id="phoneNumber"
+              type="tel"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              placeholder="+1234567890"
+              className="w-full"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="age">{t("age")}</Label>
+            <Input
+              id="age"
+              type="number"
+              min="18"
+              value={age}
+              onChange={(e) => setAge(e.target.value)}
+              required
+              className="w-full"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="country">{t("country")}</Label>
+            <Input
+              id="country"
+              type="text"
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+              required
+              className="w-full"
+            />
+          </div>
+
+          <div className="space-y-2">
             <Label htmlFor="password">{t("password")}</Label>
             <Input
               id="password"
@@ -163,11 +259,12 @@ const Register = () => {
                 accept=".pdf,image/*"
                 multiple
                 onChange={handleDocumentsChange}
+                required
               />
               <p className="text-sm text-gray-500">{t("documentsNote")}</p>
               {documents.length > 0 && (
                 <div className="mt-2">
-                  <p className="text-sm font-medium">Hochgeladene Dokumente:</p>
+                  <p className="text-sm font-medium">{t("uploadedDocuments")}:</p>
                   <ul className="list-disc list-inside">
                     {documents.map((doc, index) => (
                       <li key={index} className="text-sm text-gray-600">
@@ -179,6 +276,20 @@ const Register = () => {
               )}
             </div>
           )}
+
+          <Separator className="my-4" />
+
+          <div className="space-y-4">
+            <p className="text-sm text-gray-500 text-center">{t("orContinueWith")}</p>
+            
+            <Auth
+              supabaseClient={supabase}
+              appearance={{ theme: ThemeSupa }}
+              providers={["google"]}
+              view="sign_up"
+              showLinks={false}
+            />
+          </div>
 
           <Button 
             type="submit" 
