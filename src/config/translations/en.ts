@@ -46,5 +46,6 @@ export const enTranslations: Record<TranslationKey, string> = {
   passwordTooShort: "Password must be at least 6 characters long",
   registrationSuccess: "Registration successful! You can now log in.",
   registrationError: "An error occurred during registration",
-  registering: "Registering..."
+  registering: "Registering...",
+  loggingIn: "Logging in..."
 };

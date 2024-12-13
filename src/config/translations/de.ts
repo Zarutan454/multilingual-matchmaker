@@ -46,5 +46,6 @@ export const deTranslations: Record<TranslationKey, string> = {
   passwordTooShort: "Das Passwort muss mindestens 6 Zeichen lang sein",
   registrationSuccess: "Registrierung erfolgreich! Sie können sich jetzt anmelden.",
   registrationError: "Bei der Registrierung ist ein Fehler aufgetreten",
-  registering: "Registrierung läuft..."
+  registering: "Registrierung läuft...",
+  loggingIn: "Anmeldung läuft..."
 };
