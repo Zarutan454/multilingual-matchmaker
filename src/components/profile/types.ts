@@ -23,8 +23,8 @@ export const profileSchema = z.object({
   availability: z.array(z.string()).optional(),
   serviceCategories: z.array(z.string()).optional(),
   priceRange: z.object({
-    min: z.number().default(50),
-    max: z.number().default(1000)
+    min: z.number(),
+    max: z.number()
   }).default({ min: 50, max: 1000 }),
   gallery: z.array(z.any())
     .refine(

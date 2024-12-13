@@ -97,5 +97,11 @@ export const deTranslations = {
   availability: "Verfügbarkeit",
   pricing: "Preisgestaltung",
   basePrice: "Grundpreis",
-  hour: "Stunde"
+  hour: "Stunde",
+  searchProviders: "Dienstleister suchen",
+  filters: "Filter",
+  applyFilters: "Filter anwenden",
+  categories: "Kategorien",
+  availability: "Verfügbarkeit",
+  location: "Standort",
 };
