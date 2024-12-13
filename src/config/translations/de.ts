@@ -78,6 +78,7 @@ export const deTranslations = {
   occupation: "Beruf",
   saveProfile: "Profil speichern",
   memberSince: "Mitglied seit",
+  pleaseLoginFirst: "Bitte zuerst einloggen",
   height: "Größe",
   weight: "Gewicht",
   availabilityStatus: "Verfügbarkeitsstatus",
