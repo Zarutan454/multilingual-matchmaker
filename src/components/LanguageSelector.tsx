@@ -18,14 +18,15 @@ export const LanguageSelector = () => {
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="icon" className="bg-black/80 backdrop-blur-sm border-none hover:bg-black/60">
             <Globe className="h-4 w-4 text-white" />
+            <span className="sr-only">Language selector</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="bg-black/80 backdrop-blur-sm border-none">
+        <DropdownMenuContent align="end" className="bg-black/80 backdrop-blur-sm border-none min-w-[150px]">
           {Object.entries(languages).map(([code, lang]) => (
             <DropdownMenuItem
               key={code}
               onClick={() => setLanguage(code as Language)}
-              className={`text-white hover:bg-white/10 ${
+              className={`text-white hover:bg-white/10 cursor-pointer ${
                 currentLanguage === code ? "bg-white/20" : ""
               }`}
             >
