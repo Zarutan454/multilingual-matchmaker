@@ -13,6 +13,8 @@ import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { createClient } from '@supabase/supabase-js';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { Separator } from "@/components/ui/separator";
+import { KYCUpload } from "../components/kyc/KYCUpload";
+import { KYCStatus } from "../components/kyc/KYCStatus";
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -22,7 +24,7 @@ const supabase = createClient(
 const Register = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const { signUp } = useAuth();
+  const { signUp, user } = useAuth();
   
   const [userType, setUserType] = useState<"customer" | "provider">("customer");
   const [email, setEmail] = useState("");
@@ -251,30 +253,17 @@ const Register = () => {
           </div>
 
           {userType === "provider" && (
-            <div className="space-y-2">
-              <Label htmlFor="documents">{t("uploadDocuments")}</Label>
-              <Input
-                id="documents"
-                type="file"
-                accept=".pdf,image/*"
-                multiple
-                onChange={handleDocumentsChange}
-                required
-              />
-              <p className="text-sm text-gray-500">{t("documentsNote")}</p>
-              {documents.length > 0 && (
-                <div className="mt-2">
-                  <p className="text-sm font-medium">{t("uploadedDocuments")}:</p>
-                  <ul className="list-disc list-inside">
-                    {documents.map((doc, index) => (
-                      <li key={index} className="text-sm text-gray-600">
-                        {doc.name}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="documents">{t("kycRequired")}</Label>
+                {user && (
+                  <>
+                    <KYCStatus userId={user.id} />
+                    <KYCUpload userId={user.id} />
+                  </>
+                )}
+              </div>
+            </>
           )}
 
           <Separator className="my-4" />
