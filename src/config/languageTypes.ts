@@ -142,7 +142,15 @@ export type TranslationKey =
   | "ratingSubmitted"
   | "summary"
   | "allRatings"
-  | "rateProvider";
+  | "rateProvider"
+  | "noMessages"
+  | "typeMessage"
+  | "sendMessage"
+  | "messages"
+  | "chat"
+  | "startChat"
+  | "messageDeleted"
+  | "messageError";
 
 export type Translations = {
   [K in TranslationKey]: string;

@@ -142,5 +142,13 @@ export const deTranslations: Translations = {
   ratingSubmitted: "Bewertung erfolgreich übermittelt",
   summary: "Zusammenfassung",
   allRatings: "Alle Bewertungen",
-  rateProvider: "Anbieter bewerten"
+  rateProvider: "Anbieter bewerten",
+  noMessages: "Keine Nachrichten vorhanden",
+  typeMessage: "Nachricht eingeben...",
+  sendMessage: "Senden",
+  messages: "Nachrichten",
+  chat: "Chat",
+  startChat: "Chat starten",
+  messageDeleted: "Nachricht gelöscht",
+  messageError: "Fehler beim Senden der Nachricht"
 };

@@ -142,5 +142,13 @@ export const enTranslations: Translations = {
   ratingSubmitted: "Rating submitted successfully",
   summary: "Summary",
   allRatings: "All Ratings",
-  rateProvider: "Rate Provider"
+  rateProvider: "Rate Provider",
+  noMessages: "No messages yet",
+  typeMessage: "Type a message...",
+  sendMessage: "Send",
+  messages: "Messages",
+  chat: "Chat",
+  startChat: "Start Chat",
+  messageDeleted: "Message deleted",
+  messageError: "Error sending message"
 };
