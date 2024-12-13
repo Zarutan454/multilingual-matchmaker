@@ -7,32 +7,37 @@ import { ChevronDown, MapPin, Clock, Star } from "lucide-react";
 
 const featuredProfiles = [
   {
+    id: 1,
     name: "Sophie",
-    image: "/placeholder.svg",
+    image: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7?auto=format&fit=crop&w=800&q=80",
     category: "VIP Begleitung",
     location: "München"
   },
   {
+    id: 2,
     name: "Emma",
-    image: "/placeholder.svg",
+    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80",
     category: "Premium Escort",
     location: "Berlin"
   },
   {
+    id: 3,
     name: "Julia",
-    image: "/placeholder.svg",
+    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=800&q=80",
     category: "Dinner Date",
     location: "Hamburg"
   },
   {
+    id: 4,
     name: "Laura",
-    image: "/placeholder.svg",
+    image: "https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?auto=format&fit=crop&w=800&q=80",
     category: "Event Begleitung",
     location: "Frankfurt"
   },
   {
+    id: 5,
     name: "Marie",
-    image: "/placeholder.svg",
+    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80",
     category: "Reisebegleitung",
     location: "Köln"
   }
@@ -81,11 +86,11 @@ const Index = () => {
             UNSERE PREMIUM BEGLEITUNG
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-            {featuredProfiles.map((profile, index) => (
+            {featuredProfiles.map((profile) => (
               <div 
-                key={index}
-                className="group relative overflow-hidden rounded-lg cursor-pointer"
-                onClick={() => navigate("/provider/1")}
+                key={profile.id}
+                className="group relative overflow-hidden rounded-lg cursor-pointer transform transition-all duration-300 hover:scale-105"
+                onClick={() => navigate(`/provider/${profile.id}`)}
               >
                 <div className="aspect-[3/4] relative">
                   <img 
