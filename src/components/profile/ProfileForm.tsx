@@ -23,8 +23,8 @@ export const ProfileForm = () => {
   const { user } = useAuth();
   
   const defaultPriceRange = {
-    min: Number(user?.user_metadata?.price_range?.min || 0),
-    max: Number(user?.user_metadata?.price_range?.max || 0)
+    min: Number(user?.user_metadata?.price_range?.min) || 50,
+    max: Number(user?.user_metadata?.price_range?.max) || 1000
   };
   
   const form = useForm<ProfileFormValues>({
