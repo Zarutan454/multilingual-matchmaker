@@ -101,8 +101,18 @@ export const enTranslations = {
   searchProviders: "Search Providers",
   filters: "Filters",
   applyFilters: "Apply Filters",
-  priceRange: "Price Range",
   categories: "Categories",
-  availability: "Availability",
-  location: "Location"
+  kycPending: "KYC verification pending",
+  kycApproved: "KYC verification approved",
+  kycRejected: "KYC verification rejected",
+  pleaseUploadAllDocuments: "Please upload all required documents",
+  kycDocumentsUploaded: "Documents uploaded successfully",
+  errorUploadingDocuments: "Error uploading documents",
+  identityDocument: "Identity Document",
+  idDocumentNote: "Please upload a valid government-issued ID",
+  businessLicense: "Business License",
+  businessLicenseNote: "Please upload your business license or registration",
+  uploading: "Uploading...",
+  submitDocuments: "Submit Documents",
+  kycRequired: "KYC verification required"
 };
