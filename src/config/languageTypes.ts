@@ -48,7 +48,6 @@ export type TranslationKey =
   | "registrationError"
   | "registering"
   | "loggingIn"
-  // Adding the missing translation keys
   | "changePassword"
   | "changeEmail"
   | "newPassword"
@@ -69,4 +68,17 @@ export type TranslationKey =
   | "accountDeleted"
   | "errorDeletingAccount"
   | "updating"
-  | "deleting";
+  | "deleting"
+  // Neue Übersetzungsschlüssel
+  | "phoneNumber"
+  | "phoneLogin"
+  | "emailLogin"
+  | "enterPhoneNumber"
+  | "otpSent"
+  | "orContinueWith"
+  | "uploadedDocuments"
+  | "documentsRequired"
+  | "invalidPhoneNumber"
+  | "mustBe18"
+  | "age"
+  | "country";
