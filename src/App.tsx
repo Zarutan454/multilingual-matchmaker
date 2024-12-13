@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 import ProviderProfile from "./pages/ProviderProfile";
+import Admin from "./pages/Admin";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const App = () => (
               <Route path="/register" element={<Register />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/provider/:id" element={<ProviderProfile />} />
+              <Route path="/admin" element={<Admin />} />
             </Routes>
           </BrowserRouter>
         </TooltipProvider>
