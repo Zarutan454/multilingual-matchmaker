@@ -3,8 +3,40 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "../contexts/LanguageContext";
 import { AgeVerification } from "../components/AgeVerification";
-import { ServiceCategories } from "../components/services/ServiceCategories";
-import { Shield, Users, Star, Wallet, Lock } from "lucide-react";
+import { ChevronDown, MapPin, Clock, Star } from "lucide-react";
+
+const featuredProfiles = [
+  {
+    name: "Sophie",
+    image: "/placeholder.svg",
+    category: "VIP Begleitung",
+    location: "München"
+  },
+  {
+    name: "Emma",
+    image: "/placeholder.svg",
+    category: "Premium Escort",
+    location: "Berlin"
+  },
+  {
+    name: "Julia",
+    image: "/placeholder.svg",
+    category: "Dinner Date",
+    location: "Hamburg"
+  },
+  {
+    name: "Laura",
+    image: "/placeholder.svg",
+    category: "Event Begleitung",
+    location: "Frankfurt"
+  },
+  {
+    name: "Marie",
+    image: "/placeholder.svg",
+    category: "Reisebegleitung",
+    location: "Köln"
+  }
+];
 
 const Index = () => {
   const { t } = useLanguage();
@@ -15,138 +47,144 @@ const Index = () => {
     return <AgeVerification onVerified={() => setIsAgeVerified(true)} />;
   }
 
-  const benefits = [
-    {
-      icon: <Shield className="w-12 h-12 text-secondary mb-4" />,
-      title: "100% Diskret",
-      description: "Ihre Privatsphäre hat für uns höchste Priorität"
-    },
-    {
-      icon: <Users className="w-12 h-12 text-secondary mb-4" />,
-      title: "Geprüfte Profile",
-      description: "Alle Begleitpersonen werden sorgfältig verifiziert"
-    },
-    {
-      icon: <Star className="w-12 h-12 text-secondary mb-4" />,
-      title: "Premium Service",
-      description: "Erstklassige Begleitung für höchste Ansprüche"
-    },
-    {
-      icon: <Wallet className="w-12 h-12 text-secondary mb-4" />,
-      title: "Faire Preise",
-      description: "Transparente Preisgestaltung ohne versteckte Kosten"
-    }
-  ];
-
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      <div className="absolute inset-0 flex">
-        <div 
-          className="w-1/2 bg-cover bg-center transform hover:scale-105 transition-transform duration-700"
-          style={{
-            backgroundImage: 'url(/photo-1581092795360-fd1ca04f0952)',
-            filter: 'brightness(0.6) contrast(1.2)'
-          }}
-        />
-        <div 
-          className="w-1/2 bg-cover bg-center transform hover:scale-105 transition-transform duration-700"
-          style={{
-            backgroundImage: 'url(/photo-1581091226825-a6a2a5aee158)',
-            filter: 'brightness(0.6) contrast(1.2)'
-          }}
-        />
-      </div>
-      
-      <div className="absolute inset-0 bg-gradient-dark backdrop-blur-sm" />
-      
-      <div className="relative z-10">
-        <div className="container mx-auto px-4 py-20 text-center">
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-8 tracking-tight leading-tight animate-fade-in">
-            Exklusive Begleitservice
+    <div className="min-h-screen bg-black text-white">
+      {/* Hero Section */}
+      <div className="relative h-[80vh] flex items-center justify-center bg-gradient-to-r from-black to-gray-900">
+        <div className="absolute inset-0 bg-black/60" />
+        <div className="relative z-10 text-center px-4">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            PREMIUM BEGLEITSERVICE 24/7
           </h1>
-          <p className="text-xl md:text-2xl text-neutral-300 mb-12 max-w-3xl mx-auto animate-fade-in leading-relaxed">
-            Diskrete und stilvolle Begleitung für jeden Anlass. 
-            Erleben Sie unvergessliche Momente mit unseren ausgewählten Begleitpersonen.
+          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+            Exklusive Begleitung für anspruchsvolle Momente
           </p>
-          <div className="flex gap-6 justify-center animate-fade-in">
-            <Button 
-              onClick={() => navigate("/register")}
-              className="bg-secondary hover:bg-secondary/80 text-white px-8 py-6 text-lg tracking-wide"
-            >
-              Jetzt Registrieren
-            </Button>
-            <Button 
-              onClick={() => navigate("/login")}
-              variant="outline"
-              className="border-secondary text-secondary hover:bg-secondary/10 px-8 py-6 text-lg tracking-wide"
-            >
-              Anmelden
-            </Button>
-          </div>
+          <Button 
+            variant="secondary"
+            size="lg"
+            className="bg-secondary hover:bg-secondary/90"
+            onClick={() => {
+              const element = document.getElementById('featured');
+              element?.scrollIntoView({ behavior: 'smooth' });
+            }}
+          >
+            <ChevronDown className="mr-2" />
+            Entdecken Sie mehr
+          </Button>
         </div>
+      </div>
 
-        <ServiceCategories />
-
-        {/* Benefits Section */}
-        <div className="container mx-auto px-4 py-24 bg-black/40 backdrop-blur-md">
-          <h2 className="text-4xl font-bold text-white text-center mb-6 tracking-tight">
-            Warum Sie uns vertrauen können
+      {/* Featured Profiles */}
+      <section id="featured" className="py-20 bg-black">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            UNSERE PREMIUM BEGLEITUNG
           </h2>
-          <p className="text-xl text-neutral-300 text-center mb-16 max-w-3xl mx-auto">
-            Entdecken Sie die Vorteile unseres exklusiven Services
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {benefits.map((benefit, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+            {featuredProfiles.map((profile, index) => (
               <div 
-                key={index} 
-                className="text-center p-8 rounded-lg border border-neutral-800 hover:border-secondary transition-colors duration-300"
+                key={index}
+                className="group relative overflow-hidden rounded-lg cursor-pointer"
+                onClick={() => navigate("/provider/1")}
               >
-                <div className="flex justify-center">{benefit.icon}</div>
-                <h3 className="text-2xl font-semibold text-white mb-4">{benefit.title}</h3>
-                <p className="text-neutral-400">{benefit.description}</p>
+                <div className="aspect-[3/4] relative">
+                  <img 
+                    src={profile.image} 
+                    alt={profile.name}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                    <h3 className="text-xl font-bold mb-1">{profile.name}</h3>
+                    <div className="flex items-center gap-2 text-sm text-gray-300">
+                      <MapPin className="w-4 h-4" />
+                      {profile.location}
+                    </div>
+                  </div>
+                  <div className="absolute top-4 right-4">
+                    <span className="bg-secondary/90 px-3 py-1 rounded-full text-sm">
+                      FEATURED
+                    </span>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         </div>
+      </section>
 
-        {/* Call to Action Section */}
-        <div className="container mx-auto px-4 py-24">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-8 tracking-tight">
-              Bereit für unvergessliche Momente?
-            </h2>
-            <p className="text-xl text-neutral-300 mb-12 leading-relaxed">
-              Registrieren Sie sich jetzt und erleben Sie erstklassige Begleitung. 
-              Unsere sorgfältig ausgewählten Begleitpersonen freuen sich darauf, 
-              Ihren Anlass zu etwas ganz Besonderem zu machen.
+      {/* Info Section */}
+      <section className="py-20 bg-gradient-to-b from-black to-gray-900">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-12">ÜBER UNSEREN SERVICE</h2>
+          <div className="max-w-4xl mx-auto text-gray-300 leading-relaxed">
+            <p className="mb-8">
+              Wir bieten Ihnen einen exklusiven Begleitservice der Extraklasse. 
+              Unsere sorgfältig ausgewählten Begleiterinnen vereinen Stil, Charme und Intelligenz 
+              und sind die perfekte Wahl für jeden gehobenen Anlass.
             </p>
-            <Button 
-              onClick={() => navigate("/register")}
-              className="bg-secondary hover:bg-secondary/80 text-white px-12 py-6 text-xl tracking-wide"
-            >
-              Jetzt kostenlos registrieren
-            </Button>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+              <div className="flex flex-col items-center">
+                <Clock className="w-12 h-12 text-secondary mb-4" />
+                <h3 className="text-xl font-semibold mb-2">24/7 Verfügbar</h3>
+                <p className="text-sm text-gray-400">Flexible Buchungen rund um die Uhr</p>
+              </div>
+              <div className="flex flex-col items-center">
+                <Star className="w-12 h-12 text-secondary mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Premium Service</h3>
+                <p className="text-sm text-gray-400">Höchste Qualitätsstandards</p>
+              </div>
+              <div className="flex flex-col items-center">
+                <MapPin className="w-12 h-12 text-secondary mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Deutschlandweit</h3>
+                <p className="text-sm text-gray-400">In allen großen Städten verfügbar</p>
+              </div>
+            </div>
           </div>
         </div>
+      </section>
 
-        {/* Trust Indicators */}
-        <div className="container mx-auto px-4 py-12 border-t border-neutral-800">
-          <div className="flex flex-wrap justify-center gap-12 text-neutral-400 text-sm">
-            <div className="flex items-center gap-2">
-              <Lock size={16} />
-              <span>256-bit SSL Verschlüsselung</span>
+      {/* Footer */}
+      <footer className="bg-black py-12 border-t border-gray-800">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Information</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="/about" className="hover:text-secondary">Über uns</a></li>
+                <li><a href="/services" className="hover:text-secondary">Services</a></li>
+                <li><a href="/booking" className="hover:text-secondary">Buchung</a></li>
+              </ul>
             </div>
-            <div className="flex items-center gap-2">
-              <Users size={16} />
-              <span>1000+ zufriedene Kunden</span>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Städte</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-secondary">Berlin</a></li>
+                <li><a href="#" className="hover:text-secondary">München</a></li>
+                <li><a href="#" className="hover:text-secondary">Hamburg</a></li>
+              </ul>
             </div>
-            <div className="flex items-center gap-2">
-              <Star size={16} />
-              <span>4.9/5 Durchschnittsbewertung</span>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Rechtliches</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="/privacy" className="hover:text-secondary">Datenschutz</a></li>
+                <li><a href="/terms" className="hover:text-secondary">AGB</a></li>
+                <li><a href="/imprint" className="hover:text-secondary">Impressum</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Kontakt</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li>Email: info@example.com</li>
+                <li>Tel: +49 123 456789</li>
+              </ul>
             </div>
           </div>
+          <div className="mt-12 pt-8 border-t border-gray-800 text-center text-gray-500 text-sm">
+            <p>© {new Date().getFullYear()} Premium Escort Service. Alle Rechte vorbehalten.</p>
+          </div>
         </div>
-      </div>
+      </footer>
     </div>
   );
 };
