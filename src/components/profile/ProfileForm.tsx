@@ -22,6 +22,11 @@ export const ProfileForm = () => {
   const { t } = useLanguage();
   const { user } = useAuth();
   
+  const defaultPriceRange = {
+    min: Number(user?.user_metadata?.price_range?.min || 0),
+    max: Number(user?.user_metadata?.price_range?.max || 0)
+  };
+  
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
@@ -34,10 +39,7 @@ export const ProfileForm = () => {
       weight: user?.user_metadata?.weight || "",
       availability: user?.user_metadata?.availability || [],
       serviceCategories: user?.user_metadata?.service_categories || [],
-      priceRange: {
-        min: Number(user?.user_metadata?.price_range?.min || 0),
-        max: Number(user?.user_metadata?.price_range?.max || 0)
-      },
+      priceRange: defaultPriceRange,
       availabilityStatus: user?.user_metadata?.availability_status || "offline",
       gallery: user?.user_metadata?.gallery || [],
     },
