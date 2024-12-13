@@ -39,20 +39,39 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-dark">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Split Background Images */}
+      <div className="absolute inset-0 flex">
+        <div 
+          className="w-1/2 bg-cover bg-center transform hover:scale-105 transition-transform duration-700"
+          style={{
+            backgroundImage: 'url(/photo-1581092795360-fd1ca04f0952)',
+            filter: 'brightness(0.6) contrast(1.2)'
+          }}
+        />
+        <div 
+          className="w-1/2 bg-cover bg-center transform hover:scale-105 transition-transform duration-700"
+          style={{
+            backgroundImage: 'url(/photo-1581091226825-a6a2a5aee158)',
+            filter: 'brightness(0.6) contrast(1.2)'
+          }}
+        />
+      </div>
+      
+      {/* Overlay Gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80 backdrop-blur-sm" />
       
       <div className="relative z-10">
         {/* Hero Section */}
         <div className="container mx-auto px-4 py-20 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 animate-fade-in">
             Exklusive Begleitservice
           </h1>
-          <p className="text-xl text-neutral-300 mb-12 max-w-2xl mx-auto">
+          <p className="text-xl text-neutral-300 mb-12 max-w-2xl mx-auto animate-fade-in">
             Diskrete und stilvolle Begleitung für jeden Anlass. 
             Erleben Sie unvergessliche Momente mit unseren ausgewählten Begleitpersonen.
           </p>
-          <div className="flex gap-4 justify-center">
+          <div className="flex gap-4 justify-center animate-fade-in">
             <Button 
               onClick={() => navigate("/register")}
               className="bg-secondary hover:bg-secondary/80 text-white px-8 py-6 text-lg"
