@@ -150,7 +150,8 @@ export type TranslationKey =
   | "chat"
   | "startChat"
   | "messageDeleted"
-  | "messageError";
+  | "messageError"
+  | "invalidCredentials";
 
 export type Translations = {
   [K in TranslationKey]: string;

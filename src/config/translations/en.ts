@@ -150,5 +150,6 @@ export const enTranslations: Translations = {
   chat: "Chat",
   startChat: "Start Chat",
   messageDeleted: "Message deleted",
-  messageError: "Error sending message"
+  messageError: "Error sending message",
+  invalidCredentials: "Invalid login credentials"
 };
