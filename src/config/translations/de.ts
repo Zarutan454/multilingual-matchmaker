@@ -113,5 +113,6 @@ export const deTranslations = {
   businessLicenseNote: "Bitte laden Sie Ihren Gewerbeschein oder Ihre Registrierung hoch",
   uploading: "Wird hochgeladen...",
   submitDocuments: "Dokumente einreichen",
-  kycRequired: "KYC-Verifizierung erforderlich"
+  kycRequired: "KYC-Verifizierung erforderlich",
+  categories: "Kategorien"
 };
