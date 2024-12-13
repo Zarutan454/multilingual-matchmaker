@@ -107,4 +107,9 @@ export type TranslationKey =
   | "kycRequired"
   | "kycPending"
   | "kycApproved"
-  | "kycRejected";
+  | "kycRejected"
+  | "availability"
+  | "pricing"
+  | "basePrice"
+  | "hour"
+  | "select";

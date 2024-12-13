@@ -78,7 +78,6 @@ export const deTranslations = {
   occupation: "Beruf",
   saveProfile: "Profil speichern",
   memberSince: "Mitglied seit",
-  pleaseLoginFirst: "Bitte zuerst einloggen",
   height: "Größe",
   weight: "Gewicht",
   availabilityStatus: "Verfügbarkeitsstatus",
@@ -97,9 +96,5 @@ export const deTranslations = {
   availability: "Verfügbarkeit",
   pricing: "Preisgestaltung",
   basePrice: "Grundpreis",
-  hour: "Stunde",
-  welcome: "Willkommen",
-  loginRequired: "Bitte melden Sie sich an, um alle Funktionen nutzen zu können.",
-  providerDashboard: "Dienstleister Dashboard",
-  yourServices: "Ihre Dienstleistungen"
+  hour: "Stunde"
 };
