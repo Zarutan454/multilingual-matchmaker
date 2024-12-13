@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from "sonner";
 import { useLanguage } from '../contexts/LanguageContext';
 import { Loader2 } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -46,60 +47,73 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-neutral-100 px-4">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center mb-6">{t("login")}</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              {t("email")}
-            </label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full"
+    <div className="min-h-screen flex items-center justify-center bg-neutral-100 px-4 animate-fade-in">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-center">
+            {t("login")}
+          </CardTitle>
+          <CardDescription className="text-center">
+            {t("pleaseLoginFirst")}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                {t("email")}
+              </label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full"
+                disabled={isLoading}
+                placeholder="email@example.com"
+              />
+            </div>
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                {t("password")}
+              </label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full"
+                disabled={isLoading}
+                placeholder="••••••••"
+              />
+            </div>
+            <Button 
+              type="submit" 
+              className="w-full" 
               disabled={isLoading}
-            />
-          </div>
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-              {t("password")}
-            </label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full"
-              disabled={isLoading}
-            />
-          </div>
-          <Button 
-            type="submit" 
-            className="w-full" 
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {t("loggingIn")}
-              </>
-            ) : (
-              t("loginButton")
-            )}
-          </Button>
-        </form>
-        <p className="mt-4 text-center text-sm text-gray-600">
-          {t("noAccount")}{' '}
-          <a href="/register" className="text-primary hover:underline">
-            {t("registerNow")}
-          </a>
-        </p>
-      </div>
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {t("loggingIn")}
+                </>
+              ) : (
+                t("loginButton")
+              )}
+            </Button>
+          </form>
+        </CardContent>
+        <CardFooter className="flex justify-center">
+          <p className="text-sm text-gray-600">
+            {t("noAccount")}{' '}
+            <a href="/register" className="text-primary hover:underline">
+              {t("registerNow")}
+            </a>
+          </p>
+        </CardFooter>
+      </Card>
     </div>
   );
 };
