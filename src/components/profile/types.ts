@@ -18,14 +18,13 @@ export const profileSchema = z.object({
       "Only .jpg, .jpeg, .png and .gif formats are supported"
     )
     .optional(),
-  // Extended Profile Fields
   height: z.string().optional(),
   weight: z.string().optional(),
   availability: z.array(z.string()).optional(),
   serviceCategories: z.array(z.string()).optional(),
   priceRange: z.object({
-    min: z.number().min(0),
-    max: z.number().min(0)
+    min: z.number(),
+    max: z.number()
   }).optional(),
   gallery: z.array(z.any())
     .refine(
