@@ -1,73 +1,80 @@
+import { Card } from "@/components/ui/card";
+import { useLanguage } from "../../contexts/LanguageContext";
 import { useState } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Plus } from "lucide-react";
 
-interface ProviderGalleryProps {
-  images: string[];
+export interface ProviderGalleryProps {
+  providerId: string;
 }
 
-export const ProviderGallery = ({ images }: ProviderGalleryProps) => {
+export const ProviderGallery = ({ providerId }: ProviderGalleryProps) => {
+  const { t } = useLanguage();
+  const [images, setImages] = useState<string[]>([]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
 
-  const handlePrevious = () => {
-    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1));
-  };
-
-  const handleNext = () => {
-    setCurrentIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0));
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImages([...images, reader.result as string]);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-xl font-semibold mb-4">Galerie</h2>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <Card className="p-6">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-semibold">{t("gallery")}</h2>
+        <label htmlFor="image-upload">
+          <Button variant="outline" size="sm" className="cursor-pointer">
+            <Plus className="h-4 w-4 mr-2" />
+            {t("addImage")}
+          </Button>
+        </label>
+        <input
+          id="image-upload"
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleImageUpload}
+        />
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {images.map((image, index) => (
-          <div
-            key={index}
-            className="aspect-square rounded-lg overflow-hidden cursor-pointer"
-            onClick={() => {
-              setSelectedImage(image);
-              setCurrentIndex(index);
-            }}
-          >
-            <img
-              src={image}
-              alt={`Gallery ${index + 1}`}
-              className="w-full h-full object-cover hover:scale-105 transition-transform"
-            />
-          </div>
+          <Dialog key={index}>
+            <DialogTrigger asChild>
+              <div
+                className="aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
+                onClick={() => setSelectedImage(image)}
+              >
+                <img
+                  src={image}
+                  alt={`Gallery ${index + 1}`}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </DialogTrigger>
+            <DialogContent className="max-w-3xl">
+              <img
+                src={selectedImage || ""}
+                alt="Gallery preview"
+                className="w-full h-auto"
+              />
+            </DialogContent>
+          </Dialog>
         ))}
       </div>
 
-      <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
-        <DialogContent className="max-w-4xl">
-          <div className="relative">
-            <img
-              src={images[currentIndex]}
-              alt={`Gallery ${currentIndex + 1}`}
-              className="w-full h-full object-contain"
-            />
-            <Button
-              variant="outline"
-              size="icon"
-              className="absolute left-2 top-1/2 transform -translate-y-1/2"
-              onClick={handlePrevious}
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              className="absolute right-2 top-1/2 transform -translate-y-1/2"
-              onClick={handleNext}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </div>
+      {images.length === 0 && (
+        <div className="text-center text-gray-500 py-8">
+          {t("noProfilesYet")}
+        </div>
+      )}
+    </Card>
   );
 };

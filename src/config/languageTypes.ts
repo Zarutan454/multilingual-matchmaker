@@ -126,7 +126,23 @@ export type TranslationKey =
   | "noRatingsYet"
   | "ratings"
   | "rating"
-  | "averageRating";
+  | "averageRating"
+  | "userStatusUpdated"
+  | "errorUpdatingUser"
+  | "userManagement"
+  | "name"
+  | "status"
+  | "role"
+  | "actions"
+  | "notProvided"
+  | "pending"
+  | "user"
+  | "activate"
+  | "suspend"
+  | "ratingSubmitted"
+  | "summary"
+  | "allRatings"
+  | "rateProvider";
 
 export type Translations = {
   [K in TranslationKey]: string;

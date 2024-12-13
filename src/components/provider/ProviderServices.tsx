@@ -2,8 +2,9 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { useLanguage } from "../../contexts/LanguageContext";
 
-interface ProviderServicesProps {
+export interface ProviderServicesProps {
   services: string[];
+  providerId: string;
 }
 
 export const ProviderServices = ({ services }: ProviderServicesProps) => {
