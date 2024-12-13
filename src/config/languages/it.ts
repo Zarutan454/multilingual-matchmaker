@@ -1,6 +1,7 @@
+import { Translations } from "../languageTypes";
 import { enTranslations } from "../translations/en";
 
-export const itTranslations = {
+export const itTranslations: Translations = {
   ...enTranslations,
   phoneNumber: "Numero di telefono",
   phoneLogin: "Accedi con telefono",

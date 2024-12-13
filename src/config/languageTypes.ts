@@ -120,3 +120,7 @@ export type TranslationKey =
   | "errorLoadingProfile"
   | "profileNotFound"
   | "noProfilesYet";
+
+export type Translations = {
+  [K in TranslationKey]: string;
+};

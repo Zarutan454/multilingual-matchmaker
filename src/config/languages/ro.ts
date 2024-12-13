@@ -1,6 +1,7 @@
+import { Translations } from "../languageTypes";
 import { enTranslations } from "../translations/en";
 
-export const roTranslations = {
+export const roTranslations: Translations = {
   ...enTranslations,
   phoneNumber: "Număr de telefon",
   phoneLogin: "Conectare cu telefon",

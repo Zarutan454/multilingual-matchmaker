@@ -1,4 +1,6 @@
-export const deTranslations = {
+import { Translations } from "../languageTypes";
+
+export const deTranslations: Translations = {
   home: "Startseite",
   about: "Über uns",
   services: "Dienstleistungen",
@@ -105,7 +107,7 @@ export const deTranslations = {
   kycPending: "KYC ausstehend",
   kycApproved: "KYC genehmigt",
   kycRejected: "KYC abgelehnt",
-  pleaseUploadAllDocuments: "Bitte laden Sie alle Dokumente hoch.",
+  pleaseUploadAllDocuments: "Bitte laden Sie alle Dokumente hoch",
   kycDocumentsUploaded: "KYC-Dokumente hochgeladen",
   errorUploadingDocuments: "Fehler beim Hochladen der Dokumente",
   identityDocument: "Identitätsdokument",
@@ -118,4 +120,4 @@ export const deTranslations = {
   errorLoadingProfile: "Fehler beim Laden des Profils",
   profileNotFound: "Profil nicht gefunden",
   noProfilesYet: "Es wurden noch keine Profile angelegt"
-} as const;
+};

@@ -1,4 +1,6 @@
-export const enTranslations = {
+import { Translations } from "../languageTypes";
+
+export const enTranslations: Translations = {
   home: "Home",
   about: "About",
   services: "Services",
@@ -118,4 +120,4 @@ export const enTranslations = {
   errorLoadingProfile: "Error loading profile",
   profileNotFound: "Profile not found",
   noProfilesYet: "No profiles have been created yet"
-} as const;
+};
