@@ -120,20 +120,13 @@ export type TranslationKey =
   | "errorLoadingProfile"
   | "profileNotFound"
   | "noProfilesYet"
-  // Neue Schlüssel für User Management
-  | "userStatusUpdated"
-  | "errorUpdatingUser"
-  | "userManagement"
-  | "name"
-  | "email"
-  | "status"
-  | "role"
-  | "actions"
-  | "notProvided"
-  | "pending"
-  | "user"
-  | "activate"
-  | "suspend";
+  | "pleaseSelectRating"
+  | "ratingComment"
+  | "submitRating"
+  | "noRatingsYet"
+  | "ratings"
+  | "rating"
+  | "averageRating";
 
 export type Translations = {
   [K in TranslationKey]: string;
