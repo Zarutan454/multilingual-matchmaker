@@ -25,7 +25,6 @@ export type TranslationKey =
   | "ageQuestion"
   | "yes"
   | "no"
-  // Profile related translations
   | "profile"
   | "profileUpdated"
   | "errorUpdatingProfile"
@@ -36,4 +35,9 @@ export type TranslationKey =
   | "occupation"
   | "saveProfile"
   | "memberSince"
-  | "pleaseLoginFirst";
+  | "pleaseLoginFirst"
+  | "loginSuccess"
+  | "loginError"
+  | "loginButton"
+  | "noAccount"
+  | "registerNow";

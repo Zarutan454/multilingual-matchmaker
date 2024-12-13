@@ -35,5 +35,10 @@ export const deTranslations: Record<TranslationKey, string> = {
   occupation: "Beruf",
   saveProfile: "Profil speichern",
   memberSince: "Mitglied seit",
-  pleaseLoginFirst: "Bitte melden Sie sich zuerst an"
+  pleaseLoginFirst: "Bitte melden Sie sich zuerst an",
+  loginSuccess: "Erfolgreich eingeloggt",
+  loginError: "Fehler bei der Anmeldung",
+  loginButton: "Anmelden",
+  noAccount: "Noch kein Konto?",
+  registerNow: "Jetzt registrieren"
 };

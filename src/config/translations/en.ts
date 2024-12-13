@@ -35,5 +35,10 @@ export const enTranslations: Record<TranslationKey, string> = {
   occupation: "Occupation",
   saveProfile: "Save Profile",
   memberSince: "Member Since",
-  pleaseLoginFirst: "Please login first"
+  pleaseLoginFirst: "Please login first",
+  loginSuccess: "Successfully logged in",
+  loginError: "Login error",
+  loginButton: "Login",
+  noAccount: "Don't have an account?",
+  registerNow: "Register now"
 };
