@@ -13,16 +13,24 @@ if (!supabaseUrl || !supabaseKey) {
 try {
   new URL(supabaseUrl);
 } catch (error) {
-  throw new Error(`Ungültige Supabase URL: ${supabaseUrl}. Bitte stellen Sie sicher, dass Sie eine vollständige URL eingeben (z.B. https://ihr-projekt.supabase.co)`);
+  throw new Error(`Ungültige Supabase URL: ${supabaseUrl}`);
 }
 
 const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Auth Konfiguration
+const AUTH_CONFIG = {
+  passwordTimeout: 10800, // 3 Stunden in Sekunden
+  passwordResetExpiration: 60, // 60 Minuten
+  passwordResetThrottle: 60, // 60 Sekunden Wartezeit zwischen Reset-Anfragen
+};
 
 type AuthContextType = {
   user: User | null;
   signUp: (email: string, password: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -67,8 +75,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (error) throw error;
   };
 
+  const resetPassword = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) throw error;
+  };
+
   return (
-    <AuthContext.Provider value={{ user, signUp, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, signUp, signIn, signOut, resetPassword }}>
       {children}
     </AuthContext.Provider>
   );
