@@ -78,5 +78,19 @@ export const enTranslations = {
   occupation: "Occupation",
   saveProfile: "Save Profile",
   memberSince: "Member Since",
-  pleaseLoginFirst: "Please Login First"
+  pleaseLoginFirst: "Please Login First",
+  height: "Height",
+  weight: "Weight",
+  availabilityStatus: "Availability Status",
+  selectAvailability: "Select Availability",
+  available: "Available",
+  busy: "Busy",
+  offline: "Offline",
+  serviceCategories: "Service Categories",
+  selectServices: "Select Services",
+  gallery: "Gallery",
+  addImage: "Add Image",
+  priceRange: "Price Range",
+  from: "From",
+  to: "To"
 };

@@ -5,10 +5,12 @@ import { Form } from "../ui/form";
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "../../contexts/AuthContext";
-import { createClient, UserAttributes } from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js";
 import { ProfileAvatar } from "./ProfileAvatar";
 import { ProfileBasicInfo } from "./ProfileBasicInfo";
 import { ProfileAdditionalInfo } from "./ProfileAdditionalInfo";
+import { ExtendedProfileInfo } from "./ExtendedProfileInfo";
+import { ProfileGallery } from "./ProfileGallery";
 import { profileSchema, ProfileFormValues, UserMetadata } from "./types";
 
 const supabase = createClient(
@@ -28,6 +30,13 @@ export const ProfileForm = () => {
       location: user?.user_metadata?.location || "",
       interests: user?.user_metadata?.interests || "",
       occupation: user?.user_metadata?.occupation || "",
+      height: user?.user_metadata?.height || "",
+      weight: user?.user_metadata?.weight || "",
+      availability: user?.user_metadata?.availability || [],
+      serviceCategories: user?.user_metadata?.service_categories || [],
+      priceRange: user?.user_metadata?.price_range || { min: 0, max: 0 },
+      availabilityStatus: user?.user_metadata?.availability_status || "offline",
+      gallery: user?.user_metadata?.gallery || [],
     },
   });
 
@@ -39,8 +48,15 @@ export const ProfileForm = () => {
         location: data.location,
         interests: data.interests,
         occupation: data.occupation,
+        height: data.height,
+        weight: data.weight,
+        availability: data.availability,
+        service_categories: data.serviceCategories,
+        price_range: data.priceRange,
+        availability_status: data.availabilityStatus,
       };
 
+      // Handle avatar upload
       if (data.avatar instanceof File) {
         const fileExt = data.avatar.name.split('.').pop();
         const filePath = `${user?.id}/${Math.random()}.${fileExt}`;
@@ -49,9 +65,7 @@ export const ProfileForm = () => {
           .from('avatars')
           .upload(filePath, data.avatar);
 
-        if (uploadError) {
-          throw uploadError;
-        }
+        if (uploadError) throw uploadError;
 
         const { data: { publicUrl } } = supabase.storage
           .from('avatars')
@@ -60,11 +74,35 @@ export const ProfileForm = () => {
         metadata.avatar_url = publicUrl;
       }
 
-      const updates: UserAttributes = {
-        data: metadata
-      };
+      // Handle gallery uploads
+      if (data.gallery?.length) {
+        const galleryUrls = [];
+        for (const image of data.gallery) {
+          if (image instanceof File) {
+            const fileExt = image.name.split('.').pop();
+            const filePath = `gallery/${user?.id}/${Math.random()}.${fileExt}`;
 
-      const { error } = await supabase.auth.updateUser(updates);
+            const { error: uploadError } = await supabase.storage
+              .from('gallery')
+              .upload(filePath, image);
+
+            if (uploadError) throw uploadError;
+
+            const { data: { publicUrl } } = supabase.storage
+              .from('gallery')
+              .getPublicUrl(filePath);
+
+            galleryUrls.push(publicUrl);
+          } else {
+            galleryUrls.push(image);
+          }
+        }
+        metadata.gallery = galleryUrls;
+      }
+
+      const { error } = await supabase.auth.updateUser({
+        data: metadata
+      });
 
       if (error) throw error;
       
@@ -81,6 +119,8 @@ export const ProfileForm = () => {
         <ProfileAvatar form={form} />
         <ProfileBasicInfo form={form} />
         <ProfileAdditionalInfo form={form} />
+        <ExtendedProfileInfo form={form} />
+        <ProfileGallery form={form} />
         
         <Button type="submit" className="w-full">
           {t("saveProfile")}
