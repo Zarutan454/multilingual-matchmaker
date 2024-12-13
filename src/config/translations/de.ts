@@ -126,5 +126,21 @@ export const deTranslations: Translations = {
   noRatingsYet: "Noch keine Bewertungen",
   ratings: "Bewertungen",
   rating: "Bewertung",
-  averageRating: "Durchschnittliche Bewertung"
+  averageRating: "Durchschnittliche Bewertung",
+  userStatusUpdated: "Benutzerstatus erfolgreich aktualisiert",
+  errorUpdatingUser: "Fehler beim Aktualisieren des Benutzerstatus",
+  userManagement: "Benutzerverwaltung",
+  name: "Name",
+  status: "Status",
+  role: "Rolle",
+  actions: "Aktionen",
+  notProvided: "Nicht angegeben",
+  pending: "Ausstehend",
+  user: "Benutzer",
+  activate: "Aktivieren",
+  suspend: "Sperren",
+  ratingSubmitted: "Bewertung erfolgreich übermittelt",
+  summary: "Zusammenfassung",
+  allRatings: "Alle Bewertungen",
+  rateProvider: "Anbieter bewerten"
 };

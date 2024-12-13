@@ -126,5 +126,21 @@ export const enTranslations: Translations = {
   noRatingsYet: "No ratings yet",
   ratings: "Ratings",
   rating: "Rating",
-  averageRating: "Average Rating"
+  averageRating: "Average Rating",
+  userStatusUpdated: "User status updated successfully",
+  errorUpdatingUser: "Error updating user status",
+  userManagement: "User Management",
+  name: "Name",
+  status: "Status",
+  role: "Role",
+  actions: "Actions",
+  notProvided: "Not provided",
+  pending: "Pending",
+  user: "User",
+  activate: "Activate",
+  suspend: "Suspend",
+  ratingSubmitted: "Rating submitted successfully",
+  summary: "Summary",
+  allRatings: "All Ratings",
+  rateProvider: "Rate Provider"
 };

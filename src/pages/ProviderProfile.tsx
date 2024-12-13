@@ -7,7 +7,7 @@ import { ProviderRatings } from "../components/provider/ProviderRatings";
 
 export default function ProviderProfile() {
   const { id } = useParams();
-  // Beispieldaten - später durch echte Daten ersetzen
+  // Example data - replace with real data later
   const mockProvider = {
     id: id,
     full_name: "John Doe",
@@ -15,13 +15,14 @@ export default function ProviderProfile() {
     location: "Berlin",
     bio: "Experienced massage therapist with 10+ years of practice",
     availability_status: "available",
+    services: ["Massage", "Physiotherapy", "Wellness"]
   };
 
   return (
     <div className="container mx-auto py-8 space-y-8">
       <ProviderInfo provider={mockProvider} />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <ProviderServices providerId={id!} />
+        <ProviderServices services={mockProvider.services} providerId={id!} />
         <ProviderAvailability providerId={id!} />
       </div>
       <ProviderRatings providerId={id!} />
