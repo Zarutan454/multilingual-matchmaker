@@ -57,7 +57,7 @@ export const LoginForm = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="bg-[#222222] border-neutral-700 text-white placeholder-neutral-500 focus:border-purple-500"
+          className="bg-[#222222] border-neutral-700 text-white placeholder-neutral-500 focus:border-secondary"
           disabled={isLoading}
           placeholder="email@example.com"
         />
@@ -73,7 +73,7 @@ export const LoginForm = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="bg-[#222222] border-neutral-700 text-white placeholder-neutral-500 focus:border-purple-500"
+          className="bg-[#222222] border-neutral-700 text-white placeholder-neutral-500 focus:border-secondary"
           disabled={isLoading}
           placeholder="••••••••"
         />
@@ -81,7 +81,7 @@ export const LoginForm = () => {
 
       <Button 
         type="submit" 
-        className="w-full bg-[#9b87f5] hover:bg-[#7E69AB] text-white transition-colors" 
+        className="w-full bg-secondary hover:bg-secondary/80 text-white transition-colors" 
         disabled={isLoading}
       >
         {isLoading ? (

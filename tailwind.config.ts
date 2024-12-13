@@ -32,6 +32,10 @@ export default {
           DEFAULT: "#c69963",
           foreground: "#ffffff",
         },
+        accent: {
+          DEFAULT: "#9b87f5",
+          hover: "#7E69AB",
+        },
         neutral: {
           100: "#f7f7f7",
           200: "#eaeaea",
@@ -41,6 +45,10 @@ export default {
       },
       fontFamily: {
         sans: ["Roboto", "sans-serif"],
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-dark': 'linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.9))',
       },
       keyframes: {
         "fade-in": {

@@ -3,14 +3,23 @@ import { Separator } from "@/components/ui/separator";
 import { useLanguage } from '../contexts/LanguageContext';
 import { LoginForm } from '../components/auth/LoginForm';
 import { SocialLogin } from '../components/auth/SocialLogin';
+import { AgeVerification } from '../components/AgeVerification';
+import { useState } from "react";
 
 const Login = () => {
   const { t } = useLanguage();
+  const [isAgeVerified, setIsAgeVerified] = useState(false);
+
+  if (!isAgeVerified) {
+    return <AgeVerification onVerified={() => setIsAgeVerified(true)} />;
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#000000e6] px-4">
-      <div className="w-full max-w-md">
-        <Card className="bg-[#222222] border-neutral-700 shadow-xl">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-dark bg-cover bg-center px-4">
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+      
+      <div className="w-full max-w-md relative z-10">
+        <Card className="bg-black/80 border-neutral-700 shadow-xl backdrop-blur-md">
           <CardHeader className="space-y-3">
             <CardTitle className="text-3xl font-bold text-center text-white">
               {t("login")}
@@ -26,7 +35,7 @@ const Login = () => {
             <div className="relative">
               <Separator className="my-4 bg-neutral-700" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="bg-[#222222] px-2 text-sm text-neutral-400">
+                <span className="bg-black/80 px-2 text-sm text-neutral-400">
                   {t("orContinueWith")}
                 </span>
               </div>
@@ -40,7 +49,7 @@ const Login = () => {
               {t("noAccount")}{' '}
               <a 
                 href="/register" 
-                className="text-[#9b87f5] hover:text-[#7E69AB] transition-colors duration-200 font-medium"
+                className="text-secondary hover:text-secondary/80 transition-colors duration-200 font-medium"
               >
                 {t("registerNow")}
               </a>
