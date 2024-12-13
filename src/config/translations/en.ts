@@ -47,5 +47,27 @@ export const enTranslations: Record<TranslationKey, string> = {
   registrationSuccess: "Registration successful! You can now log in.",
   registrationError: "An error occurred during registration",
   registering: "Registering...",
-  loggingIn: "Logging in..."
+  loggingIn: "Logging in...",
+  // Adding the new translations
+  changePassword: "Change Password",
+  changeEmail: "Change Email",
+  newPassword: "New Password",
+  newEmail: "New Email",
+  updatePassword: "Update Password",
+  updateEmail: "Update Email",
+  passwordUpdated: "Password Updated",
+  emailUpdated: "Email Updated",
+  errorUpdatingPassword: "Error Updating Password",
+  errorUpdatingEmail: "Error Updating Email",
+  emailRequired: "Email is required",
+  dangerZone: "Danger Zone",
+  deleteAccount: "Delete Account",
+  deleteAccountConfirm: "Confirm Account Deletion",
+  deleteAccountWarning: "This action cannot be undone. All your data will be permanently deleted.",
+  cancel: "Cancel",
+  confirmDelete: "Yes, Delete Account",
+  accountDeleted: "Your account has been successfully deleted",
+  errorDeletingAccount: "Error deleting account",
+  updating: "Updating...",
+  deleting: "Deleting..."
 };
