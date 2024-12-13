@@ -19,7 +19,12 @@ export type TranslationKey =
   | "registerAsCustomer"
   | "registerAsProvider"
   | "submit"
-  | "documentsNote";
+  | "documentsNote"
+  | "accessDenied"
+  | "ageVerification"
+  | "ageQuestion"
+  | "yes"
+  | "no";
 
 export const languages: Record<
   Language,
@@ -48,6 +53,11 @@ export const languages: Record<
       registerAsProvider: "Als Dienstleister registrieren",
       submit: "Absenden",
       documentsNote: "Bitte laden Sie relevante Dokumente hoch (PDF, Bilder)",
+      accessDenied: "Zugriff verweigert",
+      ageVerification: "Altersüberprüfung",
+      ageQuestion: "Sind Sie über 18 Jahre alt?",
+      yes: "Ja",
+      no: "Nein",
     },
   },
   en: {
@@ -73,6 +83,11 @@ export const languages: Record<
       registerAsProvider: "Register as Provider",
       submit: "Submit",
       documentsNote: "Please upload relevant documents (PDF, images)",
+      accessDenied: "Access Denied",
+      ageVerification: "Age Verification",
+      ageQuestion: "Are you over 18 years old?",
+      yes: "Yes",
+      no: "No",
     },
   },
   ru: {
@@ -98,6 +113,11 @@ export const languages: Record<
       registerAsProvider: "Зарегистрироваться как поставщик",
       submit: "Отправить",
       documentsNote: "Загрузите необходимые документы (PDF, изображения)",
+      accessDenied: "Доступ запрещен",
+      ageVerification: "Проверка возраста",
+      ageQuestion: "Вам больше 18 лет?",
+      yes: "Да",
+      no: "Нет",
     },
   },
   ro: {
@@ -123,6 +143,11 @@ export const languages: Record<
       registerAsProvider: "Înregistrare ca furnizor",
       submit: "Trimite",
       documentsNote: "Vă rugăm să încărcați documentele relevante (PDF, imagini)",
+      accessDenied: "Acces interzis",
+      ageVerification: "Verificare vârstă",
+      ageQuestion: "Aveți peste 18 ani?",
+      yes: "Da",
+      no: "Nu",
     },
   },
   it: {
@@ -148,6 +173,11 @@ export const languages: Record<
       registerAsProvider: "Registrati come fornitore",
       submit: "Invia",
       documentsNote: "Carica i documenti pertinenti (PDF, immagini)",
+      accessDenied: "Accesso negato",
+      ageVerification: "Verifica età",
+      ageQuestion: "Hai più di 18 anni?",
+      yes: "Sì",
+      no: "No",
     },
   },
   es: {
@@ -173,6 +203,11 @@ export const languages: Record<
       registerAsProvider: "Registrarse como proveedor",
       submit: "Enviar",
       documentsNote: "Por favor, sube los documentos relevantes (PDF, imágenes)",
+      accessDenied: "Acceso denegado",
+      ageVerification: "Verificación de edad",
+      ageQuestion: "¿Tienes más de 18 años?",
+      yes: "Sí",
+      no: "No",
     },
   },
   fr: {
@@ -198,6 +233,11 @@ export const languages: Record<
       registerAsProvider: "S'inscrire comme prestataire",
       submit: "Envoyer",
       documentsNote: "Veuillez télécharger les documents pertinents (PDF, images)",
+      accessDenied: "Accès refusé",
+      ageVerification: "Vérification de l'âge",
+      ageQuestion: "Avez-vous plus de 18 ans ?",
+      yes: "Oui",
+      no: "Non",
     },
   },
 };
