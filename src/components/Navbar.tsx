@@ -1,11 +1,13 @@
 import { useLanguage } from "../contexts/LanguageContext";
 import { languages, Language } from "../config/languages";
-import { Menu } from "lucide-react";
+import { Menu, User } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
 
 export const Navbar = () => {
   const { currentLanguage, setLanguage, t } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user } = useAuth();
 
   return (
     <nav className="fixed w-full z-50 bg-black/80 backdrop-blur-sm">
@@ -29,9 +31,16 @@ export const Navbar = () => {
             <a href="/contact" className="text-white hover:text-[#c69963] transition-colors">
               {t("contact")}
             </a>
-            <a href="/register" className="text-white hover:text-[#c69963] transition-colors">
-              {t("register")}
-            </a>
+            {user ? (
+              <a href="/profile" className="text-white hover:text-[#c69963] transition-colors flex items-center gap-2">
+                <User size={18} />
+                {t("profile")}
+              </a>
+            ) : (
+              <a href="/register" className="text-white hover:text-[#c69963] transition-colors">
+                {t("register")}
+              </a>
+            )}
           </div>
           
           <div className="flex items-center space-x-4">
@@ -73,9 +82,16 @@ export const Navbar = () => {
               <a href="/contact" className="text-white hover:text-[#c69963] transition-colors">
                 {t("contact")}
               </a>
-              <a href="/register" className="text-white hover:text-[#c69963] transition-colors">
-                {t("register")}
-              </a>
+              {user ? (
+                <a href="/profile" className="text-white hover:text-[#c69963] transition-colors flex items-center gap-2">
+                  <User size={18} />
+                  {t("profile")}
+                </a>
+              ) : (
+                <a href="/register" className="text-white hover:text-[#c69963] transition-colors">
+                  {t("register")}
+                </a>
+              )}
             </div>
           </div>
         )}
