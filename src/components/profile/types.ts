@@ -23,9 +23,9 @@ export const profileSchema = z.object({
   availability: z.array(z.string()).optional(),
   serviceCategories: z.array(z.string()).optional(),
   priceRange: z.object({
-    min: z.number().min(50, "Minimum price must be at least 50"),
-    max: z.number().min(1000, "Maximum price must be at least 1000")
-  }),
+    min: z.number().default(50),
+    max: z.number().default(1000)
+  }).default({ min: 50, max: 1000 }),
   gallery: z.array(z.any())
     .refine(
       (files) => files.length <= MAX_GALLERY_IMAGES,
