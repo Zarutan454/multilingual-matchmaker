@@ -15,6 +15,10 @@ interface KYCStatusProps {
 
 type KYCStatus = 'pending' | 'approved' | 'rejected' | null;
 
+interface KYCVerification {
+  status: KYCStatus;
+}
+
 export const KYCStatus = ({ userId }: KYCStatusProps) => {
   const { t } = useLanguage();
   const [status, setStatus] = useState<KYCStatus>(null);
@@ -32,7 +36,7 @@ export const KYCStatus = ({ userId }: KYCStatusProps) => {
         return;
       }
 
-      setStatus(data?.status || null);
+      setStatus((data as KYCVerification)?.status || null);
     };
 
     fetchKYCStatus();
@@ -49,7 +53,7 @@ export const KYCStatus = ({ userId }: KYCStatusProps) => {
           filter: `user_id=eq.${userId}`,
         },
         (payload) => {
-          setStatus(payload.new.status);
+          setStatus((payload.new as KYCVerification).status);
         }
       )
       .subscribe();

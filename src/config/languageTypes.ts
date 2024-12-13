@@ -81,4 +81,16 @@ export type TranslationKey =
   | "kycRequired"
   | "kycPending"
   | "kycApproved"
-  | "kycRejected";
+  | "kycRejected"
+  | "phoneNumber"
+  | "phoneLogin"
+  | "emailLogin"
+  | "enterPhoneNumber"
+  | "otpSent"
+  | "orContinueWith"
+  | "uploadedDocuments"
+  | "documentsRequired"
+  | "invalidPhoneNumber"
+  | "mustBe18"
+  | "age"
+  | "country";
