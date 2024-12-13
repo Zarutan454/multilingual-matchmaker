@@ -116,4 +116,7 @@ export type TranslationKey =
   | "businessLicenseNote"
   | "uploading"
   | "submitDocuments"
-  | "kycRequired";
+  | "kycRequired"
+  | "errorLoadingProfile"
+  | "profileNotFound"
+  | "noProfilesYet";

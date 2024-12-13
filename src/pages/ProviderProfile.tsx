@@ -30,6 +30,10 @@ const ProviderProfile = () => {
 
       if (error) {
         console.error("Error fetching provider:", error);
+        if (error.code === "PGRST116") {
+          toast.error(t("noProfilesYet"));
+          throw new Error("No profiles exist yet");
+        }
         toast.error(t("errorLoadingProfile"));
         throw error;
       }
