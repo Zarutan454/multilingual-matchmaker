@@ -8,6 +8,7 @@ import { ProviderServices } from "../components/provider/ProviderServices";
 import { ProviderAvailability } from "../components/provider/ProviderAvailability";
 import { useLanguage } from "../contexts/LanguageContext";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -27,10 +28,20 @@ const ProviderProfile = () => {
         .eq("id", id)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching provider:", error);
+        toast.error(t("errorLoadingProfile"));
+        throw error;
+      }
+
+      if (!data) {
+        toast.error(t("profileNotFound"));
+        throw new Error("Profile not found");
+      }
+
       return data;
     },
-    enabled: !!id, // Only run query if id exists
+    enabled: !!id,
   });
 
   if (isLoading) {
