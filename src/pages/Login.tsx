@@ -5,28 +5,48 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from "sonner";
 import { useLanguage } from '../contexts/LanguageContext';
+import { Loader2 } from 'lucide-react';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const { signIn } = useAuth();
   const navigate = useNavigate();
   const { t } = useLanguage();
 
+  const validateForm = () => {
+    if (!email || !password) {
+      toast.error(t("fillAllFields"));
+      return false;
+    }
+    if (password.length < 6) {
+      toast.error(t("passwordTooShort"));
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateForm()) return;
+    
+    setIsLoading(true);
     try {
       await signIn(email, password);
       toast.success(t("loginSuccess"));
       navigate('/profile');
     } catch (error) {
-      toast.error(t("loginError"));
       console.error('Login error:', error);
+      toast.error(t("loginError"));
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-neutral-100">
+    <div className="min-h-screen flex items-center justify-center bg-neutral-100 px-4">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h1 className="text-2xl font-bold text-center mb-6">{t("login")}</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -41,6 +61,7 @@ const Login = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
               className="w-full"
+              disabled={isLoading}
             />
           </div>
           <div>
@@ -54,10 +75,22 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
               className="w-full"
+              disabled={isLoading}
             />
           </div>
-          <Button type="submit" className="w-full">
-            {t("loginButton")}
+          <Button 
+            type="submit" 
+            className="w-full" 
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {t("loggingIn")}
+              </>
+            ) : (
+              t("loginButton")
+            )}
           </Button>
         </form>
         <p className="mt-4 text-center text-sm text-gray-600">

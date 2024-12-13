@@ -46,4 +46,5 @@ export type TranslationKey =
   | "passwordTooShort"
   | "registrationSuccess"
   | "registrationError"
-  | "registering";
+  | "registering"
+  | "loggingIn";
