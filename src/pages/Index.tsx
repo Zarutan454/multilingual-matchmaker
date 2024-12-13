@@ -9,35 +9,35 @@ const featuredProfiles = [
   {
     id: 1,
     name: "Sophie",
-    image: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7?auto=format&fit=crop&w=800&q=80",
+    image: "/lovable-uploads/da17ddfa-149e-442c-bd33-ea6287b02581.png",
     category: "VIP Begleitung",
     location: "München"
   },
   {
     id: 2,
     name: "Emma",
-    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80",
+    image: "/lovable-uploads/fe01f460-75ee-475d-8e6c-efb6244e2622.png",
     category: "Premium Escort",
     location: "Berlin"
   },
   {
     id: 3,
     name: "Julia",
-    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=800&q=80",
+    image: "/lovable-uploads/5a72d1e4-e990-4665-8f3a-c72bef742a3c.png",
     category: "Dinner Date",
     location: "Hamburg"
   },
   {
     id: 4,
     name: "Laura",
-    image: "https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?auto=format&fit=crop&w=800&q=80",
+    image: "/lovable-uploads/0fee5c22-13f5-4317-835d-751e10816c40.png",
     category: "Event Begleitung",
     location: "Frankfurt"
   },
   {
     id: 5,
     name: "Marie",
-    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80",
+    image: "/lovable-uploads/3f84bf9b-9940-48fd-b090-c8c4ff825b87.png",
     category: "Reisebegleitung",
     location: "Köln"
   }
