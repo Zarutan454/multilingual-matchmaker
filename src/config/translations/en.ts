@@ -119,5 +119,17 @@ export const enTranslations: Translations = {
   kycRequired: "KYC Required",
   errorLoadingProfile: "Error loading profile",
   profileNotFound: "Profile not found",
-  noProfilesYet: "No profiles have been created yet"
+  noProfilesYet: "No profiles have been created yet",
+  userStatusUpdated: "User status updated",
+  errorUpdatingUser: "Error updating user",
+  userManagement: "User Management",
+  name: "Name",
+  status: "Status",
+  role: "Role",
+  actions: "Actions",
+  notProvided: "Not Provided",
+  pending: "Pending",
+  user: "User",
+  activate: "Activate",
+  suspend: "Suspend"
 };

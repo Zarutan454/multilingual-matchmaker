@@ -119,5 +119,17 @@ export const deTranslations: Translations = {
   kycRequired: "KYC erforderlich",
   errorLoadingProfile: "Fehler beim Laden des Profils",
   profileNotFound: "Profil nicht gefunden",
-  noProfilesYet: "Es wurden noch keine Profile angelegt"
+  noProfilesYet: "Es wurden noch keine Profile angelegt",
+  userStatusUpdated: "Benutzerstatus aktualisiert",
+  errorUpdatingUser: "Fehler beim Aktualisieren des Benutzers",
+  userManagement: "Benutzerverwaltung",
+  name: "Name",
+  status: "Status",
+  role: "Rolle",
+  actions: "Aktionen",
+  notProvided: "Nicht angegeben",
+  pending: "Ausstehend",
+  user: "Benutzer",
+  activate: "Aktivieren",
+  suspend: "Sperren"
 };

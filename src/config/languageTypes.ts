@@ -119,7 +119,21 @@ export type TranslationKey =
   | "kycRequired"
   | "errorLoadingProfile"
   | "profileNotFound"
-  | "noProfilesYet";
+  | "noProfilesYet"
+  // Neue Schlüssel für User Management
+  | "userStatusUpdated"
+  | "errorUpdatingUser"
+  | "userManagement"
+  | "name"
+  | "email"
+  | "status"
+  | "role"
+  | "actions"
+  | "notProvided"
+  | "pending"
+  | "user"
+  | "activate"
+  | "suspend";
 
 export type Translations = {
   [K in TranslationKey]: string;
