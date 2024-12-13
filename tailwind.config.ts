@@ -44,7 +44,7 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["Roboto", "sans-serif"],
+        sans: ["Playfair Display", "serif"],
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
