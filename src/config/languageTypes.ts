@@ -69,7 +69,7 @@ export type TranslationKey =
   | "errorDeletingAccount"
   | "updating"
   | "deleting"
-  // Neue Übersetzungsschlüssel
+  // New translation keys
   | "phoneNumber"
   | "phoneLogin"
   | "emailLogin"
