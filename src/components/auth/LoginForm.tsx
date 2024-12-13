@@ -25,7 +25,16 @@ export const LoginForm = () => {
     
     setIsLoading(true);
     try {
-      await signIn(email, password);
+      const { error } = await signIn(email, password);
+      if (error) {
+        if (error.message.includes('Invalid login credentials')) {
+          toast.error(t("invalidCredentials"));
+        } else {
+          toast.error(t("loginError"));
+        }
+        console.error('Login error:', error);
+        return;
+      }
       toast.success(t("loginSuccess"));
       navigate('/profile');
     } catch (error) {

@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { createClient, User } from '@supabase/supabase-js';
+import { createClient, User, AuthError } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -8,24 +8,12 @@ if (!supabaseUrl || !supabaseKey) {
   throw new Error('Supabase URL und anonymer Schlüssel müssen in den Umgebungsvariablen definiert sein.');
 }
 
-try {
-  new URL(supabaseUrl);
-} catch (error) {
-  throw new Error(`Ungültige Supabase URL: ${supabaseUrl}`);
-}
-
 const supabase = createClient(supabaseUrl, supabaseKey);
-
-const AUTH_CONFIG = {
-  passwordTimeout: 10800,
-  passwordResetExpiration: 60,
-  passwordResetThrottle: 60,
-};
 
 type AuthContextType = {
   user: User | null;
-  signUp: (email: string, password: string) => Promise<void>;
-  signIn: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string) => Promise<{ error: AuthError | null }>;
+  signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   updatePassword: (newPassword: string) => Promise<void>;
@@ -57,7 +45,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       email,
       password,
     });
-    if (error) throw error;
+    return { error };
   };
 
   const signIn = async (email: string, password: string) => {
@@ -65,7 +53,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       email,
       password,
     });
-    if (error) throw error;
+    return { error };
   };
 
   const signOut = async () => {
