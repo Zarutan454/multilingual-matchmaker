@@ -45,14 +45,14 @@ const Index = () => {
         <div 
           className="w-1/2 bg-cover bg-center transform hover:scale-105 transition-transform duration-700"
           style={{
-            backgroundImage: 'url(/lovable-uploads/4e0eb2bc-57e3-423b-965a-a78b03a25b27.png)',
+            backgroundImage: 'url(/photo-1581092795360-fd1ca04f0952)',
             filter: 'brightness(0.6) contrast(1.2)'
           }}
         />
         <div 
           className="w-1/2 bg-cover bg-center transform hover:scale-105 transition-transform duration-700"
           style={{
-            backgroundImage: 'url(/lovable-uploads/c603b566-6bd8-4894-8f88-e8421e30bbb4.png)',
+            backgroundImage: 'url(/photo-1581091226825-a6a2a5aee158)',
             filter: 'brightness(0.6) contrast(1.2)'
           }}
         />
