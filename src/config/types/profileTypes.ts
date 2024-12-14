@@ -15,4 +15,13 @@ export type ProfileTranslationKeys =
   | "offline"
   | "gallery"
   | "addImage"
-  | "viewAllPhotos";
+  | "viewAllPhotos"
+  | "profileImage"
+  | "serviceCategories"
+  | "selectServices"
+  | "profileUpdated"
+  | "errorUpdatingProfile"
+  | "age"
+  | "country"
+  | "registerAsCustomer"
+  | "registerAsProvider";
