@@ -3,17 +3,29 @@ import { ChevronDown, Star, Heart, UserPlus } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useRef } from "react";
 
 export const HeroSection = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    // Ensure video plays when component mounts
+    if (videoRef.current) {
+      videoRef.current.play().catch(error => {
+        console.log("Video autoplay failed:", error);
+      });
+    }
+  }, []);
 
   return (
     <div className="relative min-h-screen">
       {/* Video Background */}
       <div className="absolute inset-0 w-full h-full overflow-hidden">
         <video
+          ref={videoRef}
           autoPlay
           loop
           muted
@@ -22,6 +34,7 @@ export const HeroSection = () => {
           style={{ filter: 'brightness(0.4)' }}
         >
           <source src="/lovable-uploads/hero-background.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
         </video>
       </div>
 
