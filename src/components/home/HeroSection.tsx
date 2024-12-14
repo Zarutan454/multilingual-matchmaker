@@ -3,86 +3,16 @@ import { ChevronDown, Heart, UserPlus } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useRef } from "react";
 
 export const HeroSection = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    const videoElement = videoRef.current;
-    
-    if (videoElement) {
-      videoElement.defaultMuted = true;
-      videoElement.muted = true;
-      videoElement.playsInline = true;
-      videoElement.autoplay = true;
-      videoElement.loop = true;
-      
-      console.log("Video Element Eigenschaften:", {
-        videoWidth: videoElement.videoWidth,
-        videoHeight: videoElement.videoHeight,
-        readyState: videoElement.readyState,
-        networkState: videoElement.networkState,
-        error: videoElement.error
-      });
-
-      const playVideo = async () => {
-        try {
-          const playPromise = videoElement.play();
-          if (playPromise !== undefined) {
-            await playPromise;
-            console.log("Video wird erfolgreich abgespielt");
-          }
-        } catch (error) {
-          console.error("Fehler beim Abspielen des Videos:", error);
-        }
-      };
-
-      videoElement.addEventListener('loadedmetadata', () => {
-        console.log("Video Metadaten geladen:", {
-          duration: videoElement.duration,
-          size: `${videoElement.videoWidth}x${videoElement.videoHeight}`
-        });
-        playVideo();
-      });
-
-      videoElement.addEventListener('error', (e) => {
-        console.error("Video Fehler:", e);
-        console.log("Video Error Code:", videoElement.error?.code);
-        console.log("Video Error Message:", videoElement.error?.message);
-      });
-
-      playVideo();
-    }
-
-    return () => {
-      if (videoElement) {
-        videoElement.pause();
-        videoElement.removeEventListener('loadedmetadata', () => {});
-        videoElement.removeEventListener('error', () => {});
-      }
-    };
-  }, []);
 
   return (
     <div className="relative min-h-screen">
-      <div className="absolute inset-0 w-full h-full overflow-hidden">
-        <video
-          ref={videoRef}
-          className="absolute min-w-full min-h-full object-cover"
-          style={{ filter: 'brightness(0.4)' }}
-          muted
-          playsInline
-          autoPlay
-          loop
-        >
-          <source src="startvideo.mp4" type="video/mp4" />
-          <source src="startvideo.webm" type="video/webm" />
-          Ihr Browser unterstützt keine Videos.
-        </video>
+      <div className="absolute inset-0 w-full h-full overflow-hidden bg-gradient-to-br from-purple-900 via-black to-indigo-900 animate-gradient-xy">
+        <div className="absolute inset-0 opacity-50 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-purple-500/20 via-transparent to-transparent animate-pulse"></div>
       </div>
 
       {/* Gradient Overlay */}
