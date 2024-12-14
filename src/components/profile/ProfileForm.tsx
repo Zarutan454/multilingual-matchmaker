@@ -147,7 +147,7 @@ export const ProfileForm = () => {
       }
 
       console.log("Updating user metadata:", metadata);
-      const { error: updateError, data: updateData } = await supabase.auth.updateUser({
+      const { error: updateError } = await supabase.auth.updateUser({
         data: metadata
       });
 
@@ -157,12 +157,12 @@ export const ProfileForm = () => {
         throw updateError;
       }
 
-      console.log("Profile update response:", updateData);
       console.log("Profile updated successfully");
       toast.success(t("profileUpdated"));
       
-      // Navigate to profile page after successful update
+      // Weiterleitung zur Profilseite
       navigate('/profile');
+      
     } catch (error) {
       console.error('Error:', error);
       if (error instanceof Error) {
