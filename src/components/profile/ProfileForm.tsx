@@ -46,6 +46,11 @@ export const ProfileForm = () => {
   });
 
   const onSubmit = async (data: ProfileFormValues) => {
+    if (!user) {
+      toast.error(t("pleaseLoginFirst"));
+      return;
+    }
+
     try {
       const metadata: UserMetadata = {
         full_name: data.fullName,
@@ -64,19 +69,24 @@ export const ProfileForm = () => {
       // Handle avatar upload
       if (data.avatar instanceof File) {
         const fileExt = data.avatar.name.split('.').pop();
-        const filePath = `${user?.id}/${Math.random()}.${fileExt}`;
+        const filePath = `${user.id}/${Math.random()}.${fileExt}`;
 
-        const { error: uploadError } = await supabase.storage
+        const { error: uploadError, data: uploadData } = await supabase.storage
           .from('avatars')
           .upload(filePath, data.avatar);
 
-        if (uploadError) throw uploadError;
+        if (uploadError) {
+          console.error('Avatar upload error:', uploadError);
+          throw uploadError;
+        }
 
-        const { data: { publicUrl } } = supabase.storage
-          .from('avatars')
-          .getPublicUrl(filePath);
+        if (uploadData) {
+          const { data: { publicUrl } } = supabase.storage
+            .from('avatars')
+            .getPublicUrl(filePath);
 
-        metadata.avatar_url = publicUrl;
+          metadata.avatar_url = publicUrl;
+        }
       }
 
       // Handle gallery uploads
@@ -85,19 +95,24 @@ export const ProfileForm = () => {
         for (const image of data.gallery) {
           if (image instanceof File) {
             const fileExt = image.name.split('.').pop();
-            const filePath = `gallery/${user?.id}/${Math.random()}.${fileExt}`;
+            const filePath = `gallery/${user.id}/${Math.random()}.${fileExt}`;
 
-            const { error: uploadError } = await supabase.storage
+            const { error: uploadError, data: uploadData } = await supabase.storage
               .from('gallery')
               .upload(filePath, image);
 
-            if (uploadError) throw uploadError;
+            if (uploadError) {
+              console.error('Gallery upload error:', uploadError);
+              throw uploadError;
+            }
 
-            const { data: { publicUrl } } = supabase.storage
-              .from('gallery')
-              .getPublicUrl(filePath);
+            if (uploadData) {
+              const { data: { publicUrl } } = supabase.storage
+                .from('gallery')
+                .getPublicUrl(filePath);
 
-            galleryUrls.push(publicUrl);
+              galleryUrls.push(publicUrl);
+            }
           } else {
             galleryUrls.push(image);
           }
@@ -109,7 +124,10 @@ export const ProfileForm = () => {
         data: metadata
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Profile update error:', error);
+        throw error;
+      }
       
       toast.success(t("profileUpdated"));
     } catch (error) {
