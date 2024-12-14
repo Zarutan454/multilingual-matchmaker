@@ -4,6 +4,7 @@ export type NavigationTranslationKeys =
   | "services"
   | "contact"
   | "profile"
-  | "search"
-  | "searchProfiles"
-  | "enterLocation";
+  | "register"
+  | "logout"
+  | "logoutSuccess"
+  | "logoutError";
