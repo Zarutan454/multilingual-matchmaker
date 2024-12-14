@@ -6,6 +6,7 @@ import { useState } from "react";
 import { ChatWindow } from "../messaging/ChatWindow";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { SearchBar } from "../search/SearchBar";
 
 const featuredProfiles = [
   {
@@ -79,6 +80,7 @@ export const FeaturedProfiles = () => {
   const navigate = useNavigate();
   const [selectedProfile, setSelectedProfile] = useState<number | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [filteredProfiles, setFilteredProfiles] = useState(featuredProfiles);
 
   const handleProfileClick = (profileId: number) => {
     navigate(`/provider/${profileId}`);
@@ -90,14 +92,26 @@ export const FeaturedProfiles = () => {
     setIsChatOpen(true);
   };
 
+  const handleSearch = (searchTerm: string, location: string) => {
+    const filtered = featuredProfiles.filter((profile) => {
+      const matchesSearch = profile.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesLocation = location === "" || profile.location.toLowerCase().includes(location.toLowerCase());
+      return matchesSearch && matchesLocation;
+    });
+    setFilteredProfiles(filtered);
+  };
+
   return (
     <section id="featured" className="py-20 bg-gradient-to-b from-black to-gray-900">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-12 text-white">
           UNSERE PREMIUM BEGLEITUNG
         </h2>
+        
+        <SearchBar onSearch={handleSearch} />
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-          {featuredProfiles.map((profile) => (
+          {filteredProfiles.map((profile) => (
             <div 
               key={profile.id}
               className="group relative overflow-hidden rounded-lg cursor-pointer transform transition-all duration-300 hover:scale-105 bg-gray-900/50 backdrop-blur-sm"
