@@ -36,7 +36,7 @@ export const LoginForm = () => {
         return;
       }
       toast.success(t("loginSuccess"));
-      navigate('/profile');
+      navigate('/dashboard');
     } catch (error) {
       console.error('Login error:', error);
       toast.error(t("loginError"));
