@@ -3,4 +3,9 @@ export type AvailabilityTranslationKeys =
   | "endTime"
   | "selectStartTime"
   | "selectEndTime"
-  | "addTimeSlot";
+  | "addTimeSlot"
+  | "selectDate"
+  | "invalidTimeRange"
+  | "timeSlotOverlap"
+  | "timeSlotAdded"
+  | "timeSlotRemoved";
