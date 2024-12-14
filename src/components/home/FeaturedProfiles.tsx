@@ -95,13 +95,15 @@ export const FeaturedProfiles = () => {
   };
 
   return (
-    <section id="featured" className="py-20 bg-gradient-dark">
+    <section id="featured" className="py-8 bg-gradient-dark">
       <div className="container mx-auto px-4">
+        <div className="-mt-16 mb-12">
+          <SearchBar onSearch={handleSearch} />
+        </div>
+        
         <h2 className="text-3xl font-bold text-center mb-12 text-white">
           UNSERE PREMIUM BEGLEITUNG
         </h2>
-        
-        <SearchBar onSearch={handleSearch} />
 
         <ProfileGrid 
           profiles={filteredProfiles}
