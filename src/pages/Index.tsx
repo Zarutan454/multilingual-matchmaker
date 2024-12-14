@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { HeroSection } from "../components/home/HeroSection";
 import { FeaturedProfiles } from "../components/home/FeaturedProfiles";
 import { InfoSection } from "../components/home/InfoSection";
@@ -22,7 +22,7 @@ export default function Index() {
   };
 
   // Add scroll event listener
-  useState(() => {
+  useEffect(() => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
