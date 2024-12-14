@@ -54,6 +54,11 @@ export const deTranslations: Translations = {
   search: "Suchen",
   searchProfiles: "Profile durchsuchen",
   enterLocation: "Ort eingeben",
+  searchProviders: "Anbieter suchen",
+  filters: "Filter",
+  categories: "Kategorien",
+  priceRange: "Preisbereich",
+  applyFilters: "Filter anwenden",
   // KYC translations
   kycRequired: "KYC erforderlich",
   kycPending: "KYC ausstehend",
@@ -91,5 +96,6 @@ export const deTranslations: Translations = {
   registerAsProvider: "Als Anbieter registrieren",
   pricing: "Preise",
   basePrice: "Grundpreis",
-  hour: "Stunde"
+  hour: "Stunde",
+  no: "Nein"
 };
