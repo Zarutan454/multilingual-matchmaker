@@ -98,15 +98,19 @@ export const deTranslations: Translations = {
   documentsVerification: "Dokumentenprüfung",
   documentsNote: "Bitte stellen Sie sicher, dass alle Dokumente klar und gültig sind",
   
-  // Add missing rating translations
-  ratings: "Bewertungen",
-  ratingSubmitted: "Bewertung erfolgreich abgegeben",
-  summary: "Zusammenfassung",
-  allRatings: "Alle Bewertungen",
-  rateProvider: "Anbieter bewerten",
-  pleaseSelectRating: "Bitte wählen Sie eine Bewertung",
-  ratingComment: "Ihr Kommentar",
-  submitRating: "Bewertung abschicken",
-  noRatingsYet: "Noch keine Bewertungen",
-  reviews: "Bewertungen"
+  // Dashboard translations
+  welcome: "Willkommen",
+  lastLogin: "Letzter Login",
+  dashboard: "Dashboard",
+  calendar: "Kalender",
+  messages: "Nachrichten",
+  settings: "Einstellungen",
+  manageProfile: "Profil verwalten",
+  manageAppointments: "Termine verwalten",
+  manageMessages: "Nachrichten verwalten",
+  manageSettings: "Einstellungen verwalten",
+  editProfile: "Profil bearbeiten",
+  viewCalendar: "Kalender anzeigen",
+  viewMessages: "Nachrichten anzeigen",
+  editSettings: "Einstellungen bearbeiten"
 };

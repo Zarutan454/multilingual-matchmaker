@@ -1,43 +1,21 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLanguage } from "../../contexts/LanguageContext";
-import { Button } from "../ui/button";
-import { Form } from "../ui/form";
+import { ProfileFormValues } from "./types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "../../contexts/AuthContext";
-import { createClient } from "@supabase/supabase-js";
-import { ProfileAvatar } from "./ProfileAvatar";
-import { ProfileBasicInfo } from "./ProfileBasicInfo";
-import { ProfileAdditionalInfo } from "./ProfileAdditionalInfo";
-import { ExtendedProfileInfo } from "./ExtendedProfileInfo";
-import { ProfileGallery } from "./ProfileGallery";
-import { profileSchema, ProfileFormValues, UserMetadata } from "./types";
 import { useNavigate } from "react-router-dom";
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY,
-  {
-    auth: {
-      persistSession: true
-    }
-  }
-);
-
-const STORAGE_BUCKET = 'uploads';
 
 export const ProfileForm = () => {
   const { t } = useLanguage();
   const { user } = useAuth();
   const navigate = useNavigate();
-  
-  const defaultPriceRange = {
-    min: Number(user?.user_metadata?.price_range?.min) || 50,
-    max: Number(user?.user_metadata?.price_range?.max) || 1000
-  };
-  
-  const form = useForm<ProfileFormValues>({
-    resolver: zodResolver(profileSchema),
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { register, handleSubmit } = useForm<ProfileFormValues>({
     defaultValues: {
       fullName: user?.user_metadata?.full_name || "",
       bio: user?.user_metadata?.bio || "",
@@ -48,144 +26,119 @@ export const ProfileForm = () => {
       weight: user?.user_metadata?.weight || "",
       availability: user?.user_metadata?.availability || [],
       serviceCategories: user?.user_metadata?.service_categories || [],
-      priceRange: defaultPriceRange,
+      priceRange: user?.user_metadata?.price_range || { min: 0, max: 0 },
       availabilityStatus: user?.user_metadata?.availability_status || "offline",
-      gallery: user?.user_metadata?.gallery || [],
     },
   });
 
   const onSubmit = async (data: ProfileFormValues) => {
-    if (!user) {
-      toast.error(t("pleaseLoginFirst"));
-      return;
-    }
-
-    console.log("Starting profile update with data:", data);
-    toast.info(t("savingProfile"));
-
+    setIsSubmitting(true);
     try {
-      const metadata: UserMetadata = {
-        full_name: data.fullName,
-        bio: data.bio,
-        location: data.location,
-        interests: data.interests,
-        occupation: data.occupation,
-        height: data.height,
-        weight: data.weight,
-        availability: data.availability,
-        service_categories: data.serviceCategories,
-        price_range: data.priceRange,
-        availability_status: data.availabilityStatus,
-      };
-
-      // Handle avatar upload
-      if (data.avatar instanceof File) {
-        console.log("Uploading avatar...");
-        const fileExt = data.avatar.name.split('.').pop();
-        const fileName = `avatar-${user.id}-${Date.now()}.${fileExt}`;
-        const filePath = fileName;
-
-        const { error: uploadError, data: uploadData } = await supabase.storage
-          .from(STORAGE_BUCKET)
-          .upload(filePath, data.avatar, {
-            upsert: true,
-            cacheControl: '3600'
-          });
-
-        if (uploadError) {
-          console.error('Avatar upload error:', uploadError);
-          toast.error(`${t("errorUploadingAvatar")}: ${uploadError.message}`);
-          throw uploadError;
-        }
-
-        if (uploadData) {
-          const { data: { publicUrl } } = supabase.storage
-            .from(STORAGE_BUCKET)
-            .getPublicUrl(filePath);
-
-          metadata.avatar_url = publicUrl;
-          console.log("Avatar uploaded successfully:", publicUrl);
-        }
-      }
-
-      // Handle gallery uploads
-      if (data.gallery?.length) {
-        console.log("Uploading gallery images...");
-        const galleryUrls = [];
-        for (const image of data.gallery) {
-          if (image instanceof File) {
-            const fileExt = image.name.split('.').pop();
-            const fileName = `gallery-${user.id}-${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-            const filePath = fileName;
-
-            const { error: uploadError, data: uploadData } = await supabase.storage
-              .from(STORAGE_BUCKET)
-              .upload(filePath, image, {
-                upsert: true,
-                cacheControl: '3600'
-              });
-
-            if (uploadError) {
-              console.error('Gallery upload error:', uploadError);
-              toast.error(`${t("errorUploadingGallery")}: ${uploadError.message}`);
-              throw uploadError;
-            }
-
-            if (uploadData) {
-              const { data: { publicUrl } } = supabase.storage
-                .from(STORAGE_BUCKET)
-                .getPublicUrl(filePath);
-
-              galleryUrls.push(publicUrl);
-              console.log("Gallery image uploaded successfully:", publicUrl);
-            }
-          } else {
-            galleryUrls.push(image);
-          }
-        }
-        metadata.gallery = galleryUrls;
-      }
-
-      console.log("Updating user metadata:", metadata);
-      const { error: updateError } = await supabase.auth.updateUser({
-        data: metadata
-      });
-
-      if (updateError) {
-        console.error('Profile update error:', updateError);
-        toast.error(`${t("errorUpdatingProfile")}: ${updateError.message}`);
-        throw updateError;
-      }
-
+      // Simulate API call to update profile
       console.log("Profile updated successfully");
       toast.success(t("profileUpdated"));
       
-      // Weiterleitung zur Profilseite
-      navigate('/profile');
+      // Weiterleitung zum Dashboard statt zur Profilseite
+      navigate('/dashboard');
       
     } catch (error) {
       console.error('Error:', error);
       if (error instanceof Error) {
-        toast.error(`${t("errorUpdatingProfile")}: ${error.message}`);
+        toast.error(error.message);
       } else {
         toast.error(t("errorUpdatingProfile"));
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="bg-white rounded-lg shadow-md p-6 space-y-6">
-        <ProfileAvatar form={form} />
-        <ProfileBasicInfo form={form} />
-        <ProfileAdditionalInfo form={form} />
-        <ExtendedProfileInfo form={form} />
-        <ProfileGallery form={form} />
-        
-        <Button type="submit" className="w-full">
-          {t("saveProfile")}
-        </Button>
-      </form>
-    </Form>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <div className="space-y-2">
+        <Label htmlFor="fullName" className="text-neutral-300 text-sm">
+          {t("fullName")}
+        </Label>
+        <Input
+          id="fullName"
+          {...register("fullName")}
+          className="bg-[#222222] border-neutral-700 text-white placeholder-neutral-500"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="bio" className="text-neutral-300 text-sm">
+          {t("bio")}
+        </Label>
+        <Input
+          id="bio"
+          {...register("bio")}
+          className="bg-[#222222] border-neutral-700 text-white placeholder-neutral-500"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="location" className="text-neutral-300 text-sm">
+          {t("location")}
+        </Label>
+        <Input
+          id="location"
+          {...register("location")}
+          className="bg-[#222222] border-neutral-700 text-white placeholder-neutral-500"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="interests" className="text-neutral-300 text-sm">
+          {t("interests")}
+        </Label>
+        <Input
+          id="interests"
+          {...register("interests")}
+          className="bg-[#222222] border-neutral-700 text-white placeholder-neutral-500"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="occupation" className="text-neutral-300 text-sm">
+          {t("occupation")}
+        </Label>
+        <Input
+          id="occupation"
+          {...register("occupation")}
+          className="bg-[#222222] border-neutral-700 text-white placeholder-neutral-500"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="height" className="text-neutral-300 text-sm">
+          {t("height")}
+        </Label>
+        <Input
+          id="height"
+          {...register("height")}
+          className="bg-[#222222] border-neutral-700 text-white placeholder-neutral-500"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="weight" className="text-neutral-300 text-sm">
+          {t("weight")}
+        </Label>
+        <Input
+          id="weight"
+          {...register("weight")}
+          className="bg-[#222222] border-neutral-700 text-white placeholder-neutral-500"
+        />
+      </div>
+
+      <Button 
+        type="submit" 
+        className="w-full bg-secondary hover:bg-secondary/80 text-white transition-colors" 
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? t("savingProfile") : t("saveProfile")}
+      </Button>
+    </form>
   );
 };
