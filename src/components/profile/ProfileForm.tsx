@@ -19,6 +19,8 @@ const supabase = createClient(
   import.meta.env.VITE_SUPABASE_ANON_KEY
 );
 
+const STORAGE_BUCKET = import.meta.env.VITE_SUPABASE_STORAGE_BUCKET || 'public';
+
 export const ProfileForm = () => {
   const { t } = useLanguage();
   const { user } = useAuth();
@@ -76,10 +78,10 @@ export const ProfileForm = () => {
         console.log("Uploading avatar...");
         const fileExt = data.avatar.name.split('.').pop();
         const fileName = `avatar-${user.id}-${Date.now()}.${fileExt}`;
-        const filePath = `avatars/${fileName}`;
+        const filePath = fileName;
 
         const { error: uploadError, data: uploadData } = await supabase.storage
-          .from('avatars')
+          .from(STORAGE_BUCKET)
           .upload(filePath, data.avatar, {
             upsert: true,
             cacheControl: '3600'
@@ -93,7 +95,7 @@ export const ProfileForm = () => {
 
         if (uploadData) {
           const { data: { publicUrl } } = supabase.storage
-            .from('avatars')
+            .from(STORAGE_BUCKET)
             .getPublicUrl(filePath);
 
           metadata.avatar_url = publicUrl;
@@ -109,10 +111,10 @@ export const ProfileForm = () => {
           if (image instanceof File) {
             const fileExt = image.name.split('.').pop();
             const fileName = `gallery-${user.id}-${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-            const filePath = `gallery/${fileName}`;
+            const filePath = fileName;
 
             const { error: uploadError, data: uploadData } = await supabase.storage
-              .from('gallery')
+              .from(STORAGE_BUCKET)
               .upload(filePath, image, {
                 upsert: true,
                 cacheControl: '3600'
@@ -126,7 +128,7 @@ export const ProfileForm = () => {
 
             if (uploadData) {
               const { data: { publicUrl } } = supabase.storage
-                .from('gallery')
+                .from(STORAGE_BUCKET)
                 .getPublicUrl(filePath);
 
               galleryUrls.push(publicUrl);
