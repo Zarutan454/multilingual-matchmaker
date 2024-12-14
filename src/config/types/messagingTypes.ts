@@ -3,4 +3,7 @@ export type MessagingTranslationKeys =
   | "noMessages"
   | "error"
   | "errorLoadingMessages"
-  | "errorSendingMessage";
+  | "errorSendingMessage"
+  | "requestCall"
+  | "sendMessage"
+  | "bookAppointment";
