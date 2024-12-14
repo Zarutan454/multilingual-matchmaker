@@ -11,4 +11,8 @@ export type KYCTranslationKeys =
   | "businessLicenseNote"
   | "uploading"
   | "submitDocuments"
-  | "kycRequired";
+  | "kycRequired"
+  | "kycStatus"
+  | "kycVerification"
+  | "documentsVerification"
+  | "documentsNote";
