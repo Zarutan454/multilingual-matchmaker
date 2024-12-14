@@ -1,18 +1,10 @@
 import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Clock, Plus, Trash2 } from "lucide-react";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { toast } from "sonner";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { TimeSlotSelector } from "./TimeSlotSelector";
+import { TimeSlotList } from "./TimeSlotList";
 
 interface TimeSlot {
   start: string;
@@ -30,11 +22,6 @@ export const AvailabilitySchedule = () => {
   const [schedule, setSchedule] = useState<DaySchedule[]>([]);
   const [selectedStartTime, setSelectedStartTime] = useState("09:00");
   const [selectedEndTime, setSelectedEndTime] = useState("17:00");
-
-  const timeOptions = Array.from({ length: 24 }, (_, i) => {
-    const hour = i.toString().padStart(2, "0");
-    return `${hour}:00`;
-  });
 
   const validateTimeSlot = (start: string, end: string): boolean => {
     const startHour = parseInt(start.split(":")[0]);
@@ -59,7 +46,6 @@ export const AvailabilitySchedule = () => {
     );
 
     if (daySchedule) {
-      // Prüfen auf Überschneidungen
       const hasOverlap = daySchedule.timeSlots.some((slot) => {
         const slotStart = parseInt(slot.start.split(":")[0]);
         const slotEnd = parseInt(slot.end.split(":")[0]);
@@ -80,7 +66,6 @@ export const AvailabilitySchedule = () => {
         start: selectedStartTime,
         end: selectedEndTime,
       });
-      // Sortieren der Zeitslots nach Startzeit
       daySchedule.timeSlots.sort((a, b) => 
         parseInt(a.start) - parseInt(b.start)
       );
@@ -135,79 +120,20 @@ export const AvailabilitySchedule = () => {
         </div>
 
         <div className="space-y-4">
-          <div className="flex items-center gap-4">
-            <div className="flex-1">
-              <label className="text-sm font-medium mb-1 block">
-                {t("startTime")}
-              </label>
-              <Select value={selectedStartTime} onValueChange={setSelectedStartTime}>
-                <SelectTrigger>
-                  <SelectValue placeholder={t("selectStartTime")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {timeOptions.map((time) => (
-                    <SelectItem key={time} value={time}>
-                      {time}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex-1">
-              <label className="text-sm font-medium mb-1 block">
-                {t("endTime")}
-              </label>
-              <Select value={selectedEndTime} onValueChange={setSelectedEndTime}>
-                <SelectTrigger>
-                  <SelectValue placeholder={t("selectEndTime")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {timeOptions.map((time) => (
-                    <SelectItem key={time} value={time}>
-                      {time}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <Button
-              onClick={addTimeSlot}
-              className="mt-6"
-              variant="secondary"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              {t("addTimeSlot")}
-            </Button>
-          </div>
+          <TimeSlotSelector
+            selectedStartTime={selectedStartTime}
+            selectedEndTime={selectedEndTime}
+            onStartTimeChange={setSelectedStartTime}
+            onEndTimeChange={setSelectedEndTime}
+            onAddTimeSlot={addTimeSlot}
+          />
 
           {selectedDate && (
-            <div>
-              <h4 className="font-medium mb-2">
-                {selectedDate.toLocaleDateString()}
-              </h4>
-              <div className="space-y-2">
-                {getTimeSlotsForDate(selectedDate).map((slot, index) => (
-                  <div key={index} className="flex items-center justify-between">
-                    <Badge
-                      variant="secondary"
-                      className="flex items-center gap-2"
-                    >
-                      <Clock className="w-4 h-4" />
-                      {slot.start} - {slot.end}
-                    </Badge>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeTimeSlot(selectedDate, index)}
-                    >
-                      <Trash2 className="w-4 h-4 text-red-500" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <TimeSlotList
+              date={selectedDate}
+              timeSlots={getTimeSlotsForDate(selectedDate)}
+              onRemoveTimeSlot={(index) => removeTimeSlot(selectedDate, index)}
+            />
           )}
         </div>
       </div>
