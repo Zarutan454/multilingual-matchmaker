@@ -21,20 +21,13 @@ export const HeroSection = () => {
       videoElement.autoplay = true;
       videoElement.loop = true;
       
-      // Debug-Ausgaben für verschiedene Pfadvarianten mit dem neuen Dateinamen
-      const possiblePaths = [
-        "./public/startvideo.mp4",
-        "../public/startvideo.mp4",
-        "/public/startvideo.mp4",
-        "./startvideo.mp4",
-        "../startvideo.mp4",
-        "startvideo.mp4",
-        "/startvideo.mp4",
-      ];
-      
-      console.log("Mögliche Videopfade:", possiblePaths);
-      console.log("Aktueller Origin:", window.location.origin);
-      console.log("Aktueller BASE_URL:", import.meta.env.BASE_URL);
+      console.log("Video Element Eigenschaften:", {
+        videoWidth: videoElement.videoWidth,
+        videoHeight: videoElement.videoHeight,
+        readyState: videoElement.readyState,
+        networkState: videoElement.networkState,
+        error: videoElement.error
+      });
 
       const playVideo = async () => {
         try {
@@ -49,7 +42,10 @@ export const HeroSection = () => {
       };
 
       videoElement.addEventListener('loadedmetadata', () => {
-        console.log("Video Metadaten geladen");
+        console.log("Video Metadaten geladen:", {
+          duration: videoElement.duration,
+          size: `${videoElement.videoWidth}x${videoElement.videoHeight}`
+        });
         playVideo();
       });
 
@@ -83,7 +79,8 @@ export const HeroSection = () => {
           autoPlay
           loop
         >
-          <source src="/public/startvideo.mp4" type="video/mp4" />
+          <source src="startvideo.mp4" type="video/mp4" />
+          <source src="startvideo.webm" type="video/webm" />
           Ihr Browser unterstützt keine Videos.
         </video>
       </div>
