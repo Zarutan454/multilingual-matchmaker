@@ -22,7 +22,7 @@ export const HeroSection = () => {
         <div className="w-1/2 h-full relative overflow-hidden group">
           <div className="absolute inset-0 bg-black/60 group-hover:opacity-30 transition-opacity duration-500"></div>
           <img 
-            src="/lovable-uploads/2a2315eb-05c4-4c59-becf-4fe72a935b04.png"
+            src="/lovable-uploads/4b743deb-ed0c-4dd6-bccf-c51804afc787.png"
             alt="Male escort"
             className="w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
           />
@@ -31,7 +31,7 @@ export const HeroSection = () => {
         <div className="w-1/2 h-full relative overflow-hidden group">
           <div className="absolute inset-0 bg-black/60 group-hover:opacity-30 transition-opacity duration-500"></div>
           <img 
-            src="/lovable-uploads/4e0eb2bc-57e3-423b-965a-a78b03a25b27.png"
+            src="/lovable-uploads/a1eb5fec-42ce-4ce0-bd18-d7b20a0a1500.png"
             alt="Female escort"
             className="w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
           />
