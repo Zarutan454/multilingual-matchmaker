@@ -85,5 +85,13 @@ export const deTranslations: Translations = {
   pending: "Ausstehend",
   user: "Benutzer",
   activate: "Aktivieren",
-  suspend: "Sperren"
+  suspend: "Sperren",
+  // Registration translations
+  age: "Alter",
+  country: "Land",
+  registerAsCustomer: "Als Kunde registrieren",
+  registerAsProvider: "Als Anbieter registrieren",
+  pricing: "Preise",
+  basePrice: "Grundpreis",
+  hour: "Stunde"
 };

@@ -85,5 +85,13 @@ export const enTranslations: Translations = {
   pending: "Pending",
   user: "User",
   activate: "Activate",
-  suspend: "Suspend"
+  suspend: "Suspend",
+  // Registration translations
+  age: "Age",
+  country: "Country",
+  registerAsCustomer: "Register as Customer",
+  registerAsProvider: "Register as Provider",
+  pricing: "Pricing",
+  basePrice: "Base Price",
+  hour: "Hour"
 };
