@@ -24,7 +24,7 @@ const supabase = createClient(
   }
 );
 
-const STORAGE_BUCKET = 'public';
+const STORAGE_BUCKET = 'uploads';
 
 export const ProfileForm = () => {
   const { t } = useLanguage();
