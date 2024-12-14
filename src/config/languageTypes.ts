@@ -7,6 +7,7 @@ import { MessagingTranslationKeys } from "./types/messagingTypes";
 import { RatingsTranslationKeys } from "./types/ratingsTypes";
 import { ProviderTranslationKeys } from "./types/providerTypes";
 import { ServiceTranslationKeys } from "./types/serviceTypes";
+import { SubscriptionTranslationKeys } from "./types/subscriptionTypes";
 
 export type Language = "de" | "en" | "ru" | "ro" | "it" | "es" | "fr";
 
@@ -19,7 +20,8 @@ export type TranslationKey =
   | MessagingTranslationKeys
   | RatingsTranslationKeys
   | ProviderTranslationKeys
-  | ServiceTranslationKeys;
+  | ServiceTranslationKeys
+  | SubscriptionTranslationKeys;
 
 export type Translations = {
   [K in TranslationKey]: string;

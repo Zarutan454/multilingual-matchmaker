@@ -10,5 +10,23 @@ export const enTranslations: Translations = {
   ...navigationTranslations,
   ...profileTranslations,
   ...servicesTranslations,
-  ...subscriptionTranslations
+  ...subscriptionTranslations,
+  // Add any missing translations here
+  fullName: "Full Name",
+  bio: "Bio",
+  location: "Location",
+  interests: "Interests",
+  occupation: "Occupation",
+  height: "Height",
+  weight: "Weight",
+  availability: "Availability",
+  availabilityStatus: "Availability Status",
+  selectAvailability: "Select Availability",
+  available: "Available",
+  busy: "Busy",
+  offline: "Offline",
+  gallery: "Gallery",
+  addImage: "Add Image",
+  viewAllPhotos: "View All Photos",
+  profileImage: "Profile Image"
 };

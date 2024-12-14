@@ -10,5 +10,23 @@ export const deTranslations: Translations = {
   ...navigationTranslations,
   ...profileTranslations,
   ...servicesTranslations,
-  ...subscriptionTranslations
+  ...subscriptionTranslations,
+  // Add any missing translations here
+  fullName: "Vollständiger Name",
+  bio: "Biografie",
+  location: "Standort",
+  interests: "Interessen",
+  occupation: "Beruf",
+  height: "Größe",
+  weight: "Gewicht",
+  availability: "Verfügbarkeit",
+  availabilityStatus: "Verfügbarkeitsstatus",
+  selectAvailability: "Verfügbarkeit auswählen",
+  available: "Verfügbar",
+  busy: "Beschäftigt",
+  offline: "Offline",
+  gallery: "Galerie",
+  addImage: "Bild hinzufügen",
+  viewAllPhotos: "Alle Fotos ansehen",
+  profileImage: "Profilbild"
 };
