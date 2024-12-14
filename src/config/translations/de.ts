@@ -99,5 +99,11 @@ export const deTranslations: Translations = {
   pricing: "Preise",
   basePrice: "Grundpreis",
   hour: "Stunde",
-  no: "Nein"
+  no: "Nein",
+  // Availability translations
+  startTime: "Startzeit",
+  endTime: "Endzeit",
+  selectStartTime: "Startzeit wählen",
+  selectEndTime: "Endzeit wählen",
+  addTimeSlot: "Zeitfenster hinzufügen"
 };
