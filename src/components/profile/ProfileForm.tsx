@@ -51,6 +51,9 @@ export const ProfileForm = () => {
       return;
     }
 
+    toast.info(t("savingProfile"));
+    console.log("Starting profile update with data:", data);
+
     try {
       const metadata: UserMetadata = {
         full_name: data.fullName,
@@ -68,6 +71,7 @@ export const ProfileForm = () => {
 
       // Handle avatar upload
       if (data.avatar instanceof File) {
+        console.log("Uploading avatar...");
         const fileExt = data.avatar.name.split('.').pop();
         const filePath = `${user.id}/${Math.random()}.${fileExt}`;
 
@@ -77,6 +81,7 @@ export const ProfileForm = () => {
 
         if (uploadError) {
           console.error('Avatar upload error:', uploadError);
+          toast.error(t("errorUploadingAvatar"));
           throw uploadError;
         }
 
@@ -86,11 +91,13 @@ export const ProfileForm = () => {
             .getPublicUrl(filePath);
 
           metadata.avatar_url = publicUrl;
+          console.log("Avatar uploaded successfully:", publicUrl);
         }
       }
 
       // Handle gallery uploads
       if (data.gallery?.length) {
+        console.log("Uploading gallery images...");
         const galleryUrls = [];
         for (const image of data.gallery) {
           if (image instanceof File) {
@@ -103,6 +110,7 @@ export const ProfileForm = () => {
 
             if (uploadError) {
               console.error('Gallery upload error:', uploadError);
+              toast.error(t("errorUploadingGallery"));
               throw uploadError;
             }
 
@@ -112,6 +120,7 @@ export const ProfileForm = () => {
                 .getPublicUrl(filePath);
 
               galleryUrls.push(publicUrl);
+              console.log("Gallery image uploaded successfully:", publicUrl);
             }
           } else {
             galleryUrls.push(image);
@@ -120,16 +129,22 @@ export const ProfileForm = () => {
         metadata.gallery = galleryUrls;
       }
 
+      console.log("Updating user metadata:", metadata);
       const { error } = await supabase.auth.updateUser({
         data: metadata
       });
 
       if (error) {
         console.error('Profile update error:', error);
+        toast.error(t("errorUpdatingProfile"));
         throw error;
       }
       
+      console.log("Profile updated successfully");
       toast.success(t("profileUpdated"));
+      
+      // Reload the page after successful update
+      window.location.reload();
     } catch (error) {
       console.error('Error:', error);
       toast.error(t("errorUpdatingProfile"));
