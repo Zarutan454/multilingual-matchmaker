@@ -1,0 +1,23 @@
+export const profileTranslations = {
+  changePassword: "Passwort ändern",
+  changeEmail: "E-Mail ändern",
+  newPassword: "Neues Passwort",
+  newEmail: "Neue E-Mail",
+  updatePassword: "Passwort aktualisieren",
+  updateEmail: "E-Mail aktualisieren",
+  passwordUpdated: "Passwort aktualisiert",
+  emailUpdated: "E-Mail aktualisiert",
+  errorUpdatingPassword: "Fehler beim Aktualisieren des Passworts",
+  errorUpdatingEmail: "Fehler beim Aktualisieren der E-Mail",
+  emailRequired: "E-Mail ist erforderlich",
+  dangerZone: "Gefahrenbereich",
+  deleteAccount: "Konto löschen",
+  deleteAccountConfirm: "Möchten Sie Ihr Konto wirklich löschen?",
+  deleteAccountWarning: "Diese Aktion kann nicht rückgängig gemacht werden.",
+  cancel: "Abbrechen",
+  confirmDelete: "Löschen bestätigen",
+  accountDeleted: "Konto erfolgreich gelöscht",
+  errorDeletingAccount: "Fehler beim Löschen des Kontos",
+  updating: "Aktualisiere...",
+  deleting: "Lösche..."
+};

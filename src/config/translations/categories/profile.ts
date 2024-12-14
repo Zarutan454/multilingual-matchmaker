@@ -1,0 +1,23 @@
+export const profileTranslations = {
+  changePassword: "Change Password",
+  changeEmail: "Change Email",
+  newPassword: "New Password",
+  newEmail: "New Email",
+  updatePassword: "Update Password",
+  updateEmail: "Update Email",
+  passwordUpdated: "Password updated",
+  emailUpdated: "Email updated",
+  errorUpdatingPassword: "Error updating password",
+  errorUpdatingEmail: "Error updating email",
+  emailRequired: "Email is required",
+  dangerZone: "Danger Zone",
+  deleteAccount: "Delete Account",
+  deleteAccountConfirm: "Are you sure you want to delete your account?",
+  deleteAccountWarning: "This action cannot be undone.",
+  cancel: "Cancel",
+  confirmDelete: "Confirm Delete",
+  accountDeleted: "Account successfully deleted",
+  errorDeletingAccount: "Error deleting account",
+  updating: "Updating...",
+  deleting: "Deleting..."
+};

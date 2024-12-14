@@ -1,0 +1,21 @@
+export const authTranslations = {
+  login: "Login",
+  register: "Register",
+  email: "Email",
+  password: "Password",
+  confirmPassword: "Confirm Password",
+  submit: "Submit",
+  loginSuccess: "Successfully logged in",
+  loginError: "Login error",
+  loginButton: "Login",
+  noAccount: "No account?",
+  registerNow: "Register now",
+  fillAllFields: "Please fill all fields",
+  passwordsDoNotMatch: "Passwords do not match",
+  passwordTooShort: "Password too short",
+  registrationSuccess: "Registration successful",
+  registrationError: "Registration error",
+  registering: "Registering...",
+  loggingIn: "Logging in...",
+  invalidCredentials: "Invalid Credentials"
+};
