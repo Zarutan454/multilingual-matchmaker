@@ -11,8 +11,8 @@ export const HeroSection = () => {
 
   return (
     <div className="relative min-h-screen">
-      <div className="absolute inset-0 w-full h-full overflow-hidden bg-gradient-to-br from-purple-900 via-black to-indigo-900 animate-gradient-xy">
-        <div className="absolute inset-0 opacity-50 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-purple-500/20 via-transparent to-transparent animate-pulse"></div>
+      <div className="absolute inset-0 w-full h-full overflow-hidden bg-gradient-to-br from-red-900 via-black to-black animate-gradient-xy">
+        <div className="absolute inset-0 opacity-50 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-red-800/20 via-transparent to-transparent animate-pulse"></div>
       </div>
 
       {/* Gradient Overlay */}
