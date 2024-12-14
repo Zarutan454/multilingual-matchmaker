@@ -6,6 +6,7 @@ import { servicesTranslations } from "./categories/de/services";
 import { subscriptionTranslations } from "./categories/de/subscription";
 import { availabilityTranslations } from "./categories/de/availability";
 import { pricingTranslations } from "./categories/de/pricing";
+import { dashboardTranslations } from "./categories/de/dashboard";
 
 export const deTranslations: Translations = {
   ...authTranslations,
@@ -15,6 +16,7 @@ export const deTranslations: Translations = {
   ...subscriptionTranslations,
   ...availabilityTranslations,
   ...pricingTranslations,
+  ...dashboardTranslations,
   
   search: "Suche",
   searchProfiles: "Profile durchsuchen",
@@ -96,21 +98,5 @@ export const deTranslations: Translations = {
   kycStatus: "KYC-Status",
   kycVerification: "KYC-Verifizierung",
   documentsVerification: "Dokumentenprüfung",
-  documentsNote: "Bitte stellen Sie sicher, dass alle Dokumente klar und gültig sind",
-  
-  // Dashboard translations
-  welcome: "Willkommen",
-  lastLogin: "Letzter Login",
-  dashboard: "Dashboard",
-  calendar: "Kalender",
-  messages: "Nachrichten",
-  settings: "Einstellungen",
-  manageProfile: "Profil verwalten",
-  manageAppointments: "Termine verwalten",
-  manageMessages: "Nachrichten verwalten",
-  manageSettings: "Einstellungen verwalten",
-  editProfile: "Profil bearbeiten",
-  viewCalendar: "Kalender anzeigen",
-  viewMessages: "Nachrichten anzeigen",
-  editSettings: "Einstellungen bearbeiten"
+  documentsNote: "Bitte stellen Sie sicher, dass alle Dokumente klar und gültig sind"
 };

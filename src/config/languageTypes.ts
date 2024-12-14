@@ -10,6 +10,7 @@ import { ServiceTranslationKeys } from "./types/serviceTypes";
 import { SubscriptionTranslationKeys } from "./types/subscriptionTypes";
 import { AvailabilityTranslationKeys } from "./types/availabilityTypes";
 import { PricingTranslationKeys } from "./types/pricingTypes";
+import { DashboardTranslationKeys } from "./types/dashboardTypes";
 
 export type Language = "de" | "en" | "ru" | "ro" | "it" | "es" | "fr";
 
@@ -25,7 +26,8 @@ export type TranslationKey =
   | ServiceTranslationKeys
   | SubscriptionTranslationKeys
   | AvailabilityTranslationKeys
-  | PricingTranslationKeys;
+  | PricingTranslationKeys
+  | DashboardTranslationKeys;
 
 export type Translations = {
   [K in TranslationKey]: string;
