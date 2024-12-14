@@ -122,5 +122,10 @@ export const enTranslations: Translations = {
   ratingComment: "Your comment",
   submitRating: "Submit Rating",
   noRatingsYet: "No ratings yet",
-  reviews: "Reviews"
+  reviews: "Reviews",
+
+  // Add the missing logout-related translations
+  logout: "Logout",
+  logoutSuccess: "Successfully logged out",
+  logoutError: "Error logging out"
 };
