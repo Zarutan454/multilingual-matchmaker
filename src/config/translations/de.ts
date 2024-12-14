@@ -155,5 +155,23 @@ export const deTranslations: Translations = {
   reviews: "Bewertungen",
   requestCall: "Anruf anfordern",
   bookAppointment: "Termin buchen",
-  invalidCredentials: "Ungültige Anmeldedaten"
+  invalidCredentials: "Ungültige Anmeldedaten",
+  // Subscription related translations
+  basic_profile: "Basis-Profil",
+  enhanced_profile: "Erweitertes Profil",
+  premium_profile: "Premium-Profil",
+  vip_profile: "VIP-Profil",
+  photo_uploads: "Foto-Uploads",
+  video_uploads: "Video-Uploads",
+  contact_requests: "Kontaktanfragen",
+  visibility: "Sichtbarkeit",
+  priority_support: "Prioritäts-Support",
+  featured_listing: "Hervorgehobene Anzeige",
+  analytics_access: "Zugang zu Analysen",
+  dedicated_manager: "Persönlicher Manager",
+  advertising_credits: "Werbeguthaben",
+  bookNow: "Jetzt buchen",
+  recommended: "Empfohlen",
+  premiumMembership: "Premium Mitgliedschaft",
+  choosePlan: "Wählen Sie den passenden Plan für Ihre Bedürfnisse"
 };
