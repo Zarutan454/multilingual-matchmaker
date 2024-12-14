@@ -92,11 +92,12 @@ export const FeaturedProfiles = () => {
     setIsChatOpen(true);
   };
 
-  const handleSearch = (searchTerm: string, location: string) => {
+  const handleSearch = (searchTerm: string, location: string, category: string) => {
     const filtered = featuredProfiles.filter((profile) => {
       const matchesSearch = profile.name.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesLocation = location === "" || profile.location.toLowerCase().includes(location.toLowerCase());
-      return matchesSearch && matchesLocation;
+      const matchesCategory = category === "" || profile.category.toLowerCase().includes(category.toLowerCase());
+      return matchesSearch && matchesLocation && matchesCategory;
     });
     setFilteredProfiles(filtered);
   };

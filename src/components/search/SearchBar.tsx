@@ -1,20 +1,32 @@
-import { Search, MapPin } from "lucide-react";
+import { Search, MapPin, Grid2x2 } from "lucide-react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { useLanguage } from "../../contexts/LanguageContext";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 interface SearchBarProps {
-  onSearch: (searchTerm: string, location: string) => void;
+  onSearch: (searchTerm: string, location: string, category: string) => void;
 }
 
 export const SearchBar = ({ onSearch }: SearchBarProps) => {
   const { t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState("");
   const [location, setLocation] = useState("");
+  const [category, setCategory] = useState("");
+
+  const categories = [
+    { id: "massage", label: "Massage" },
+    { id: "event", label: "Eventbegleitung" },
+    { id: "erotic", label: "Erotische Treffen" },
+    { id: "hotel", label: "Hotelbesuche" },
+    { id: "home", label: "Hausbesuche" },
+    { id: "dinner", label: "Dinner Dates" },
+    { id: "travel", label: "Reisebegleitung" }
+  ];
 
   const handleSearch = () => {
-    onSearch(searchTerm, location);
+    onSearch(searchTerm, location, category);
   };
 
   return (
@@ -39,6 +51,21 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
             onChange={(e) => setLocation(e.target.value)}
             className="pl-10"
           />
+        </div>
+        <div className="relative flex-1">
+          <Grid2x2 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <Select value={category} onValueChange={setCategory}>
+            <SelectTrigger className="pl-10">
+              <SelectValue placeholder="Kategorie wählen" />
+            </SelectTrigger>
+            <SelectContent>
+              {categories.map((cat) => (
+                <SelectItem key={cat.id} value={cat.id}>
+                  {cat.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <Button 
           onClick={handleSearch}
