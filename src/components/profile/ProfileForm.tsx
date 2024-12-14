@@ -75,8 +75,8 @@ export const ProfileForm = () => {
       if (data.avatar instanceof File) {
         console.log("Uploading avatar...");
         const fileExt = data.avatar.name.split('.').pop();
-        const fileName = `${user.id}-${Date.now()}.${fileExt}`;
-        const filePath = `${user.id}/${fileName}`;
+        const fileName = `avatar-${user.id}-${Date.now()}.${fileExt}`;
+        const filePath = `avatars/${fileName}`;
 
         const { error: uploadError, data: uploadData } = await supabase.storage
           .from('avatars')
@@ -87,7 +87,7 @@ export const ProfileForm = () => {
 
         if (uploadError) {
           console.error('Avatar upload error:', uploadError);
-          toast.error(t("errorUploadingAvatar"));
+          toast.error(`${t("errorUploadingAvatar")}: ${uploadError.message}`);
           throw uploadError;
         }
 
@@ -108,8 +108,8 @@ export const ProfileForm = () => {
         for (const image of data.gallery) {
           if (image instanceof File) {
             const fileExt = image.name.split('.').pop();
-            const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-            const filePath = `gallery/${user.id}/${fileName}`;
+            const fileName = `gallery-${user.id}-${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+            const filePath = `gallery/${fileName}`;
 
             const { error: uploadError, data: uploadData } = await supabase.storage
               .from('gallery')
@@ -120,7 +120,7 @@ export const ProfileForm = () => {
 
             if (uploadError) {
               console.error('Gallery upload error:', uploadError);
-              toast.error(t("errorUploadingGallery"));
+              toast.error(`${t("errorUploadingGallery")}: ${uploadError.message}`);
               throw uploadError;
             }
 
@@ -140,16 +140,17 @@ export const ProfileForm = () => {
       }
 
       console.log("Updating user metadata:", metadata);
-      const { error: updateError } = await supabase.auth.updateUser({
+      const { error: updateError, data: updateData } = await supabase.auth.updateUser({
         data: metadata
       });
 
       if (updateError) {
         console.error('Profile update error:', updateError);
-        toast.error(t("errorUpdatingProfile"));
+        toast.error(`${t("errorUpdatingProfile")}: ${updateError.message}`);
         throw updateError;
       }
-      
+
+      console.log("Profile update response:", updateData);
       console.log("Profile updated successfully");
       toast.success(t("profileUpdated"));
       
