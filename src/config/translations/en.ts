@@ -76,5 +76,18 @@ export const enTranslations: Translations = {
   premiumMembership: "Premium Membership",
   choosePlan: "Choose Plan",
   recommended: "Recommended",
-  bookNow: "Book Now"
+  bookNow: "Book Now",
+  kycPending: "KYC Pending",
+  kycApproved: "KYC Approved",
+  kycRejected: "KYC Rejected",
+  pleaseUploadAllDocuments: "Please upload all documents",
+  kycDocumentsUploaded: "KYC documents uploaded",
+  errorUploadingDocuments: "Error uploading documents",
+  identityDocument: "Identity Document",
+  idDocumentNote: "Please upload a valid identity document",
+  businessLicense: "Business License",
+  businessLicenseNote: "Please upload your business license",
+  uploading: "Uploading...",
+  submitDocuments: "Submit Documents",
+  kycRequired: "KYC Required"
 };
