@@ -105,5 +105,11 @@ export const deTranslations: Translations = {
   endTime: "Endzeit",
   selectStartTime: "Startzeit wählen",
   selectEndTime: "Endzeit wählen",
-  addTimeSlot: "Zeitfenster hinzufügen"
+  addTimeSlot: "Zeitfenster hinzufügen",
+  // Pricing translations
+  serviceName: "Servicename",
+  enterServiceName: "Servicename eingeben",
+  duration: "Dauer",
+  selectDuration: "Dauer auswählen",
+  addCategory: "Kategorie hinzufügen"
 };
