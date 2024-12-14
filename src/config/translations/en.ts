@@ -15,6 +15,7 @@ export const enTranslations: Translations = {
   ...subscriptionTranslations,
   ...availabilityTranslations,
   ...pricingTranslations,
+  
   search: "Search",
   searchProfiles: "Search Profiles",
   enterLocation: "Enter Location",
@@ -95,5 +96,17 @@ export const enTranslations: Translations = {
   kycStatus: "KYC Status",
   kycVerification: "KYC Verification",
   documentsVerification: "Documents Verification",
-  documentsNote: "Please ensure all documents are clear and valid"
+  documentsNote: "Please ensure all documents are clear and valid",
+  
+  // Add missing rating translations
+  ratings: "Ratings",
+  ratingSubmitted: "Rating submitted successfully",
+  summary: "Summary",
+  allRatings: "All Ratings",
+  rateProvider: "Rate Provider",
+  pleaseSelectRating: "Please select a rating",
+  ratingComment: "Your comment",
+  submitRating: "Submit Rating",
+  noRatingsYet: "No ratings yet",
+  reviews: "Reviews"
 };

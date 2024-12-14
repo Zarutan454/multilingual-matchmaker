@@ -15,6 +15,7 @@ export const deTranslations: Translations = {
   ...subscriptionTranslations,
   ...availabilityTranslations,
   ...pricingTranslations,
+  
   search: "Suche",
   searchProfiles: "Profile durchsuchen",
   enterLocation: "Standort eingeben",
@@ -95,5 +96,17 @@ export const deTranslations: Translations = {
   kycStatus: "KYC-Status",
   kycVerification: "KYC-Verifizierung",
   documentsVerification: "Dokumentenprüfung",
-  documentsNote: "Bitte stellen Sie sicher, dass alle Dokumente klar und gültig sind"
+  documentsNote: "Bitte stellen Sie sicher, dass alle Dokumente klar und gültig sind",
+  
+  // Add missing rating translations
+  ratings: "Bewertungen",
+  ratingSubmitted: "Bewertung erfolgreich abgegeben",
+  summary: "Zusammenfassung",
+  allRatings: "Alle Bewertungen",
+  rateProvider: "Anbieter bewerten",
+  pleaseSelectRating: "Bitte wählen Sie eine Bewertung",
+  ratingComment: "Ihr Kommentar",
+  submitRating: "Bewertung abschicken",
+  noRatingsYet: "Noch keine Bewertungen",
+  reviews: "Bewertungen"
 };
