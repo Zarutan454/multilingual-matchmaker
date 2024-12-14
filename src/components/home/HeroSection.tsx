@@ -11,12 +11,32 @@ export const HeroSection = () => {
 
   return (
     <div className="relative min-h-screen">
+      {/* Background with gradient */}
       <div className="absolute inset-0 w-full h-full overflow-hidden bg-gradient-to-br from-[#D946EF] via-[#1A1F2C] to-[#221F26] animate-gradient-xy">
         <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#ea384c]/30 via-transparent to-transparent animate-pulse"></div>
       </div>
 
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/40" />
+      {/* Split background images */}
+      <div className="absolute inset-0 flex">
+        {/* Left side - Male image */}
+        <div className="w-1/2 h-full relative overflow-hidden group">
+          <div className="absolute inset-0 bg-black/60 group-hover:opacity-30 transition-opacity duration-500"></div>
+          <img 
+            src="/lovable-uploads/2a2315eb-05c4-4c59-becf-4fe72a935b04.png"
+            alt="Male escort"
+            className="w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+          />
+        </div>
+        {/* Right side - Female image */}
+        <div className="w-1/2 h-full relative overflow-hidden group">
+          <div className="absolute inset-0 bg-black/60 group-hover:opacity-30 transition-opacity duration-500"></div>
+          <img 
+            src="/lovable-uploads/4e0eb2bc-57e3-423b-965a-a78b03a25b27.png"
+            alt="Female escort"
+            className="w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+          />
+        </div>
+      </div>
 
       {/* Content */}
       <div className="relative z-10 flex items-center justify-center min-h-screen">
