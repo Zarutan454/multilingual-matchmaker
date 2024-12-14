@@ -1,0 +1,18 @@
+export type ProfileTranslationKeys =
+  | "fullName"
+  | "bio"
+  | "location"
+  | "interests"
+  | "occupation"
+  | "saveProfile"
+  | "memberSince"
+  | "height"
+  | "weight"
+  | "availabilityStatus"
+  | "selectAvailability"
+  | "available"
+  | "busy"
+  | "offline"
+  | "gallery"
+  | "addImage"
+  | "viewAllPhotos";
