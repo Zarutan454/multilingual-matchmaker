@@ -4,6 +4,7 @@ import { navigationTranslations } from "./categories/de/navigation";
 import { profileTranslations } from "./categories/de/profile";
 import { servicesTranslations } from "./categories/de/services";
 import { subscriptionTranslations } from "./categories/de/subscription";
+import { availabilityTranslations } from "./categories/de/availability";
 
 export const deTranslations: Translations = {
   ...authTranslations,
@@ -11,6 +12,7 @@ export const deTranslations: Translations = {
   ...profileTranslations,
   ...servicesTranslations,
   ...subscriptionTranslations,
+  ...availabilityTranslations,
   // Profile translations
   fullName: "Vollständiger Name",
   bio: "Biografie",
