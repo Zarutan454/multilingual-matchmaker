@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { subscriptionsConfig } from "@/config/subscriptions";
 import { toast } from "sonner";
+import { TranslationKey } from "@/config/languageTypes";
 
 export const SubscriptionPlans = () => {
   const { t } = useLanguage();
@@ -19,8 +20,8 @@ export const SubscriptionPlans = () => {
     <div className="py-12 bg-gray-50">
       <div className="container px-4 mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">Premium Mitgliedschaft</h2>
-          <p className="text-gray-600">Wählen Sie den passenden Plan für Ihre Bedürfnisse</p>
+          <h2 className="text-3xl font-bold mb-4">{t('premiumMembership')}</h2>
+          <p className="text-gray-600">{t('choosePlan')}</p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -29,7 +30,7 @@ export const SubscriptionPlans = () => {
               {id === 'vip' && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                   <span className="bg-secondary text-secondary-foreground px-4 py-1 rounded-full text-sm font-medium">
-                    Empfohlen
+                    {t('recommended')}
                   </span>
                 </div>
               )}
@@ -51,11 +52,11 @@ export const SubscriptionPlans = () => {
                     <Check className="h-5 w-5 text-green-500 mr-2" />
                     <span className="text-gray-600">
                       {typeof value === 'number' 
-                        ? `${value} ${t(feature)}`
+                        ? `${value} ${t(feature as TranslationKey)}`
                         : value === true 
-                          ? t(feature)
+                          ? t(feature as TranslationKey)
                           : value === 'unlimited' 
-                            ? `Unbegrenzt ${t(feature)}`
+                            ? `Unbegrenzt ${t(feature as TranslationKey)}`
                             : value}
                     </span>
                   </div>
@@ -67,7 +68,7 @@ export const SubscriptionPlans = () => {
                 variant={id === 'vip' ? 'default' : 'outline'}
                 onClick={() => handleSubscribe(id)}
               >
-                Jetzt buchen
+                {t('bookNow')}
               </Button>
 
               {plan.trial_days > 0 && (

@@ -154,7 +154,25 @@ export type TranslationKey =
   | "reviews"
   | "requestCall"
   | "bookAppointment"
-  | "invalidCredentials";
+  | "invalidCredentials"
+  // Subscription related translations
+  | "basic_profile"
+  | "enhanced_profile"
+  | "premium_profile"
+  | "vip_profile"
+  | "photo_uploads"
+  | "video_uploads"
+  | "contact_requests"
+  | "visibility"
+  | "priority_support"
+  | "featured_listing"
+  | "analytics_access"
+  | "dedicated_manager"
+  | "advertising_credits"
+  | "bookNow"
+  | "recommended"
+  | "premiumMembership"
+  | "choosePlan";
 
 export type Translations = {
   [K in TranslationKey]: string;
