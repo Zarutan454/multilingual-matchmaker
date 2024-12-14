@@ -12,6 +12,7 @@ import { ProfileAdditionalInfo } from "./ProfileAdditionalInfo";
 import { ExtendedProfileInfo } from "./ExtendedProfileInfo";
 import { ProfileGallery } from "./ProfileGallery";
 import { profileSchema, ProfileFormValues, UserMetadata } from "./types";
+import { useNavigate } from "react-router-dom";
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -21,6 +22,7 @@ const supabase = createClient(
 export const ProfileForm = () => {
   const { t } = useLanguage();
   const { user } = useAuth();
+  const navigate = useNavigate();
   
   const defaultPriceRange = {
     min: Number(user?.user_metadata?.price_range?.min) || 50,
@@ -151,8 +153,8 @@ export const ProfileForm = () => {
       console.log("Profile updated successfully");
       toast.success(t("profileUpdated"));
       
-      // Reload the page after successful update
-      window.location.reload();
+      // Navigate to profile page after successful update
+      navigate('/profile');
     } catch (error) {
       console.error('Error:', error);
       if (error instanceof Error) {
