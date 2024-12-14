@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ChevronDown, Star, Heart, UserPlus } from "lucide-react";
+import { ChevronDown, Heart, UserPlus } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
@@ -13,28 +13,37 @@ export const HeroSection = () => {
 
   useEffect(() => {
     const videoElement = videoRef.current;
-    console.log("Video element:", videoElement);
     
     if (videoElement) {
-      // Ereignislistener für das Laden des Videos
+      videoElement.defaultMuted = true;
+      videoElement.muted = true;
+      videoElement.playsInline = true;
+      
+      const playVideo = async () => {
+        try {
+          await videoElement.play();
+          console.log("Video started playing successfully");
+        } catch (error) {
+          console.error("Error playing video:", error);
+        }
+      };
+
       videoElement.addEventListener('loadeddata', () => {
         console.log("Video loaded successfully");
+        playVideo();
       });
 
-      // Ereignislistener für Fehler
       videoElement.addEventListener('error', (e) => {
         console.error("Video error:", e);
       });
 
-      // Versuche das Video abzuspielen
-      videoElement.play().catch(error => {
-        console.error("Video autoplay failed:", error);
-      });
+      // Versuche das Video sofort abzuspielen
+      playVideo();
     }
 
-    // Cleanup-Funktion
     return () => {
       if (videoElement) {
+        videoElement.pause();
         videoElement.removeEventListener('loadeddata', () => {});
         videoElement.removeEventListener('error', () => {});
       }
@@ -60,7 +69,7 @@ export const HeroSection = () => {
       </div>
 
       {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-dark opacity-60" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/40" />
 
       {/* Content */}
       <div className="relative z-10 flex items-center justify-center min-h-screen">
