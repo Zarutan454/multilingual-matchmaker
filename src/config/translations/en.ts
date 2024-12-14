@@ -98,6 +98,12 @@ export const enTranslations: Translations = {
   basePrice: "Base Price",
   hour: "Hour",
   no: "No",
+  // Availability translations
+  startTime: "Start Time",
+  endTime: "End Time",
+  selectStartTime: "Select start time",
+  selectEndTime: "Select end time",
+  addTimeSlot: "Add Time Slot",
   // Pricing translations
   serviceName: "Service Name",
   enterServiceName: "Enter service name",
