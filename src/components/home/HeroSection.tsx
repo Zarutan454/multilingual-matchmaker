@@ -15,14 +15,12 @@ export const HeroSection = () => {
     const videoElement = videoRef.current;
     
     if (videoElement) {
-      // Grundlegende Video-Eigenschaften setzen
       videoElement.defaultMuted = true;
       videoElement.muted = true;
       videoElement.playsInline = true;
       videoElement.autoplay = true;
       videoElement.loop = true;
       
-      // Debug-Ausgaben für Video-Status
       console.log("Video Eigenschaften:", {
         src: videoElement.src,
         muted: videoElement.muted,
@@ -46,7 +44,6 @@ export const HeroSection = () => {
         }
       };
 
-      // Event Listener für verschiedene Video-Events
       videoElement.addEventListener('loadedmetadata', () => {
         console.log("Video Metadaten geladen");
         playVideo();
@@ -64,7 +61,6 @@ export const HeroSection = () => {
         console.error("Video Fehler:", e);
       });
 
-      // Initial versuchen, das Video abzuspielen
       playVideo();
     }
 
@@ -81,7 +77,6 @@ export const HeroSection = () => {
 
   return (
     <div className="relative min-h-screen">
-      {/* Video Background */}
       <div className="absolute inset-0 w-full h-full overflow-hidden">
         <video
           ref={videoRef}
@@ -92,7 +87,7 @@ export const HeroSection = () => {
           autoPlay
           loop
         >
-          <source src="hero-background.mp4" type="video/mp4" />
+          <source src={import.meta.env.BASE_URL + "hero-background.mp4"} type="video/mp4" />
           Ihr Browser unterstützt keine Videos.
         </video>
       </div>
