@@ -9,4 +9,9 @@ export type NavigationTranslationKeys =
   | "enterLocation"
   | "logout"
   | "logoutSuccess"
-  | "logoutError";
+  | "logoutError"
+  | "recentMessages"
+  | "contacts"
+  | "recentContacts" 
+  | "favorites"
+  | "yourFavorites";
