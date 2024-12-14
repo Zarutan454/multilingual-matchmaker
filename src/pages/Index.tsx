@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useLanguage } from "../contexts/LanguageContext";
 import { AgeVerification } from "../components/AgeVerification";
 import { ChevronDown, MapPin, Clock, Star } from "lucide-react";
+import { SubscriptionPlans } from "@/components/subscription/SubscriptionPlans";
 
 const featuredProfiles = [
   {
@@ -117,6 +118,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Subscription Plans */}
+      <SubscriptionPlans />
 
       {/* Info Section */}
       <section className="py-20 bg-gradient-to-b from-black to-gray-900">
