@@ -16,10 +16,18 @@ import { useNavigate } from "react-router-dom";
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
+  import.meta.env.VITE_SUPABASE_ANON_KEY,
+  {
+    auth: {
+      persistSession: true
+    },
+    storage: {
+      storageKey: 'storage-key'
+    }
+  }
 );
 
-const STORAGE_BUCKET = import.meta.env.VITE_SUPABASE_STORAGE_BUCKET || 'public';
+const STORAGE_BUCKET = 'public';
 
 export const ProfileForm = () => {
   const { t } = useLanguage();
