@@ -11,37 +11,37 @@ export const HeroSection = () => {
 
   return (
     <div className="relative min-h-screen">
-      {/* Background with gradient */}
-      <div className="absolute inset-0 w-full h-full overflow-hidden bg-gradient-to-br from-[#D946EF] via-[#1A1F2C] to-[#221F26] animate-gradient-xy">
-        <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#ea384c]/30 via-transparent to-transparent animate-pulse"></div>
+      {/* Optimierter Hintergrund mit sanfterem Farbverlauf */}
+      <div className="absolute inset-0 w-full h-full overflow-hidden bg-gradient-to-br from-[#D946EF]/80 via-[#1A1F2C] to-[#221F26] animate-gradient-xy">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#8E9196]/20 via-transparent to-transparent animate-pulse"></div>
       </div>
 
-      {/* Split background with images */}
+      {/* Optimierte Bilddarstellung */}
       <div className="absolute inset-0 flex">
-        {/* Left side - Male image */}
+        {/* Linke Seite - Männliches Bild */}
         <div className="relative w-1/2 h-full overflow-hidden flex items-center justify-center">
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black opacity-60"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-[#1A1F2C]/90 via-[#1A1F2C]/70 to-transparent"></div>
           <img 
             src="/lovable-uploads/d6eff054-978b-4d36-bf3d-8aa1cb81d205.png"
             alt="Male escort"
-            className="h-[90%] object-contain z-10 opacity-75 transform scale-110 transition-all duration-700 ease-in-out"
+            className="h-[90%] object-contain z-10 opacity-85 transform scale-110 transition-all duration-700 ease-in-out mix-blend-luminosity"
           />
-          <div className="absolute inset-0 bg-gradient-radial from-transparent via-black/40 to-black/80"></div>
+          <div className="absolute inset-0 bg-gradient-radial from-transparent via-[#1A1F2C]/60 to-[#1A1F2C]/90"></div>
         </div>
 
-        {/* Right side - Female image */}
+        {/* Rechte Seite - Weibliches Bild */}
         <div className="relative w-1/2 h-full overflow-hidden flex items-center justify-center">
-          <div className="absolute inset-0 bg-gradient-to-l from-black via-transparent to-black opacity-60"></div>
+          <div className="absolute inset-0 bg-gradient-to-l from-[#1A1F2C]/90 via-[#1A1F2C]/70 to-transparent"></div>
           <img 
             src="/lovable-uploads/b5b39dd2-35f6-40ce-b15d-891a8a5482bd.png"
             alt="Female escort"
-            className="h-[90%] object-contain z-10 opacity-75 transform scale-110 transition-all duration-700 ease-in-out"
+            className="h-[90%] object-contain z-10 opacity-85 transform scale-110 transition-all duration-700 ease-in-out mix-blend-luminosity"
           />
-          <div className="absolute inset-0 bg-gradient-radial from-transparent via-black/40 to-black/80"></div>
+          <div className="absolute inset-0 bg-gradient-radial from-transparent via-[#1A1F2C]/60 to-[#1A1F2C]/90"></div>
         </div>
 
-        {/* Subtle center blend */}
-        <div className="absolute inset-y-0 left-1/2 w-[2px] bg-gradient-to-b from-transparent via-white/5 to-transparent transform -translate-x-1/2 blur-lg"></div>
+        {/* Verbesserter Übergang in der Mitte */}
+        <div className="absolute inset-y-0 left-1/2 w-[100px] bg-gradient-to-r from-transparent via-[#1A1F2C]/30 to-transparent transform -translate-x-1/2"></div>
       </div>
 
       {/* Content */}
