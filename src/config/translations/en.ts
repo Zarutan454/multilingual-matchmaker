@@ -4,6 +4,7 @@ import { navigationTranslations } from "./categories/navigation";
 import { profileTranslations } from "./categories/profile";
 import { servicesTranslations } from "./categories/services";
 import { subscriptionTranslations } from "./categories/subscription";
+import { availabilityTranslations } from "./categories/availability";
 
 export const enTranslations: Translations = {
   ...authTranslations,
@@ -11,6 +12,7 @@ export const enTranslations: Translations = {
   ...profileTranslations,
   ...servicesTranslations,
   ...subscriptionTranslations,
+  ...availabilityTranslations,
   // Profile translations
   fullName: "Full Name",
   bio: "Bio",
@@ -104,10 +106,9 @@ export const enTranslations: Translations = {
   selectStartTime: "Select start time",
   selectEndTime: "Select end time",
   addTimeSlot: "Add Time Slot",
-  // Pricing translations
-  serviceName: "Service Name",
-  enterServiceName: "Enter service name",
-  duration: "Duration",
-  selectDuration: "Select duration",
-  addCategory: "Add Category"
+  selectDate: "Please select a date",
+  invalidTimeRange: "Invalid time range",
+  timeSlotOverlap: "Time slot overlaps with existing slot",
+  timeSlotAdded: "Time slot added successfully",
+  timeSlotRemoved: "Time slot removed successfully"
 };
