@@ -98,7 +98,21 @@ export const enTranslations: Translations = {
   documentsVerification: "Documents Verification",
   documentsNote: "Please ensure all documents are clear and valid",
   
-  // Add missing rating translations
+  welcome: "Welcome",
+  lastLogin: "Last Login",
+  dashboard: "Dashboard",
+  calendar: "Calendar",
+  messages: "Messages",
+  settings: "Settings",
+  manageProfile: "Manage Profile",
+  manageAppointments: "Manage Appointments",
+  manageMessages: "Manage Messages",
+  manageSettings: "Manage Settings",
+  editProfile: "Edit Profile",
+  viewCalendar: "View Calendar",
+  viewMessages: "View Messages",
+  editSettings: "Edit Settings",
+  
   ratings: "Ratings",
   ratingSubmitted: "Rating submitted successfully",
   summary: "Summary",
