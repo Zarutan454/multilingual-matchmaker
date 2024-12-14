@@ -21,22 +21,19 @@ export const HeroSection = () => {
       videoElement.autoplay = true;
       videoElement.loop = true;
       
-      // Debug-Ausgaben erweitert
-      const videoPath = "/hero-background.mp4";
-      console.log("Versuchter Video-Pfad:", videoPath);
-      console.log("BASE_URL:", import.meta.env.BASE_URL);
-      console.log("Vollständiger Pfad:", import.meta.env.BASE_URL + videoPath.substring(1));
+      // Debug-Ausgaben für verschiedene Pfadvarianten
+      const possiblePaths = [
+        "./hero-background.mp4",
+        "../hero-background.mp4",
+        "hero-background.mp4",
+        "/hero-background.mp4",
+        `${import.meta.env.BASE_URL}hero-background.mp4`,
+        `${window.location.origin}/hero-background.mp4`
+      ];
       
-      console.log("Video Eigenschaften:", {
-        src: videoElement.src,
-        muted: videoElement.muted,
-        autoplay: videoElement.autoplay,
-        loop: videoElement.loop,
-        readyState: videoElement.readyState,
-        paused: videoElement.paused,
-        currentTime: videoElement.currentTime,
-        duration: videoElement.duration
-      });
+      console.log("Mögliche Videopfade:", possiblePaths);
+      console.log("Aktueller Origin:", window.location.origin);
+      console.log("Aktueller BASE_URL:", import.meta.env.BASE_URL);
 
       const playVideo = async () => {
         try {
@@ -55,16 +52,10 @@ export const HeroSection = () => {
         playVideo();
       });
 
-      videoElement.addEventListener('playing', () => {
-        console.log("Video spielt ab");
-      });
-
-      videoElement.addEventListener('pause', () => {
-        console.log("Video pausiert");
-      });
-
       videoElement.addEventListener('error', (e) => {
         console.error("Video Fehler:", e);
+        console.log("Video Error Code:", videoElement.error?.code);
+        console.log("Video Error Message:", videoElement.error?.message);
       });
 
       playVideo();
@@ -74,8 +65,6 @@ export const HeroSection = () => {
       if (videoElement) {
         videoElement.pause();
         videoElement.removeEventListener('loadedmetadata', () => {});
-        videoElement.removeEventListener('playing', () => {});
-        videoElement.removeEventListener('pause', () => {});
         videoElement.removeEventListener('error', () => {});
       }
     };
@@ -93,7 +82,7 @@ export const HeroSection = () => {
           autoPlay
           loop
         >
-          <source src="/hero-background.mp4" type="video/mp4" />
+          <source src="./hero-background.mp4" type="video/mp4" />
           Ihr Browser unterstützt keine Videos.
         </video>
       </div>
