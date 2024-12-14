@@ -78,6 +78,9 @@ export const deTranslations: Translations = {
   // Messaging translations
   typeMessage: "Nachricht eingeben",
   noMessages: "Keine Nachrichten",
+  error: "Fehler",
+  errorLoadingMessages: "Fehler beim Laden der Nachrichten",
+  errorSendingMessage: "Fehler beim Senden der Nachricht",
   // Admin translations
   userStatusUpdated: "Benutzerstatus aktualisiert",
   errorUpdatingUser: "Fehler beim Aktualisieren des Benutzers",

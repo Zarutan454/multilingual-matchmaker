@@ -80,6 +80,9 @@ export const enTranslations: Translations = {
   // Messaging translations
   typeMessage: "Type Message",
   noMessages: "No Messages",
+  error: "Error",
+  errorLoadingMessages: "Error loading messages",
+  errorSendingMessage: "Error sending message",
   // Admin translations
   userStatusUpdated: "User Status Updated",
   errorUpdatingUser: "Error Updating User",
