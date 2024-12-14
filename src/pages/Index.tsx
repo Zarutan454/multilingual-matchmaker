@@ -12,6 +12,7 @@ import { Navbar } from "../components/Navbar";
 export default function Index() {
   const [isAgeVerified, setIsAgeVerified] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [isAtTop, setIsAtTop] = useState(true);
 
   const handleScroll = () => {
     if (window.scrollY > 400) {
@@ -19,6 +20,8 @@ export default function Index() {
     } else {
       setShowScrollTop(false);
     }
+
+    setIsAtTop(window.scrollY < 100);
   };
 
   useEffect(() => {
@@ -26,17 +29,15 @@ export default function Index() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   if (!isAgeVerified) {
     return <AgeVerification onVerified={() => setIsAgeVerified(true)} />;
   }
 
   return (
     <div className="min-h-screen bg-black">
-      <Navbar />
+      <div className={`transition-all duration-300 ${isAtTop ? 'bg-transparent' : 'bg-black/80 backdrop-blur-sm'}`}>
+        <Navbar />
+      </div>
       <HeroSection />
       
       <div id="featured" className="py-20">
@@ -56,7 +57,7 @@ export default function Index() {
           variant="secondary"
           size="icon"
           className="fixed bottom-8 right-8 rounded-full shadow-lg"
-          onClick={scrollToTop}
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         >
           <ArrowUp className="h-5 w-5" />
         </Button>
