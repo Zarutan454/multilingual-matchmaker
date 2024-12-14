@@ -21,14 +21,14 @@ export const HeroSection = () => {
       videoElement.autoplay = true;
       videoElement.loop = true;
       
-      // Debug-Ausgaben für verschiedene Pfadvarianten
+      // Debug-Ausgaben für verschiedene Pfadvarianten mit dem neuen Dateinamen
       const possiblePaths = [
-        "./hero-background.mp4",
-        "../hero-background.mp4",
-        "hero-background.mp4",
-        "/hero-background.mp4",
-        `${import.meta.env.BASE_URL}hero-background.mp4`,
-        `${window.location.origin}/hero-background.mp4`
+        "./startvideo.mp4",
+        "../startvideo.mp4",
+        "startvideo.mp4",
+        "/startvideo.mp4",
+        `${import.meta.env.BASE_URL}startvideo.mp4`,
+        `${window.location.origin}/startvideo.mp4`
       ];
       
       console.log("Mögliche Videopfade:", possiblePaths);
@@ -82,7 +82,7 @@ export const HeroSection = () => {
           autoPlay
           loop
         >
-          <source src="./hero-background.mp4" type="video/mp4" />
+          <source src="/startvideo.mp4" type="video/mp4" />
           Ihr Browser unterstützt keine Videos.
         </video>
       </div>
