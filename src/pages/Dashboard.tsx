@@ -3,13 +3,63 @@ import { useLanguage } from "../contexts/LanguageContext";
 import { Navbar } from "../components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, MessageSquare, Settings, User } from "lucide-react";
+import { MessageSquare, Star, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
 
 export default function Dashboard() {
   const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+
+  // Letzte Chats abrufen
+  const { data: recentChats = [] } = useQuery({
+    queryKey: ['recentChats'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('messages')
+        .select('*, profiles!messages_recipient_fkey(full_name, avatar_url)')
+        .or(`sender.eq.${user?.id},recipient.eq.${user?.id}`)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user
+  });
+
+  // Letzte Kontakte abrufen
+  const { data: recentContacts = [] } = useQuery({
+    queryKey: ['recentContacts'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .limit(5);
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user
+  });
+
+  // Favoriten abrufen
+  const { data: favorites = [] } = useQuery({
+    queryKey: ['favorites'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('favorites')
+        .select('*, profiles(*)')
+        .eq('user_id', user?.id)
+        .limit(5);
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user
+  });
 
   return (
     <div className="min-h-screen bg-black">
@@ -25,52 +75,8 @@ export default function Dashboard() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Profil Card */}
-          <Card className="bg-gray-900 border-gray-800">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
-                <User className="h-5 w-5 text-secondary" />
-                {t("profile")}
-              </CardTitle>
-              <CardDescription className="text-gray-400">
-                {t("manageProfile")}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button 
-                variant="secondary" 
-                className="w-full"
-                onClick={() => navigate("/profile")}
-              >
-                {t("editProfile")}
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Kalender Card */}
-          <Card className="bg-gray-900 border-gray-800">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-secondary" />
-                {t("calendar")}
-              </CardTitle>
-              <CardDescription className="text-gray-400">
-                {t("manageAppointments")}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button 
-                variant="secondary" 
-                className="w-full"
-                onClick={() => navigate("/calendar")}
-              >
-                {t("viewCalendar")}
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Nachrichten Card */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Letzte Chats */}
           <Card className="bg-gray-900 border-gray-800">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
@@ -78,39 +84,103 @@ export default function Dashboard() {
                 {t("messages")}
               </CardTitle>
               <CardDescription className="text-gray-400">
-                {t("manageMessages")}
+                {t("recentMessages")}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button 
-                variant="secondary" 
-                className="w-full"
-                onClick={() => navigate("/messages")}
-              >
-                {t("viewMessages")}
-              </Button>
+              <div className="space-y-4">
+                {recentChats.map((chat: any) => (
+                  <div 
+                    key={chat.id} 
+                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-800 cursor-pointer"
+                    onClick={() => navigate(`/messages/${chat.sender === user?.id ? chat.recipient : chat.sender}`)}
+                  >
+                    <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
+                      {chat.profiles?.avatar_url ? (
+                        <img src={chat.profiles.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
+                      ) : (
+                        <MessageSquare className="h-5 w-5 text-gray-400" />
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-white font-medium">{chat.profiles?.full_name}</p>
+                      <p className="text-sm text-gray-400 truncate">{chat.content}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
 
-          {/* Einstellungen Card */}
+          {/* Letzte Kontakte */}
           <Card className="bg-gray-900 border-gray-800">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
-                <Settings className="h-5 w-5 text-secondary" />
-                {t("settings")}
+                <Users className="h-5 w-5 text-secondary" />
+                {t("contacts")}
               </CardTitle>
               <CardDescription className="text-gray-400">
-                {t("manageSettings")}
+                {t("recentContacts")}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button 
-                variant="secondary" 
-                className="w-full"
-                onClick={() => navigate("/settings")}
-              >
-                {t("editSettings")}
-              </Button>
+              <div className="space-y-4">
+                {recentContacts.map((contact: any) => (
+                  <div 
+                    key={contact.id} 
+                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-800 cursor-pointer"
+                    onClick={() => navigate(`/provider/${contact.id}`)}
+                  >
+                    <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
+                      {contact.avatar_url ? (
+                        <img src={contact.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
+                      ) : (
+                        <Users className="h-5 w-5 text-gray-400" />
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-white font-medium">{contact.full_name}</p>
+                      <p className="text-sm text-gray-400">{contact.location}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Favoriten */}
+          <Card className="bg-gray-900 border-gray-800">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center gap-2">
+                <Star className="h-5 w-5 text-secondary" />
+                {t("favorites")}
+              </CardTitle>
+              <CardDescription className="text-gray-400">
+                {t("yourFavorites")}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {favorites.map((favorite: any) => (
+                  <div 
+                    key={favorite.id} 
+                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-800 cursor-pointer"
+                    onClick={() => navigate(`/provider/${favorite.profiles.id}`)}
+                  >
+                    <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
+                      {favorite.profiles?.avatar_url ? (
+                        <img src={favorite.profiles.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
+                      ) : (
+                        <Star className="h-5 w-5 text-gray-400" />
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-white font-medium">{favorite.profiles.full_name}</p>
+                      <p className="text-sm text-gray-400">{favorite.profiles.location}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
         </div>
