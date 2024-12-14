@@ -10,11 +10,7 @@ export const availabilityTranslations = {
   timeSlotOverlap: "Time slot overlaps with existing slot",
   timeSlotAdded: "Time slot added successfully",
   timeSlotRemoved: "Time slot removed successfully",
-  monday: "Monday",
-  tuesday: "Tuesday",
-  wednesday: "Wednesday",
-  thursday: "Thursday",
-  friday: "Friday",
-  saturday: "Saturday",
-  sunday: "Sunday"
+  online: "Online",
+  offline: "Offline",
+  busy: "Busy"
 };

@@ -1,4 +1,5 @@
-export type AvailabilityTranslationKeys = 
+export type AvailabilityTranslationKeys =
+  | "availability"
   | "startTime"
   | "endTime"
   | "selectStartTime"
@@ -8,4 +9,7 @@ export type AvailabilityTranslationKeys =
   | "invalidTimeRange"
   | "timeSlotOverlap"
   | "timeSlotAdded"
-  | "timeSlotRemoved";
+  | "timeSlotRemoved"
+  | "online"
+  | "offline"
+  | "busy";
