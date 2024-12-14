@@ -1,7 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
+import { useAuth } from "../../contexts/AuthContext";
+import { useLanguage } from "../../contexts/LanguageContext";
+import { useNavigate } from "react-router-dom";
 
 export const HeroSection = () => {
+  const { user } = useAuth();
+  const { t } = useLanguage();
+  const navigate = useNavigate();
+
   return (
     <div className="relative h-[80vh] flex items-center justify-center bg-gradient-to-r from-black to-gray-900">
       <div className="absolute inset-0 bg-black/60" />
@@ -12,10 +19,43 @@ export const HeroSection = () => {
         <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
           Exklusive Begleitung für anspruchsvolle Momente
         </p>
+        
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+          {!user ? (
+            <>
+              <Button 
+                variant="secondary"
+                size="lg"
+                className="w-full sm:w-auto bg-secondary hover:bg-secondary/90"
+                onClick={() => navigate("/login")}
+              >
+                {t("login")}
+              </Button>
+              <Button 
+                variant="outline"
+                size="lg"
+                className="w-full sm:w-auto border-white text-white hover:bg-white/10"
+                onClick={() => navigate("/register")}
+              >
+                {t("register")}
+              </Button>
+            </>
+          ) : (
+            <Button 
+              variant="secondary"
+              size="lg"
+              className="w-full sm:w-auto bg-secondary hover:bg-secondary/90"
+              onClick={() => navigate("/profile")}
+            >
+              {t("profile")}
+            </Button>
+          )}
+        </div>
+
         <Button 
-          variant="secondary"
+          variant="ghost"
           size="lg"
-          className="bg-secondary hover:bg-secondary/90"
+          className="text-white hover:bg-white/10"
           onClick={() => {
             const element = document.getElementById('featured');
             element?.scrollIntoView({ behavior: 'smooth' });
