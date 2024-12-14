@@ -3,8 +3,9 @@ import { Calendar } from "@/components/ui/calendar";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Clock, Plus } from "lucide-react";
+import { Clock, Plus, Trash2 } from "lucide-react";
 import { useLanguage } from "../../contexts/LanguageContext";
+import { toast } from "sonner";
 import {
   Select,
   SelectContent,
@@ -35,8 +36,22 @@ export const AvailabilitySchedule = () => {
     return `${hour}:00`;
   });
 
+  const validateTimeSlot = (start: string, end: string): boolean => {
+    const startHour = parseInt(start.split(":")[0]);
+    const endHour = parseInt(end.split(":")[0]);
+    return startHour < endHour;
+  };
+
   const addTimeSlot = () => {
-    if (!selectedDate) return;
+    if (!selectedDate) {
+      toast.error(t("selectDate"));
+      return;
+    }
+
+    if (!validateTimeSlot(selectedStartTime, selectedEndTime)) {
+      toast.error(t("invalidTimeRange"));
+      return;
+    }
 
     const newSchedule = [...schedule];
     const daySchedule = newSchedule.find(
@@ -44,10 +59,31 @@ export const AvailabilitySchedule = () => {
     );
 
     if (daySchedule) {
+      // Prüfen auf Überschneidungen
+      const hasOverlap = daySchedule.timeSlots.some((slot) => {
+        const slotStart = parseInt(slot.start.split(":")[0]);
+        const slotEnd = parseInt(slot.end.split(":")[0]);
+        const newStart = parseInt(selectedStartTime.split(":")[0]);
+        const newEnd = parseInt(selectedEndTime.split(":")[0]);
+        return (
+          (newStart >= slotStart && newStart < slotEnd) ||
+          (newEnd > slotStart && newEnd <= slotEnd)
+        );
+      });
+
+      if (hasOverlap) {
+        toast.error(t("timeSlotOverlap"));
+        return;
+      }
+
       daySchedule.timeSlots.push({
         start: selectedStartTime,
         end: selectedEndTime,
       });
+      // Sortieren der Zeitslots nach Startzeit
+      daySchedule.timeSlots.sort((a, b) => 
+        parseInt(a.start) - parseInt(b.start)
+      );
     } else {
       newSchedule.push({
         date: selectedDate,
@@ -61,6 +97,21 @@ export const AvailabilitySchedule = () => {
     }
 
     setSchedule(newSchedule);
+    toast.success(t("timeSlotAdded"));
+  };
+
+  const removeTimeSlot = (date: Date, index: number) => {
+    const newSchedule = schedule.map((day) => {
+      if (day.date.toDateString() === date.toDateString()) {
+        return {
+          ...day,
+          timeSlots: day.timeSlots.filter((_, i) => i !== index),
+        };
+      }
+      return day;
+    });
+    setSchedule(newSchedule.filter((day) => day.timeSlots.length > 0));
+    toast.success(t("timeSlotRemoved"));
   };
 
   const getTimeSlotsForDate = (date: Date): TimeSlot[] => {
@@ -138,14 +189,22 @@ export const AvailabilitySchedule = () => {
               </h4>
               <div className="space-y-2">
                 {getTimeSlotsForDate(selectedDate).map((slot, index) => (
-                  <Badge
-                    key={index}
-                    variant="secondary"
-                    className="flex items-center gap-2"
-                  >
-                    <Clock className="w-4 h-4" />
-                    {slot.start} - {slot.end}
-                  </Badge>
+                  <div key={index} className="flex items-center justify-between">
+                    <Badge
+                      variant="secondary"
+                      className="flex items-center gap-2"
+                    >
+                      <Clock className="w-4 h-4" />
+                      {slot.start} - {slot.end}
+                    </Badge>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeTimeSlot(selectedDate, index)}
+                    >
+                      <Trash2 className="w-4 h-4 text-red-500" />
+                    </Button>
+                  </div>
                 ))}
               </div>
             </div>
