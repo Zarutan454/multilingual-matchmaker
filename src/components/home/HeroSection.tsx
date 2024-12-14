@@ -12,9 +12,11 @@ export const HeroSection = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
+    console.log("Video element:", videoRef.current);
     if (videoRef.current) {
+      console.log("Attempting to play video...");
       videoRef.current.play().catch(error => {
-        console.log("Video autoplay failed:", error);
+        console.error("Video autoplay failed:", error);
       });
     }
   }, []);
@@ -32,7 +34,7 @@ export const HeroSection = () => {
           className="absolute min-w-full min-h-full object-cover"
           style={{ filter: 'brightness(0.4)' }}
         >
-          <source src="/hero-background.mp4" type="video/mp4" />
+          <source src="hero-background.mp4" type="video/mp4" />
           Ihr Browser unterstützt keine Videos.
         </video>
       </div>
