@@ -7,12 +7,12 @@ import { Footer } from "../components/home/Footer";
 import { AgeVerification } from "../components/AgeVerification";
 import { Button } from "@/components/ui/button";
 import { ArrowUp } from "lucide-react";
+import { Navbar } from "../components/Navbar";
 
 export default function Index() {
   const [isAgeVerified, setIsAgeVerified] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
-  // Scroll to top visibility handler
   const handleScroll = () => {
     if (window.scrollY > 400) {
       setShowScrollTop(true);
@@ -21,7 +21,6 @@ export default function Index() {
     }
   };
 
-  // Add scroll event listener
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -37,6 +36,7 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-black">
+      <Navbar />
       <HeroSection />
       
       <div id="featured" className="py-20">
