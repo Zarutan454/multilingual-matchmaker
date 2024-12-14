@@ -15,36 +15,65 @@ export const HeroSection = () => {
     const videoElement = videoRef.current;
     
     if (videoElement) {
+      // Grundlegende Video-Eigenschaften setzen
       videoElement.defaultMuted = true;
       videoElement.muted = true;
       videoElement.playsInline = true;
+      videoElement.autoplay = true;
+      videoElement.loop = true;
       
+      // Debug-Ausgaben für Video-Status
+      console.log("Video Eigenschaften:", {
+        src: videoElement.src,
+        muted: videoElement.muted,
+        autoplay: videoElement.autoplay,
+        loop: videoElement.loop,
+        readyState: videoElement.readyState,
+        paused: videoElement.paused,
+        currentTime: videoElement.currentTime,
+        duration: videoElement.duration
+      });
+
       const playVideo = async () => {
         try {
-          await videoElement.play();
-          console.log("Video started playing successfully");
+          const playPromise = videoElement.play();
+          if (playPromise !== undefined) {
+            await playPromise;
+            console.log("Video wird erfolgreich abgespielt");
+          }
         } catch (error) {
-          console.error("Error playing video:", error);
+          console.error("Fehler beim Abspielen des Videos:", error);
         }
       };
 
-      videoElement.addEventListener('loadeddata', () => {
-        console.log("Video loaded successfully");
+      // Event Listener für verschiedene Video-Events
+      videoElement.addEventListener('loadedmetadata', () => {
+        console.log("Video Metadaten geladen");
         playVideo();
       });
 
-      videoElement.addEventListener('error', (e) => {
-        console.error("Video error:", e);
+      videoElement.addEventListener('playing', () => {
+        console.log("Video spielt ab");
       });
 
-      // Versuche das Video sofort abzuspielen
+      videoElement.addEventListener('pause', () => {
+        console.log("Video pausiert");
+      });
+
+      videoElement.addEventListener('error', (e) => {
+        console.error("Video Fehler:", e);
+      });
+
+      // Initial versuchen, das Video abzuspielen
       playVideo();
     }
 
     return () => {
       if (videoElement) {
         videoElement.pause();
-        videoElement.removeEventListener('loadeddata', () => {});
+        videoElement.removeEventListener('loadedmetadata', () => {});
+        videoElement.removeEventListener('playing', () => {});
+        videoElement.removeEventListener('pause', () => {});
         videoElement.removeEventListener('error', () => {});
       }
     };
@@ -56,12 +85,12 @@ export const HeroSection = () => {
       <div className="absolute inset-0 w-full h-full overflow-hidden">
         <video
           ref={videoRef}
-          autoPlay
-          loop
-          muted
-          playsInline
           className="absolute min-w-full min-h-full object-cover"
           style={{ filter: 'brightness(0.4)' }}
+          muted
+          playsInline
+          autoPlay
+          loop
         >
           <source src="/hero-background.mp4" type="video/mp4" />
           Ihr Browser unterstützt keine Videos.
