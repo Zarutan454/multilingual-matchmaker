@@ -2,87 +2,89 @@ import { useState } from 'react';
 import { PartyPopper, CalendarDays, Plane, Theater, UserRound, MessageSquare, Home, Bath, ShoppingCart, Gift, Lock, ChevronDown, ChevronUp } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-
-const services = [
-  {
-    title: "Gesellschaftliche Begleitung",
-    items: [
-      {
-        icon: <PartyPopper className="w-6 h-6 text-secondary" />,
-        name: "Events & Partys",
-        description: "Professionelle Begleitung für Firmenevents, Partys und Hochzeiten"
-      },
-      {
-        icon: <CalendarDays className="w-6 h-6 text-secondary" />,
-        name: "Dinner Dates",
-        description: "Stilvolle Begleitung für Restaurant- oder private Dinner"
-      },
-      {
-        icon: <Plane className="w-6 h-6 text-secondary" />,
-        name: "Reisebegleitung",
-        description: "Diskrete Begleitung für Geschäfts- oder Urlaubsreisen"
-      },
-      {
-        icon: <Theater className="w-6 h-6 text-secondary" />,
-        name: "Kultur",
-        description: "Begleitung zu Theater, Oper oder Konzerten"
-      }
-    ]
-  },
-  {
-    title: "Private Begleitung",
-    items: [
-      {
-        icon: <UserRound className="w-6 h-6 text-secondary" />,
-        name: "Persönliche Zeit",
-        description: "Individuelle Begleitung nach Ihren Wünschen"
-      },
-      {
-        icon: <MessageSquare className="w-6 h-6 text-secondary" />,
-        name: "Unterhaltung",
-        description: "Anregende Gespräche und beste Unterhaltung"
-      },
-      {
-        icon: <Home className="w-6 h-6 text-secondary" />,
-        name: "Private Treffen",
-        description: "Diskrete Begleitung in Hotels oder privaten Räumlichkeiten"
-      }
-    ]
-  },
-  {
-    title: "Wellness & Freizeit",
-    items: [
-      {
-        icon: <Bath className="w-6 h-6 text-secondary" />,
-        name: "Wellness",
-        description: "Entspannende Spa- und Wellnessbesuche"
-      },
-      {
-        icon: <ShoppingCart className="w-6 h-6 text-secondary" />,
-        name: "Shopping & Aktivitäten",
-        description: "Gemeinsame Freizeitgestaltung und Shopping-Begleitung"
-      }
-    ]
-  },
-  {
-    title: "Exklusive Erlebnisse",
-    items: [
-      {
-        icon: <Gift className="w-6 h-6 text-secondary" />,
-        name: "Spezielle Wünsche",
-        description: "Personalisierte Erlebnisse und Rollenspiele"
-      },
-      {
-        icon: <Lock className="w-6 h-6 text-secondary" />,
-        name: "Premium Arrangements",
-        description: "Exklusive Mehrtagebuchungen und Auslandsreisen"
-      }
-    ]
-  }
-];
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export const ServiceCategories = () => {
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+  const { t } = useLanguage();
+
+  const services = [
+    {
+      title: t("socialCompanionship"),
+      items: [
+        {
+          icon: <PartyPopper className="w-6 h-6 text-secondary" />,
+          name: t("eventsAndParties"),
+          description: t("eventsAndPartiesDesc")
+        },
+        {
+          icon: <CalendarDays className="w-6 h-6 text-secondary" />,
+          name: t("dinnerDates"),
+          description: t("dinnerDatesDesc")
+        },
+        {
+          icon: <Plane className="w-6 h-6 text-secondary" />,
+          name: t("travelCompanion"),
+          description: t("travelCompanionDesc")
+        },
+        {
+          icon: <Theater className="w-6 h-6 text-secondary" />,
+          name: t("culture"),
+          description: t("cultureDesc")
+        }
+      ]
+    },
+    {
+      title: t("privateCompanionship"),
+      items: [
+        {
+          icon: <UserRound className="w-6 h-6 text-secondary" />,
+          name: t("personalTime"),
+          description: t("personalTimeDesc")
+        },
+        {
+          icon: <MessageSquare className="w-6 h-6 text-secondary" />,
+          name: t("conversation"),
+          description: t("conversationDesc")
+        },
+        {
+          icon: <Home className="w-6 h-6 text-secondary" />,
+          name: t("privateMeetings"),
+          description: t("privateMeetingsDesc")
+        }
+      ]
+    },
+    {
+      title: t("wellnessAndLeisure"),
+      items: [
+        {
+          icon: <Bath className="w-6 h-6 text-secondary" />,
+          name: t("wellness"),
+          description: t("wellnessDesc")
+        },
+        {
+          icon: <ShoppingCart className="w-6 h-6 text-secondary" />,
+          name: t("shoppingAndActivities"),
+          description: t("shoppingAndActivitiesDesc")
+        }
+      ]
+    },
+    {
+      title: t("exclusiveExperiences"),
+      items: [
+        {
+          icon: <Gift className="w-6 h-6 text-secondary" />,
+          name: t("specialWishes"),
+          description: t("specialWishesDesc")
+        },
+        {
+          icon: <Lock className="w-6 h-6 text-secondary" />,
+          name: t("premiumArrangements"),
+          description: t("premiumArrangementsDesc")
+        }
+      ]
+    }
+  ];
 
   const toggleCategory = (title: string) => {
     setExpandedCategory(expandedCategory === title ? null : title);
@@ -92,7 +94,7 @@ export const ServiceCategories = () => {
     <div className="py-12 bg-black/40 backdrop-blur-md">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-white text-center mb-8">
-          Unsere Services
+          {t("ourServices")}
         </h2>
         <div className="space-y-4 max-w-4xl mx-auto">
           {services.map((category) => (

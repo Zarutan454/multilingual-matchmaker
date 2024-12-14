@@ -155,7 +155,6 @@ export type TranslationKey =
   | "requestCall"
   | "bookAppointment"
   | "invalidCredentials"
-  // Subscription related translations
   | "basic_profile"
   | "enhanced_profile"
   | "premium_profile"
@@ -172,7 +171,34 @@ export type TranslationKey =
   | "bookNow"
   | "recommended"
   | "premiumMembership"
-  | "choosePlan";
+  | "choosePlan"
+  | "socialCompanionship"
+  | "eventsAndParties"
+  | "eventsAndPartiesDesc"
+  | "dinnerDates"
+  | "dinnerDatesDesc"
+  | "travelCompanion"
+  | "travelCompanionDesc"
+  | "culture"
+  | "cultureDesc"
+  | "privateCompanionship"
+  | "personalTime"
+  | "personalTimeDesc"
+  | "conversation"
+  | "conversationDesc"
+  | "privateMeetings"
+  | "privateMeetingsDesc"
+  | "wellnessAndLeisure"
+  | "wellness"
+  | "wellnessDesc"
+  | "shoppingAndActivities"
+  | "shoppingAndActivitiesDesc"
+  | "exclusiveExperiences"
+  | "specialWishes"
+  | "specialWishesDesc"
+  | "premiumArrangements"
+  | "premiumArrangementsDesc"
+  | "ourServices";
 
 export type Translations = {
   [K in TranslationKey]: string;
