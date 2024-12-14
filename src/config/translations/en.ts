@@ -5,6 +5,7 @@ import { profileTranslations } from "./categories/profile";
 import { servicesTranslations } from "./categories/services";
 import { subscriptionTranslations } from "./categories/subscription";
 import { availabilityTranslations } from "./categories/availability";
+import { pricingTranslations } from "./categories/pricing";
 
 export const enTranslations: Translations = {
   ...authTranslations,
@@ -13,6 +14,7 @@ export const enTranslations: Translations = {
   ...servicesTranslations,
   ...subscriptionTranslations,
   ...availabilityTranslations,
+  ...pricingTranslations,
   // Profile translations
   fullName: "Full Name",
   bio: "Bio",
