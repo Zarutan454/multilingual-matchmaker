@@ -1,34 +1,66 @@
 import { useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { HeroSection } from "../components/home/HeroSection";
+import { FeaturedProfiles } from "../components/home/FeaturedProfiles";
+import { InfoSection } from "../components/home/InfoSection";
+import { ServiceCategories } from "../components/services/ServiceCategories";
+import { Footer } from "../components/home/Footer";
 import { AgeVerification } from "../components/AgeVerification";
-import { SubscriptionPlans } from "@/components/subscription/SubscriptionPlans";
-import { HeroSection } from "@/components/home/HeroSection";
-import { FeaturedProfiles } from "@/components/home/FeaturedProfiles";
-import { InfoSection } from "@/components/home/InfoSection";
-import { Footer } from "@/components/home/Footer";
-import { ReferralBanner } from "@/components/referral/ReferralBanner";
+import { Button } from "@/components/ui/button";
+import { ArrowUp } from "lucide-react";
 
-const Index = () => {
+export default function Index() {
   const [isAgeVerified, setIsAgeVerified] = useState(false);
-  const { user } = useAuth();
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
-  // Prüfen ob der Benutzer ein Dienstleister ist
-  const isProvider = user?.user_metadata?.role === 'provider';
+  // Scroll to top visibility handler
+  const handleScroll = () => {
+    if (window.scrollY > 400) {
+      setShowScrollTop(true);
+    } else {
+      setShowScrollTop(false);
+    }
+  };
+
+  // Add scroll event listener
+  useState(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   if (!isAgeVerified) {
     return <AgeVerification onVerified={() => setIsAgeVerified(true)} />;
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <ReferralBanner />
+    <div className="min-h-screen bg-black">
       <HeroSection />
-      <FeaturedProfiles />
-      {isProvider && <SubscriptionPlans />}
-      <InfoSection />
+      
+      <div id="featured" className="py-20">
+        <FeaturedProfiles />
+      </div>
+      
+      <div className="py-20 bg-black/40">
+        <InfoSection />
+      </div>
+      
+      <ServiceCategories />
+      
       <Footer />
+
+      {showScrollTop && (
+        <Button
+          variant="secondary"
+          size="icon"
+          className="fixed bottom-8 right-8 rounded-full shadow-lg"
+          onClick={scrollToTop}
+        >
+          <ArrowUp className="h-5 w-5" />
+        </Button>
+      )}
     </div>
   );
-};
-
-export default Index;
+}
