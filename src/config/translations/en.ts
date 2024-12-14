@@ -42,4 +42,12 @@ export const enTranslations: Translations = {
   savingProfile: "Saving Profile...",
   errorUploadingAvatar: "Error uploading profile image",
   errorUploadingGallery: "Error uploading gallery images",
+  age: "Age",
+  country: "Country",
+  registerAsCustomer: "Register as Customer",
+  registerAsProvider: "Register as Provider",
+  reviews: "Reviews",
+  pleaseLoginFirst: "Please login first",
+  yes: "Yes",
+  no: "No"
 };

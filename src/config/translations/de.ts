@@ -40,4 +40,12 @@ export const deTranslations: Translations = {
   savingProfile: "Profil wird gespeichert...",
   errorUploadingAvatar: "Fehler beim Hochladen des Profilbilds",
   errorUploadingGallery: "Fehler beim Hochladen der Galeriebilder",
+  age: "Alter",
+  country: "Land",
+  registerAsCustomer: "Als Kunde registrieren",
+  registerAsProvider: "Als Anbieter registrieren",
+  reviews: "Bewertungen",
+  pleaseLoginFirst: "Bitte zuerst einloggen",
+  yes: "Ja",
+  no: "Nein"
 };
