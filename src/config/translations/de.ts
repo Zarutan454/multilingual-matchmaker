@@ -87,5 +87,13 @@ export const deTranslations: Translations = {
   businessLicenseNote: "Bitte laden Sie Ihren Gewerbeschein hoch",
   uploading: "Wird hochgeladen...",
   submitDocuments: "Dokumente einreichen",
-  kycRequired: "KYC erforderlich"
+  kycRequired: "KYC erforderlich",
+  typeMessage: "Nachricht eingeben",
+  noMessages: "Keine Nachrichten",
+  error: "Fehler",
+  errorLoadingMessages: "Fehler beim Laden der Nachrichten",
+  errorSendingMessage: "Fehler beim Senden der Nachricht",
+  requestCall: "Anruf anfordern",
+  sendMessage: "Nachricht senden",
+  bookAppointment: "Termin buchen"
 };

@@ -89,5 +89,13 @@ export const enTranslations: Translations = {
   businessLicenseNote: "Please upload your business license",
   uploading: "Uploading...",
   submitDocuments: "Submit Documents",
-  kycRequired: "KYC Required"
+  kycRequired: "KYC Required",
+  typeMessage: "Type a message",
+  noMessages: "No messages",
+  error: "Error",
+  errorLoadingMessages: "Error loading messages",
+  errorSendingMessage: "Error sending message",
+  requestCall: "Request Call",
+  sendMessage: "Send Message",
+  bookAppointment: "Book Appointment"
 };
