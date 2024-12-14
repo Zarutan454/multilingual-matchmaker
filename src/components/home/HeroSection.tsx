@@ -11,9 +11,8 @@ export const HeroSection = () => {
 
   return (
     <div className="relative min-h-screen">
-      {/* Verbesserter Hintergrund mit dynamischem Farbverlauf */}
-      <div className="absolute inset-0 w-full h-full overflow-hidden bg-gradient-to-br from-[#4A90E2]/90 via-[#1A1F2C] to-[#221F26] animate-gradient-xy">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#6BB5FF]/30 via-transparent to-transparent animate-pulse"></div>
+      {/* Einfacher dunkler Hintergrund */}
+      <div className="absolute inset-0 w-full h-full overflow-hidden bg-[#1A1F2C]">
       </div>
 
       {/* Optimierte Bilddarstellung */}
@@ -40,8 +39,8 @@ export const HeroSection = () => {
           <div className="absolute inset-0 bg-gradient-radial from-transparent via-[#1A1F2C]/60 to-[#1A1F2C]/90"></div>
         </div>
 
-        {/* Verbesserter Übergang in der Mitte mit Animation */}
-        <div className="absolute inset-y-0 left-1/2 w-[120px] bg-gradient-to-r from-transparent via-[#4A90E2]/10 to-transparent transform -translate-x-1/2 animate-pulse"></div>
+        {/* Sanfter Übergang in der Mitte */}
+        <div className="absolute inset-y-0 left-1/2 w-[120px] bg-gradient-to-r from-transparent via-[#1A1F2C]/20 to-transparent transform -translate-x-1/2"></div>
       </div>
 
       {/* Content */}
