@@ -20,9 +20,6 @@ const supabase = createClient(
   {
     auth: {
       persistSession: true
-    },
-    storage: {
-      storageKey: 'storage-key'
     }
   }
 );
