@@ -19,21 +19,21 @@ export const HeroSection = () => {
       {/* Split background images */}
       <div className="absolute inset-0 flex">
         {/* Left side - Male image */}
-        <div className="w-1/2 h-full relative overflow-hidden group">
-          <div className="absolute inset-0 bg-black/60 group-hover:opacity-30 transition-opacity duration-500"></div>
+        <div className="w-1/2 h-full relative overflow-hidden">
+          <div className="absolute inset-0 bg-black/60 transition-opacity duration-500"></div>
           <img 
             src="/lovable-uploads/4b743deb-ed0c-4dd6-bccf-c51804afc787.png"
             alt="Male escort"
-            className="w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+            className="w-full h-full object-cover opacity-40 transition-opacity duration-500"
           />
         </div>
         {/* Right side - Female image */}
-        <div className="w-1/2 h-full relative overflow-hidden group">
-          <div className="absolute inset-0 bg-black/60 group-hover:opacity-30 transition-opacity duration-500"></div>
+        <div className="w-1/2 h-full relative overflow-hidden">
+          <div className="absolute inset-0 bg-black/60 transition-opacity duration-500"></div>
           <img 
             src="/lovable-uploads/a1eb5fec-42ce-4ce0-bd18-d7b20a0a1500.png"
             alt="Female escort"
-            className="w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+            className="w-full h-full object-cover opacity-40 transition-opacity duration-500"
           />
         </div>
       </div>
