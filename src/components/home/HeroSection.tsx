@@ -37,9 +37,6 @@ export const HeroSection = () => {
           />
           <div className="absolute inset-0 bg-gradient-dark"></div>
         </div>
-
-        {/* Übergang in der Mitte */}
-        <div className="absolute inset-y-0 left-1/2 w-px bg-[#1A1F2C]/50 transform -translate-x-1/2"></div>
       </div>
 
       {/* Content */}
