@@ -12,13 +12,33 @@ export const HeroSection = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    console.log("Video element:", videoRef.current);
-    if (videoRef.current) {
-      console.log("Attempting to play video...");
-      videoRef.current.play().catch(error => {
+    const videoElement = videoRef.current;
+    console.log("Video element:", videoElement);
+    
+    if (videoElement) {
+      // Ereignislistener für das Laden des Videos
+      videoElement.addEventListener('loadeddata', () => {
+        console.log("Video loaded successfully");
+      });
+
+      // Ereignislistener für Fehler
+      videoElement.addEventListener('error', (e) => {
+        console.error("Video error:", e);
+      });
+
+      // Versuche das Video abzuspielen
+      videoElement.play().catch(error => {
         console.error("Video autoplay failed:", error);
       });
     }
+
+    // Cleanup-Funktion
+    return () => {
+      if (videoElement) {
+        videoElement.removeEventListener('loadeddata', () => {});
+        videoElement.removeEventListener('error', () => {});
+      }
+    };
   }, []);
 
   return (
@@ -34,7 +54,7 @@ export const HeroSection = () => {
           className="absolute min-w-full min-h-full object-cover"
           style={{ filter: 'brightness(0.4)' }}
         >
-          <source src="hero-background.mp4" type="video/mp4" />
+          <source src="/hero-background.mp4" type="video/mp4" />
           Ihr Browser unterstützt keine Videos.
         </video>
       </div>
