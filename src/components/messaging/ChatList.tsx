@@ -1,6 +1,7 @@
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChatMessage } from "./ChatMessage";
+import { Loader2 } from "lucide-react";
 
 interface Message {
   id: string;
@@ -13,10 +14,19 @@ interface Message {
 interface ChatListProps {
   messages: Message[];
   currentUserId: string;
+  isLoading?: boolean;
 }
 
-export const ChatList = ({ messages, currentUserId }: ChatListProps) => {
+export const ChatList = ({ messages, currentUserId, isLoading }: ChatListProps) => {
   const { t } = useLanguage();
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-[400px] text-neutral-400">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
 
   if (messages.length === 0) {
     return (
