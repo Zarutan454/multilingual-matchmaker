@@ -16,34 +16,32 @@ export const HeroSection = () => {
         <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#ea384c]/30 via-transparent to-transparent animate-pulse"></div>
       </div>
 
-      {/* Split background images with gradient overlay */}
+      {/* Split background with images */}
       <div className="absolute inset-0 flex">
         {/* Left side - Male image */}
-        <div className="relative w-1/2 h-full overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-dark opacity-70"></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent"></div>
+        <div className="relative w-1/2 h-full overflow-hidden flex items-center justify-center">
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black opacity-60"></div>
           <img 
-            src="/lovable-uploads/4b743deb-ed0c-4dd6-bccf-c51804afc787.png"
+            src="/lovable-uploads/d6eff054-978b-4d36-bf3d-8aa1cb81d205.png"
             alt="Male escort"
-            className="w-full h-full object-cover opacity-40 scale-110 transform"
+            className="h-[90%] object-contain z-10 opacity-75 transform scale-110 transition-all duration-700 ease-in-out"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/50"></div>
+          <div className="absolute inset-0 bg-gradient-radial from-transparent via-black/40 to-black/80"></div>
         </div>
 
         {/* Right side - Female image */}
-        <div className="relative w-1/2 h-full overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-dark opacity-70"></div>
-          <div className="absolute inset-0 bg-gradient-to-l from-black/40 to-transparent"></div>
+        <div className="relative w-1/2 h-full overflow-hidden flex items-center justify-center">
+          <div className="absolute inset-0 bg-gradient-to-l from-black via-transparent to-black opacity-60"></div>
           <img 
-            src="/lovable-uploads/a1eb5fec-42ce-4ce0-bd18-d7b20a0a1500.png"
+            src="/lovable-uploads/b5b39dd2-35f6-40ce-b15d-891a8a5482bd.png"
             alt="Female escort"
-            className="w-full h-full object-cover opacity-40 scale-110 transform"
+            className="h-[90%] object-contain z-10 opacity-75 transform scale-110 transition-all duration-700 ease-in-out"
           />
-          <div className="absolute inset-0 bg-gradient-to-l from-transparent to-black/50"></div>
+          <div className="absolute inset-0 bg-gradient-radial from-transparent via-black/40 to-black/80"></div>
         </div>
 
-        {/* Center blend overlay */}
-        <div className="absolute inset-y-0 left-1/2 w-px bg-gradient-to-b from-transparent via-white/10 to-transparent transform -translate-x-1/2 blur-sm"></div>
+        {/* Subtle center blend */}
+        <div className="absolute inset-y-0 left-1/2 w-[2px] bg-gradient-to-b from-transparent via-white/5 to-transparent transform -translate-x-1/2 blur-lg"></div>
       </div>
 
       {/* Content */}
