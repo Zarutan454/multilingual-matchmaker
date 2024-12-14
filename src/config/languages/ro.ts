@@ -30,5 +30,7 @@ export const roTranslations: Translations = {
   mustBe18: "Trebuie să ai cel puțin 18 ani",
   age: "Vârstă",
   country: "Țară",
-  profile: "Profil"
+  search: "Caută",
+  searchProfiles: "Caută profile",
+  enterLocation: "Introdu locația"
 };

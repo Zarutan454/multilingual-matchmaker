@@ -30,5 +30,8 @@ export const frTranslations: Translations = {
   mustBe18: "Vous devez avoir au moins 18 ans",
   age: "Âge",
   country: "Pays",
-  profile: "Profil"
+  profile: "Profil",
+  search: "Rechercher",
+  searchProfiles: "Rechercher des profils",
+  enterLocation: "Entrer le lieu"
 };

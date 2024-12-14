@@ -51,11 +51,9 @@ export const deTranslations: Translations = {
   sendMessage: "Nachricht senden",
   bookAppointment: "Termin buchen",
   // Search translations
-  searchProviders: "Anbieter suchen",
-  filters: "Filter",
-  categories: "Kategorien",
-  priceRange: "Preisbereich",
-  applyFilters: "Filter anwenden",
+  search: "Suchen",
+  searchProfiles: "Profile durchsuchen",
+  enterLocation: "Ort eingeben",
   // KYC translations
   kycRequired: "KYC erforderlich",
   kycPending: "KYC ausstehend",

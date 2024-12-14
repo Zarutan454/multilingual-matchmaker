@@ -14,5 +14,8 @@ export const ruTranslations: Translations = {
   invalidPhoneNumber: "Неверный номер телефона",
   mustBe18: "Вам должно быть не менее 18 лет",
   age: "Возраст",
-  country: "Страна"
+  country: "Страна",
+  search: "Поиск",
+  searchProfiles: "Поиск профилей",
+  enterLocation: "Введите местоположение"
 };

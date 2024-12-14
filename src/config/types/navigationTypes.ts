@@ -3,4 +3,7 @@ export type NavigationTranslationKeys =
   | "about"
   | "services"
   | "contact"
-  | "profile";
+  | "profile"
+  | "search"
+  | "searchProfiles"
+  | "enterLocation";
