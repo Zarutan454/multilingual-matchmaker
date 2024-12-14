@@ -1,13 +1,27 @@
 import { useLanguage } from "../contexts/LanguageContext";
 import { languages, Language } from "../config/languages";
-import { Menu, User } from "lucide-react";
+import { Menu, User, LogOut } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export const Navbar = () => {
   const { currentLanguage, setLanguage, t } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      toast.success(t("logoutSuccess"));
+      navigate('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+      toast.error(t("logoutError"));
+    }
+  };
 
   return (
     <nav className="fixed w-full z-50 bg-black/80 backdrop-blur-sm">
@@ -32,10 +46,19 @@ export const Navbar = () => {
               {t("contact")}
             </a>
             {user ? (
-              <a href="/profile" className="text-white hover:text-[#c69963] transition-colors flex items-center gap-2">
-                <User size={18} />
-                {t("profile")}
-              </a>
+              <>
+                <a href="/profile" className="text-white hover:text-[#c69963] transition-colors flex items-center gap-2">
+                  <User size={18} />
+                  {t("profile")}
+                </a>
+                <button
+                  onClick={handleLogout}
+                  className="text-white hover:text-[#c69963] transition-colors flex items-center gap-2"
+                >
+                  <LogOut size={18} />
+                  {t("logout")}
+                </button>
+              </>
             ) : (
               <a href="/register" className="text-white hover:text-[#c69963] transition-colors">
                 {t("register")}
@@ -83,10 +106,19 @@ export const Navbar = () => {
                 {t("contact")}
               </a>
               {user ? (
-                <a href="/profile" className="text-white hover:text-[#c69963] transition-colors flex items-center gap-2">
-                  <User size={18} />
-                  {t("profile")}
-                </a>
+                <>
+                  <a href="/profile" className="text-white hover:text-[#c69963] transition-colors flex items-center gap-2">
+                    <User size={18} />
+                    {t("profile")}
+                  </a>
+                  <button
+                    onClick={handleLogout}
+                    className="text-white hover:text-[#c69963] transition-colors flex items-center gap-2"
+                  >
+                    <LogOut size={18} />
+                    {t("logout")}
+                  </button>
+                </>
               ) : (
                 <a href="/register" className="text-white hover:text-[#c69963] transition-colors">
                   {t("register")}

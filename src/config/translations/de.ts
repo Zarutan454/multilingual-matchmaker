@@ -124,5 +124,10 @@ export const deTranslations: Translations = {
   ratingComment: "Ihr Kommentar",
   submitRating: "Bewertung absenden",
   noRatingsYet: "Noch keine Bewertungen",
-  reviews: "Rezensionen"
+  reviews: "Rezensionen",
+
+  // Logout related translations
+  logout: "Abmelden",
+  logoutSuccess: "Erfolgreich abgemeldet",
+  logoutError: "Fehler beim Abmelden"
 };
