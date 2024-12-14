@@ -27,9 +27,21 @@ export const Navbar = () => {
     <nav className="fixed w-full z-50 bg-black/80 backdrop-blur-sm">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-20">
-          <a href="/" className="text-white font-bold text-xl">
-            JW
-          </a>
+          <div className="flex items-center gap-4">
+            <img 
+              src="/lovable-uploads/fe01f460-75ee-475d-8e6c-efb6244e2622.png" 
+              alt="Logo" 
+              className="h-12 w-auto"
+            />
+            <div className="flex flex-col items-start">
+              <a href="/" className="text-white font-bold text-xl">
+                JW
+              </a>
+              <span className="text-secondary text-sm italic font-light">
+                Escort made in Germany
+              </span>
+            </div>
+          </div>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-8">
