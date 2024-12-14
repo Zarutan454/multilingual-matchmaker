@@ -63,9 +63,9 @@ export const ExtendedProfileInfo = ({ form }: ExtendedProfileInfoProps) => {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="available">{t("available")}</SelectItem>
-                <SelectItem value="busy">{t("busy")}</SelectItem>
+                <SelectItem value="online">{t("online")}</SelectItem>
                 <SelectItem value="offline">{t("offline")}</SelectItem>
+                <SelectItem value="busy">{t("busy")}</SelectItem>
               </SelectContent>
             </Select>
             <FormMessage />
