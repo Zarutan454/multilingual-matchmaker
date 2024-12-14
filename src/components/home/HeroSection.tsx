@@ -16,26 +16,34 @@ export const HeroSection = () => {
         <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#ea384c]/30 via-transparent to-transparent animate-pulse"></div>
       </div>
 
-      {/* Split background images */}
+      {/* Split background images with gradient overlay */}
       <div className="absolute inset-0 flex">
         {/* Left side - Male image */}
-        <div className="w-1/2 h-full relative overflow-hidden">
-          <div className="absolute inset-0 bg-black/60 transition-opacity duration-500"></div>
+        <div className="relative w-1/2 h-full overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-dark opacity-70"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent"></div>
           <img 
             src="/lovable-uploads/4b743deb-ed0c-4dd6-bccf-c51804afc787.png"
             alt="Male escort"
-            className="w-full h-full object-cover opacity-40 transition-opacity duration-500"
+            className="w-full h-full object-cover opacity-40 scale-110 transform"
           />
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/50"></div>
         </div>
+
         {/* Right side - Female image */}
-        <div className="w-1/2 h-full relative overflow-hidden">
-          <div className="absolute inset-0 bg-black/60 transition-opacity duration-500"></div>
+        <div className="relative w-1/2 h-full overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-dark opacity-70"></div>
+          <div className="absolute inset-0 bg-gradient-to-l from-black/40 to-transparent"></div>
           <img 
             src="/lovable-uploads/a1eb5fec-42ce-4ce0-bd18-d7b20a0a1500.png"
             alt="Female escort"
-            className="w-full h-full object-cover opacity-40 transition-opacity duration-500"
+            className="w-full h-full object-cover opacity-40 scale-110 transform"
           />
+          <div className="absolute inset-0 bg-gradient-to-l from-transparent to-black/50"></div>
         </div>
+
+        {/* Center blend overlay */}
+        <div className="absolute inset-y-0 left-1/2 w-px bg-gradient-to-b from-transparent via-white/10 to-transparent transform -translate-x-1/2 blur-sm"></div>
       </div>
 
       {/* Content */}
