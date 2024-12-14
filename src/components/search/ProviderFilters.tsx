@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import { Filter } from "lucide-react";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { FilterOptions } from "./types";
+import { Checkbox } from "../ui/checkbox";
 
 interface ProviderFiltersProps {
   filters: FilterOptions;
@@ -17,10 +18,29 @@ export const ProviderFilters = ({ filters, onFilterChange }: ProviderFiltersProp
   const [isOpen, setIsOpen] = useState(false);
   const [localFilters, setLocalFilters] = useState(filters);
 
+  const serviceCategories = [
+    { id: "dinner", label: "Dinner Dates" },
+    { id: "events", label: "Events & Partys" },
+    { id: "travel", label: "Reisebegleitung" },
+    { id: "culture", label: "Kulturelle Veranstaltungen" },
+    { id: "wellness", label: "Wellness & Spa" }
+  ];
+
   const handlePriceChange = (value: number[]) => {
     setLocalFilters({
       ...localFilters,
       priceRange: { min: value[0], max: value[1] },
+    });
+  };
+
+  const handleCategoryChange = (categoryId: string, checked: boolean) => {
+    const updatedCategories = checked
+      ? [...localFilters.categories, categoryId]
+      : localFilters.categories.filter(id => id !== categoryId);
+    
+    setLocalFilters({
+      ...localFilters,
+      categories: updatedCategories,
     });
   };
 
@@ -40,7 +60,30 @@ export const ProviderFilters = ({ filters, onFilterChange }: ProviderFiltersProp
       </Button>
 
       {isOpen && (
-        <Card className="p-4 space-y-4">
+        <Card className="p-4 space-y-6">
+          <div>
+            <Label className="text-lg font-semibold mb-4">{t("categories")}</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+              {serviceCategories.map((category) => (
+                <div key={category.id} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={category.id}
+                    checked={localFilters.categories.includes(category.id)}
+                    onCheckedChange={(checked) => 
+                      handleCategoryChange(category.id, checked as boolean)
+                    }
+                  />
+                  <label
+                    htmlFor={category.id}
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    {category.label}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div>
             <Label>{t("priceRange")}</Label>
             <div className="pt-4">

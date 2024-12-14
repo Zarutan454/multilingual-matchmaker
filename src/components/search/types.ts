@@ -7,3 +7,17 @@ export interface FilterOptions {
   availability: string[];
   location: string;
 }
+
+export interface Provider {
+  id: number;
+  name: string;
+  image: string;
+  category: string;
+  location: string;
+  serviceCategories: string[];
+  priceRange: {
+    min: number;
+    max: number;
+  };
+  status: string;
+}
