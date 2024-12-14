@@ -11,42 +11,41 @@ export const HeroSection = () => {
 
   return (
     <div className="relative min-h-screen">
-      {/* Einfacher dunkler Hintergrund */}
-      <div className="absolute inset-0 w-full h-full overflow-hidden bg-[#1A1F2C]">
-      </div>
+      {/* Dunkler Hintergrund */}
+      <div className="absolute inset-0 w-full h-full bg-[#1A1F2C]"></div>
 
-      {/* Optimierte Bilddarstellung */}
+      {/* Bildcontainer */}
       <div className="absolute inset-0 flex">
         {/* Linke Seite - Männliches Bild */}
-        <div className="relative w-1/2 h-full overflow-hidden flex items-center justify-center">
-          <div className="absolute inset-0 bg-gradient-to-r from-[#1A1F2C]/90 via-[#1A1F2C]/70 to-transparent"></div>
+        <div className="relative w-1/2 h-full overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-[#1A1F2C] via-[#1A1F2C]/70 to-transparent"></div>
           <img 
             src="/lovable-uploads/d6eff054-978b-4d36-bf3d-8aa1cb81d205.png"
             alt="Male escort"
-            className="h-[90%] object-contain z-10 opacity-90 transform scale-110 transition-all duration-700 ease-in-out mix-blend-luminosity hover:opacity-100"
+            className="absolute inset-0 w-full h-full object-cover object-center opacity-90 transition-opacity duration-300 hover:opacity-100"
           />
-          <div className="absolute inset-0 bg-gradient-radial from-transparent via-[#1A1F2C]/60 to-[#1A1F2C]/90"></div>
+          <div className="absolute inset-0 bg-gradient-dark"></div>
         </div>
 
         {/* Rechte Seite - Weibliches Bild */}
-        <div className="relative w-1/2 h-full overflow-hidden flex items-center justify-center">
-          <div className="absolute inset-0 bg-gradient-to-l from-[#1A1F2C]/90 via-[#1A1F2C]/70 to-transparent"></div>
+        <div className="relative w-1/2 h-full overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-l from-[#1A1F2C] via-[#1A1F2C]/70 to-transparent"></div>
           <img 
             src="/lovable-uploads/b5b39dd2-35f6-40ce-b15d-891a8a5482bd.png"
             alt="Female escort"
-            className="h-[90%] object-contain z-10 opacity-90 transform scale-110 transition-all duration-700 ease-in-out mix-blend-luminosity hover:opacity-100"
+            className="absolute inset-0 w-full h-full object-cover object-center opacity-90 transition-opacity duration-300 hover:opacity-100"
           />
-          <div className="absolute inset-0 bg-gradient-radial from-transparent via-[#1A1F2C]/60 to-[#1A1F2C]/90"></div>
+          <div className="absolute inset-0 bg-gradient-dark"></div>
         </div>
 
-        {/* Sanfter Übergang in der Mitte */}
-        <div className="absolute inset-y-0 left-1/2 w-[120px] bg-gradient-to-r from-transparent via-[#1A1F2C]/20 to-transparent transform -translate-x-1/2"></div>
+        {/* Übergang in der Mitte */}
+        <div className="absolute inset-y-0 left-1/2 w-px bg-[#1A1F2C]/50 transform -translate-x-1/2"></div>
       </div>
 
       {/* Content */}
       <div className="relative z-10 flex items-center justify-center min-h-screen">
         <div className="text-center px-4 max-w-5xl mx-auto">
-          <div className="mb-8 animate-fade-in">
+          <div className="mb-8">
             <h1 className="text-6xl md:text-8xl font-bold mb-4 text-white">
               POPP<span className="text-secondary">*</span>IN
             </h1>
