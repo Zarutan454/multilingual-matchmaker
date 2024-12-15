@@ -7,6 +7,7 @@ import { useFavorites } from "@/hooks/useFavorites";
 import { toast } from "sonner";
 import { Loader } from "./Loader";
 import { FavoriteList } from "./FavoriteList";
+import { FavoriteData } from "@/types/favorites";
 
 interface FavoritesCardProps {
   user: User | null;
@@ -43,7 +44,7 @@ export const FavoritesCard = ({ user }: FavoritesCardProps) => {
       </CardHeader>
       <CardContent>
         <FavoriteList
-          favorites={favorites}
+          favorites={favorites as FavoriteData[]}
           onProfileClick={handleProfileClick}
           emptyMessage={t("noFavoritesSelected")}
         />
