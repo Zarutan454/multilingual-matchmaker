@@ -34,22 +34,25 @@ export default function Index() {
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-black flex flex-col">
       <div className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isAtTop ? 'bg-transparent' : 'bg-black/80 backdrop-blur-sm'}`}>
         <Navbar />
       </div>
-      <HeroSection />
       
-      <div id="featured" className="py-20">
-        <FeaturedProfiles />
-      </div>
-      
-      <div className="py-20 bg-black/40">
-        <InfoSection />
-      </div>
-      
-      <ServiceCategories />
-      
+      <main className="flex-grow">
+        <HeroSection />
+        
+        <div id="featured" className="py-20">
+          <FeaturedProfiles />
+        </div>
+        
+        <div className="py-20 bg-black/40">
+          <InfoSection />
+        </div>
+        
+        <ServiceCategories />
+      </main>
+
       <Footer />
 
       {showScrollTop && (
