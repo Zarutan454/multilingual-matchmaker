@@ -55,6 +55,11 @@ export type TranslationKey =
   | "emergencyContact"
   | "emergencyContactName"
   | "emergencyContactPhone"
-  | "emergencyContactRelationship";
+  | "emergencyContactRelationship"
+  | "nickname"
+  | "nicknameRequired"
+  | "nicknameChangeLimit"
+  | "nicknameUpdated"
+  | "errorUpdatingNickname";
 
 export type Translations = Partial<Record<TranslationKey, string>>;
