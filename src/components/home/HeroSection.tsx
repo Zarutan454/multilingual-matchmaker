@@ -82,7 +82,7 @@ export const HeroSection = () => {
                 variant="secondary"
                 size="lg"
                 className="w-full sm:w-auto bg-secondary hover:bg-secondary/90"
-                onClick={() => navigate("/profile")}
+                onClick={() => navigate("/dashboard")}
               >
                 {t("profile")}
               </Button>
