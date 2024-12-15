@@ -36,10 +36,12 @@ export const ProfileBanner = ({ profileId, bannerUrl, isEditable = false }: Prof
         .from('uploads')
         .getPublicUrl(filePath);
 
-      await supabase
+      const { error: updateError } = await supabase
         .from('profiles')
         .update({ banner_url: publicUrl })
         .eq('id', profileId);
+
+      if (updateError) throw updateError;
 
       toast.success(t("bannerUploaded"));
       window.location.reload();
@@ -62,24 +64,29 @@ export const ProfileBanner = ({ profileId, bannerUrl, isEditable = false }: Prof
       ) : (
         <div className="w-full h-full bg-gradient-to-r from-gray-900 via-purple-900 to-violet-900 flex items-center justify-center">
           {isEditable && user?.id === profileId && (
-            <label className="cursor-pointer">
-              <Button 
-                variant="secondary" 
-                className="bg-black/50 hover:bg-black/70"
-                disabled={isUploading}
-                size="lg"
-              >
-                <ImagePlus className="w-6 h-6 mr-2" />
-                {t("uploadBanner")}
-              </Button>
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleBannerUpload}
-                disabled={isUploading}
-              />
-            </label>
+            <div className="text-center">
+              <label className="cursor-pointer inline-block">
+                <div className="flex flex-col items-center gap-4">
+                  <Button 
+                    variant="secondary" 
+                    className="bg-black/50 hover:bg-black/70"
+                    disabled={isUploading}
+                    size="lg"
+                  >
+                    <ImagePlus className="w-6 h-6 mr-2" />
+                    {t("uploadBanner")}
+                  </Button>
+                  <p className="text-sm text-gray-400">{t("recommendedSize")}: 1920x300px</p>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleBannerUpload}
+                    disabled={isUploading}
+                  />
+                </div>
+              </label>
+            </div>
           )}
         </div>
       )}
@@ -92,7 +99,7 @@ export const ProfileBanner = ({ profileId, bannerUrl, isEditable = false }: Prof
             disabled={isUploading}
           >
             <ImagePlus className="w-4 h-4 mr-2" />
-            {t("uploadBanner")}
+            {t("changeBanner")}
           </Button>
           <input
             type="file"
