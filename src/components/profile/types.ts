@@ -41,6 +41,7 @@ export const MAX_GALLERY_IMAGES = 10;
 
 export interface ProfileFormValues {
   fullName: string;
+  nickname: string; // Added nickname field
   bio: string;
   avatar?: File;
   location: string;
@@ -71,6 +72,7 @@ export interface ProfileFormValues {
 
 export interface UserMetadata {
   full_name: string;
+  nickname: string; // Added nickname field
   bio: string;
   avatar_url?: string;
   location: string;
@@ -102,6 +104,7 @@ export interface UserMetadata {
 
 export const profileSchema = z.object({
   fullName: z.string().min(2, "Name muss mindestens 2 Zeichen lang sein"),
+  nickname: z.string().min(2, "Nickname muss mindestens 2 Zeichen lang sein"), // Added nickname validation
   bio: z.string().min(10, "Bio muss mindestens 10 Zeichen lang sein"),
   avatar: z.instanceof(File).optional(),
   location: z.string().min(2, "Standort ist erforderlich"),
