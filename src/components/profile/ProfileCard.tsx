@@ -3,6 +3,12 @@ import { MapPin, MessageCircle, Star, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Profile } from "./types";
+import { useAuth } from "@/contexts/AuthContext";
+import { useState } from "react";
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
+import { formatDistanceToNow } from "date-fns";
+import { de } from "date-fns/locale";
 
 interface ProfileCardProps {
   profile: Profile;
@@ -11,6 +17,50 @@ interface ProfileCardProps {
 
 export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  const handleFavoriteClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!user) {
+      toast.error("Bitte melden Sie sich an, um Favoriten hinzuzufügen");
+      return;
+    }
+
+    try {
+      if (isFavorite) {
+        const { error } = await supabase
+          .from('favorites')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('profile_id', profile.id);
+        
+        if (error) throw error;
+        setIsFavorite(false);
+        toast.success("Aus Favoriten entfernt");
+      } else {
+        const { error } = await supabase
+          .from('favorites')
+          .insert([
+            { user_id: user.id, profile_id: profile.id }
+          ]);
+        
+        if (error) throw error;
+        setIsFavorite(true);
+        toast.success("Zu Favoriten hinzugefügt");
+      }
+    } catch (error) {
+      console.error('Error updating favorites:', error);
+      toast.error("Fehler beim Aktualisieren der Favoriten");
+    }
+  };
+
+  const lastOnline = profile.last_seen 
+    ? formatDistanceToNow(new Date(profile.last_seen), { 
+        addSuffix: true, 
+        locale: de 
+      })
+    : null;
 
   return (
     <div 
@@ -24,6 +74,15 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-dark opacity-60" />
+
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute top-4 right-4 text-white hover:bg-white/20"
+          onClick={handleFavoriteClick}
+        >
+          <Star className={`h-6 w-6 ${isFavorite ? 'fill-yellow-500 text-yellow-500' : ''}`} />
+        </Button>
 
         <Badge 
           className="absolute top-16 right-4 bg-secondary/90 text-white border-none"
@@ -50,17 +109,26 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
             </div>
           </div>
 
-          {profile.status === "online" && (
-            <Button
-              onClick={(e) => onChatClick(e, profile.id)}
-              variant="secondary"
-              size="sm"
-              className="w-full mt-3 bg-accent hover:bg-accent-hover"
+          <div className="mt-3 space-y-2">
+            <Badge 
+              variant={profile.status === "online" ? "success" : "secondary"}
+              className="w-full justify-center"
             >
-              <MessageCircle className="w-4 h-4 mr-2" />
-              Chat starten
-            </Button>
-          )}
+              {profile.status === "online" ? "Online" : lastOnline ? `Zuletzt online ${lastOnline}` : "Offline"}
+            </Badge>
+
+            {profile.status === "online" && (
+              <Button
+                onClick={(e) => onChatClick(e, profile.id)}
+                variant="secondary"
+                size="sm"
+                className="w-full bg-accent hover:bg-accent-hover"
+              >
+                <MessageCircle className="w-4 h-4 mr-2" />
+                Chat starten
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -18,6 +18,7 @@ export interface Profile {
     min: number;
     max: number;
   };
+  last_seen?: string;
 }
 
 export interface ProfileFormValues {
