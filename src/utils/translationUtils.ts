@@ -1,45 +1,38 @@
 import { Language } from "../config/languageTypes";
 
-const DEEPL_API_URL = "https://api-free.deepl.com/v2/translate";
-
 export const translateText = async (
   text: string,
   targetLang: Language
 ): Promise<string> => {
-  // Convert language codes to DeepL format
-  const deeplLangMap: Record<Language, string> = {
-    de: "DE",
-    en: "EN",
-    ru: "RU",
-    ro: "RO",
-    it: "IT",
-    es: "ES",
-    fr: "FR"
+  // Konvertiere Sprachcodes in das Google Translate Format
+  const googleLangMap: Record<Language, string> = {
+    de: "de",
+    en: "en",
+    ru: "ru",
+    ro: "ro",
+    it: "it",
+    es: "es",
+    fr: "fr"
   };
 
   try {
-    const response = await fetch(DEEPL_API_URL, {
-      method: "POST",
-      headers: {
-        "Authorization": `DeepL-Auth-Key ${import.meta.env.VITE_DEEPL_API_KEY}`,
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        text,
-        target_lang: deeplLangMap[targetLang],
-      }),
-    });
+    const response = await fetch(
+      `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${
+        googleLangMap[targetLang]
+      }&dt=t&q=${encodeURIComponent(text)}`
+    );
 
     if (!response.ok) {
-      console.error("DeepL API error:", await response.text());
-      return text; // Fallback to original text
+      console.error("Translation error:", await response.text());
+      return text; // Fallback zum Originaltext
     }
 
     const data = await response.json();
-    return data.translations[0].text;
+    // Google Translate gibt ein verschachteltes Array zurück, wir nehmen den ersten übersetzten Text
+    return data[0][0][0];
   } catch (error) {
     console.error("Translation error:", error);
-    return text; // Fallback to original text
+    return text; // Fallback zum Originaltext
   }
 };
 
