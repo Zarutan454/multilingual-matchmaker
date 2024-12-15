@@ -28,9 +28,9 @@ const supabase = createClient(
 
 export const UserManagement = () => {
   const { t } = useLanguage();
-  const [isUpdating, setIsUpdating] = useState(false);
+  const [updatingUserId, setUpdatingUserId] = useState<string | null>(null);
 
-  const { data: users, isLoading, refetch } = useQuery({
+  const { data: users, isLoading, error, refetch } = useQuery({
     queryKey: ['users'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -38,13 +38,24 @@ export const UserManagement = () => {
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        toast.error(`${t('errorFetchingUsers')}: ${error.message}`);
+        throw error;
+      }
       return data;
     },
+    onSuccess: () => {
+      toast.success(t('usersLoadedSuccessfully'));
+    },
+    onError: (error: Error) => {
+      toast.error(`${t('errorFetchingUsers')}: ${error.message}`);
+    }
   });
 
   const handleStatusUpdate = async (userId: string, newStatus: string) => {
-    setIsUpdating(true);
+    setUpdatingUserId(userId);
+    const toastId = toast.loading(t('updatingUserStatus'));
+
     try {
       const { error } = await supabase
         .from('profiles')
@@ -53,13 +64,17 @@ export const UserManagement = () => {
 
       if (error) throw error;
 
-      toast.success(t('userStatusUpdated'));
-      refetch();
+      toast.success(t('userStatusUpdated'), { id: toastId });
+      try {
+        await refetch();
+      } catch (refetchError) {
+        toast.error(`${t('errorRefetchingUsers')}: ${refetchError.message}`);
+      }
     } catch (error) {
       console.error('Error updating user status:', error);
-      toast.error(t('errorUpdatingUser'));
+      toast.error(`${t('errorUpdatingUser')}: ${error.message}`, { id: toastId });
     } finally {
-      setIsUpdating(false);
+      setUpdatingUserId(null);
     }
   };
 
@@ -67,6 +82,15 @@ export const UserManagement = () => {
     return (
       <div className="flex items-center justify-center h-64">
         <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64 space-y-4">
+        <p className="text-red-500">{t('errorLoadingUsers')}</p>
+        <Button onClick={() => refetch()}>{t('tryAgain')}</Button>
       </div>
     );
   }
@@ -106,21 +130,29 @@ export const UserManagement = () => {
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 p-0">
-                        <MoreHorizontal className="h-4 w-4" />
+                      <Button 
+                        variant="ghost" 
+                        className="h-8 w-8 p-0"
+                        disabled={updatingUserId === user.id}
+                      >
+                        {updatingUserId === user.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <MoreHorizontal className="h-4 w-4" />
+                        )}
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem
                         onClick={() => handleStatusUpdate(user.id, 'active')}
-                        disabled={isUpdating}
+                        disabled={updatingUserId === user.id}
                       >
                         <UserCheck className="mr-2 h-4 w-4" />
                         {t('activate')}
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => handleStatusUpdate(user.id, 'suspended')}
-                        disabled={isUpdating}
+                        disabled={updatingUserId === user.id}
                         className="text-red-600"
                       >
                         <UserX className="mr-2 h-4 w-4" />
