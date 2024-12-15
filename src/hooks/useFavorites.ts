@@ -5,7 +5,8 @@ import { User } from "@supabase/supabase-js";
 interface FavoriteProfile {
   id: string;
   profile_id: number;
-  profiles: {
+  user_id: string;
+  profile: {
     id: number;
     full_name: string;
     avatar_url: string | null;
@@ -24,7 +25,8 @@ export const useFavorites = (user: User | null) => {
         .select(`
           id,
           profile_id,
-          profiles:profile_id (
+          user_id,
+          profile:profiles(
             id,
             full_name,
             avatar_url,
@@ -36,7 +38,7 @@ export const useFavorites = (user: User | null) => {
 
       if (error) {
         console.error('Error fetching favorites:', error);
-        throw new Error(error.message);
+        throw error;
       }
       
       return data || [];
