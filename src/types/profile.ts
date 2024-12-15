@@ -24,6 +24,16 @@ export interface Profile {
   rating?: number;
   reviews_count?: number;
   age?: number;
+  gender?: string;
+  hair_color?: string;
+  hair_length?: string;
+  hair_type?: string;
+  eye_color?: string;
+  skin_tone?: string;
+  body_type?: string;
+  bust_size?: string;
+  dress_size?: string;
+  grooming?: string;
   measurements?: {
     height?: string;
     weight?: string;
