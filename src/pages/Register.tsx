@@ -62,20 +62,19 @@ const Register = () => {
                   fontSize: '1rem',
                   padding: '0.75rem 1rem',
                   transition: 'all 0.2s',
-                  ':hover': {
-                    background: '#7E69AB',
-                  }
                 },
                 anchor: {
                   color: '#9b87f5',
                   textDecoration: 'none',
-                  ':hover': {
-                    color: '#7E69AB',
-                  }
                 },
                 container: {
                   gap: '1rem',
                 },
+              },
+              // Add CSS classes for hover states
+              className: {
+                button: 'hover:bg-[#7E69AB]',
+                anchor: 'hover:text-[#7E69AB]',
               },
             }}
             providers={["google"]}
