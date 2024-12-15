@@ -54,5 +54,26 @@ export const deTranslations: Translations = {
   
   errorNavigating: "Fehler bei der Navigation",
   errorLoadingFavorites: "Fehler beim Laden der Favoriten",
-  noFavorites: "Keine Favoriten vorhanden"
+  noFavorites: "Keine Favoriten vorhanden",
+
+  // Additional required translations from the Profile type
+  fullName: "Vollständiger Name",
+  bio: "Biografie",
+  location: "Standort",
+  interests: "Interessen",
+  occupation: "Beruf",
+  height: "Größe",
+  weight: "Gewicht",
+  availabilityStatus: "Verfügbarkeitsstatus",
+  gallery: "Galerie",
+  serviceCategories: "Dienstkategorien",
+  availability: "Verfügbarkeit",
+  priceRange: "Preisbereich",
+  phoneNumber: "Telefonnummer",
+  search: "Suche",
+  searchProfiles: "Profile durchsuchen",
+  enterLocation: "Standort eingeben",
+  logout: "Abmelden",
+  logoutSuccess: "Erfolgreich abgemeldet",
+  logoutError: "Fehler beim Abmelden"
 };

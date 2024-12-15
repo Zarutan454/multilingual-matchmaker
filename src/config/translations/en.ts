@@ -52,5 +52,26 @@ export const enTranslations: Translations = {
   
   errorNavigating: "Error navigating",
   errorLoadingFavorites: "Error loading favorites",
-  noFavorites: "No favorites yet"
+  noFavorites: "No favorites yet",
+
+  // Additional required translations from the Profile type
+  fullName: "Full Name",
+  bio: "Biography",
+  location: "Location",
+  interests: "Interests",
+  occupation: "Occupation",
+  height: "Height",
+  weight: "Weight",
+  availabilityStatus: "Availability Status",
+  gallery: "Gallery",
+  serviceCategories: "Service Categories",
+  availability: "Availability",
+  priceRange: "Price Range",
+  phoneNumber: "Phone Number",
+  search: "Search",
+  searchProfiles: "Search Profiles",
+  enterLocation: "Enter Location",
+  logout: "Logout",
+  logoutSuccess: "Successfully logged out",
+  logoutError: "Error logging out"
 };

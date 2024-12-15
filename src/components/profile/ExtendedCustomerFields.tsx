@@ -77,12 +77,12 @@ export const ExtendedCustomerFields = ({ form }: ExtendedCustomerFieldsProps) =>
 
       <FormField
         control={form.control}
-        name="languages"
+        name="spokenLanguages"
         render={({ field }) => (
           <FormItem>
             <FormLabel>{t("languages")}</FormLabel>
             <Select
-              onValueChange={(value) => field.onChange([...field.value || [], value])}
+              onValueChange={(value) => field.onChange([...(field.value || []), value])}
               value={field.value?.[0] || ""}
             >
               <FormControl>

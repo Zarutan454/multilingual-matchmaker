@@ -16,7 +16,7 @@ const featuredProfiles: Profile[] = [
     status: "online",
     rating: 4.9,
     reviews: 124,
-    languages: ["Deutsch", "Englisch"],
+    spokenLanguages: ["Deutsch", "Englisch"],
     age: 25
   },
   {
@@ -29,7 +29,7 @@ const featuredProfiles: Profile[] = [
     status: "offline",
     rating: 4.8,
     reviews: 89,
-    languages: ["Deutsch", "Französisch"],
+    spokenLanguages: ["Deutsch", "Französisch"],
     age: 23
   },
   {
@@ -42,7 +42,7 @@ const featuredProfiles: Profile[] = [
     status: "online",
     rating: 4.7,
     reviews: 156,
-    languages: ["Deutsch", "Italienisch"],
+    spokenLanguages: ["Deutsch", "Italienisch"],
     age: 27
   },
   {
@@ -55,7 +55,7 @@ const featuredProfiles: Profile[] = [
     status: "offline",
     rating: 4.9,
     reviews: 201,
-    languages: ["Deutsch", "Spanisch"],
+    spokenLanguages: ["Deutsch", "Spanisch"],
     age: 24
   },
   {
@@ -68,7 +68,7 @@ const featuredProfiles: Profile[] = [
     status: "online",
     rating: 4.8,
     reviews: 167,
-    languages: ["Deutsch", "Russisch"],
+    spokenLanguages: ["Deutsch", "Russisch"],
     age: 26
   }
 ];
