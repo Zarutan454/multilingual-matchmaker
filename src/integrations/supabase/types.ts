@@ -56,58 +56,79 @@ export type Database = {
       }
       profiles: {
         Row: {
+          age: number | null
           availability: string[] | null
           availability_status: string | null
           avatar_url: string | null
           bio: string | null
+          contact_info: Json | null
           created_at: string
           full_name: string | null
           gallery: string[] | null
           height: string | null
           id: string
           interests: string | null
+          languages: string[] | null
           location: string | null
+          measurements: Json | null
           occupation: string | null
           price_range: Json | null
+          rates: Json | null
           service_categories: string[] | null
+          services_offered: string[] | null
           updated_at: string
           weight: string | null
+          working_hours: Json | null
         }
         Insert: {
+          age?: number | null
           availability?: string[] | null
           availability_status?: string | null
           avatar_url?: string | null
           bio?: string | null
+          contact_info?: Json | null
           created_at?: string
           full_name?: string | null
           gallery?: string[] | null
           height?: string | null
           id: string
           interests?: string | null
+          languages?: string[] | null
           location?: string | null
+          measurements?: Json | null
           occupation?: string | null
           price_range?: Json | null
+          rates?: Json | null
           service_categories?: string[] | null
+          services_offered?: string[] | null
           updated_at?: string
           weight?: string | null
+          working_hours?: Json | null
         }
         Update: {
+          age?: number | null
           availability?: string[] | null
           availability_status?: string | null
           avatar_url?: string | null
           bio?: string | null
+          contact_info?: Json | null
           created_at?: string
           full_name?: string | null
           gallery?: string[] | null
           height?: string | null
           id?: string
           interests?: string | null
+          languages?: string[] | null
           location?: string | null
+          measurements?: Json | null
           occupation?: string | null
           price_range?: Json | null
+          rates?: Json | null
           service_categories?: string[] | null
+          services_offered?: string[] | null
           updated_at?: string
           weight?: string | null
+          working_hours?: Json | null
         }
         Relationships: []
       }
