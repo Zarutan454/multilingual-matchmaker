@@ -1,40 +1,45 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { User } from "@supabase/supabase-js";
-import { FavoriteData, Profile } from "@/types/favorites";
+import { useAuth } from "@/contexts/AuthContext";
+import { Profile } from "@/types/profile";
 
-interface FavoriteResponse {
+interface FavoriteProfile {
   id: string;
-  profile_id: string;
-  profile: Profile;
+  profile: {
+    id: string;
+    full_name: string;
+    avatar_url: string;
+    location: string;
+  };
 }
 
-export const useFavorites = (user: User | null) => {
+export const useFavorites = () => {
+  const { user } = useAuth();
+
   return useQuery({
-    queryKey: ['favorites', user?.id],
-    queryFn: async (): Promise<FavoriteData[]> => {
+    queryKey: ["favorites", user?.id],
+    queryFn: async () => {
       if (!user) return [];
 
       const { data: favorites, error } = await supabase
-        .from('favorites')
+        .from("favorites")
         .select(`
           id,
-          profile_id,
-          profile:profiles (
+          profile:profile_id (
             id,
             full_name,
             avatar_url,
             location
           )
         `)
-        .eq('user_id', user.id);
+        .eq("user_id", user.id);
 
       if (error) {
-        console.error('Error fetching favorites:', error);
-        return [];
+        console.error("Error fetching favorites:", error);
+        throw error;
       }
 
-      return favorites.map(favorite => ({
+      return favorites.map((favorite: FavoriteProfile) => ({
         id: favorite.id,
         profile: {
           id: favorite.profile.id,
