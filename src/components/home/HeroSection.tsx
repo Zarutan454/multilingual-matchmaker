@@ -10,7 +10,7 @@ export const HeroSection = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen pt-20">
       {/* Dunkler Hintergrund */}
       <div className="absolute inset-0 w-full h-full bg-[#1A1F2C]"></div>
 
@@ -22,7 +22,7 @@ export const HeroSection = () => {
           <img 
             src="/lovable-uploads/d6eff054-978b-4d36-bf3d-8aa1cb81d205.png"
             alt="Male escort"
-            className="absolute inset-0 w-full h-full object-cover object-center opacity-90 transition-opacity duration-300 hover:opacity-100"
+            className="absolute inset-0 w-full h-full object-cover object-top opacity-90 transition-opacity duration-300 hover:opacity-100"
           />
           <div className="absolute inset-0 bg-gradient-dark"></div>
         </div>
