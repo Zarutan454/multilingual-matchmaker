@@ -60,6 +60,7 @@ export type Database = {
           availability: string[] | null
           availability_status: string | null
           avatar_url: string | null
+          banner_url: string | null
           bio: string | null
           body_type: string | null
           bust_size: string | null
@@ -96,6 +97,7 @@ export type Database = {
           availability?: string[] | null
           availability_status?: string | null
           avatar_url?: string | null
+          banner_url?: string | null
           bio?: string | null
           body_type?: string | null
           bust_size?: string | null
@@ -132,6 +134,7 @@ export type Database = {
           availability?: string[] | null
           availability_status?: string | null
           avatar_url?: string | null
+          banner_url?: string | null
           bio?: string | null
           body_type?: string | null
           bust_size?: string | null
