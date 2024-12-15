@@ -203,7 +203,7 @@ export default function Dashboard() {
           </div>
 
           <div className="space-y-8">
-            <FavoritesCard user={user} />
+            <FavoritesCard />
             <RecentChatsCard user={user} />
           </div>
         </div>
