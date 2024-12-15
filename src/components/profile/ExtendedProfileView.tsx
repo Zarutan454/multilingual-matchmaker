@@ -41,7 +41,7 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* Linke Spalte - Hauptinformationen */}
+        {/* Left Column - Main Information */}
         <div className="md:col-span-2 space-y-6">
           <Card className="bg-black/50 backdrop-blur-sm border-neutral-800">
             <CardHeader>
@@ -55,8 +55,8 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
                 </div>
                 <div className="flex-1">
                   <h1 className="text-2xl font-bold text-white">{profile.full_name}</h1>
-                  {profile.nickname && (
-                    <p className="text-gray-400">@{profile.nickname}</p>
+                  {profile.age && (
+                    <p className="text-gray-400">{profile.age} {t("years")}</p>
                   )}
                   <div className="flex flex-wrap gap-2 mt-3">
                     {profile.availability_status && (
@@ -77,13 +77,6 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
                         {profile.languages.join(", ")}
                       </Badge>
                     )}
-                    {profile.phone_verified && (
-                      <Badge variant="outline" className="bg-green-500/20 text-green-300">
-                        <Phone className="w-3 h-3 mr-1" />
-                        {t("verified")}
-                        <Check className="w-3 h-3 ml-1" />
-                      </Badge>
-                    )}
                   </div>
                 </div>
                 {profile.rating && (
@@ -100,7 +93,80 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-300 whitespace-pre-line">{profile.bio}</p>
+              <div className="space-y-6">
+                {profile.bio && (
+                  <p className="text-gray-300 whitespace-pre-line">{profile.bio}</p>
+                )}
+
+                {/* Physical Characteristics */}
+                <div className="grid grid-cols-2 gap-4 border-t border-gray-800 pt-4">
+                  {profile.gender && (
+                    <div>
+                      <span className="text-gray-400">{t("gender")}: </span>
+                      <span className="text-white">{profile.gender}</span>
+                    </div>
+                  )}
+                  {profile.height && (
+                    <div>
+                      <span className="text-gray-400">{t("height")}: </span>
+                      <span className="text-white">{profile.height}</span>
+                    </div>
+                  )}
+                  {profile.body_type && (
+                    <div>
+                      <span className="text-gray-400">{t("bodyType")}: </span>
+                      <span className="text-white">{profile.body_type}</span>
+                    </div>
+                  )}
+                  {profile.bust_size && (
+                    <div>
+                      <span className="text-gray-400">{t("bustSize")}: </span>
+                      <span className="text-white">{profile.bust_size}</span>
+                    </div>
+                  )}
+                  {profile.dress_size && (
+                    <div>
+                      <span className="text-gray-400">{t("dressSize")}: </span>
+                      <span className="text-white">{profile.dress_size}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Appearance */}
+                <div className="space-y-4 border-t border-gray-800 pt-4">
+                  <h3 className="text-lg font-semibold text-white">{t("appearance")}</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    {(profile.hair_color || profile.hair_length || profile.hair_type) && (
+                      <div>
+                        <span className="text-gray-400">{t("hair")}: </span>
+                        <span className="text-white">
+                          {[profile.hair_color, profile.hair_length, profile.hair_type]
+                            .filter(Boolean)
+                            .join(", ")}
+                        </span>
+                      </div>
+                    )}
+                    {profile.eye_color && (
+                      <div>
+                        <span className="text-gray-400">{t("eyeColor")}: </span>
+                        <span className="text-white">{profile.eye_color}</span>
+                      </div>
+                    )}
+                    {profile.skin_tone && (
+                      <div>
+                        <span className="text-gray-400">{t("skinTone")}: </span>
+                        <span className="text-white">{profile.skin_tone}</span>
+                      </div>
+                    )}
+                    {profile.grooming && (
+                      <div>
+                        <span className="text-gray-400">{t("grooming")}: </span>
+                        <span className="text-white">{profile.grooming}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
 
@@ -114,16 +180,16 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
             </CardContent>
           </Card>
 
-          {/* Verfügbarkeit */}
+          {/* Availability */}
           <AvailabilitySchedule />
         </div>
 
-        {/* Rechte Spalte - Zusätzliche Informationen */}
+        {/* Right Column - Additional Information */}
         <div className="space-y-6">
-          {/* Preise */}
+          {/* Pricing */}
           <PricingSection />
 
-          {/* Galerie */}
+          {/* Gallery */}
           <Card className="bg-black/50 backdrop-blur-sm border-neutral-800">
             <CardHeader>
               <CardTitle className="text-white">{t("gallery")}</CardTitle>
@@ -133,34 +199,22 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
             </CardContent>
           </Card>
 
-          {/* Zusätzliche Informationen */}
+          {/* Additional Information */}
           <Card className="bg-black/50 backdrop-blur-sm border-neutral-800">
             <CardHeader>
               <CardTitle className="text-white">{t("additionalInfo")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {profile.height && (
-                <div>
-                  <span className="text-gray-400">{t("height")}:</span>
-                  <span className="text-white ml-2">{profile.height}</span>
-                </div>
-              )}
-              {profile.weight && (
-                <div>
-                  <span className="text-gray-400">{t("weight")}:</span>
-                  <span className="text-white ml-2">{profile.weight}</span>
-                </div>
-              )}
               {profile.interests && (
                 <div>
-                  <span className="text-gray-400">{t("interests")}:</span>
-                  <span className="text-white ml-2">{profile.interests}</span>
+                  <span className="text-gray-400">{t("interests")}: </span>
+                  <span className="text-white">{profile.interests}</span>
                 </div>
               )}
               {profile.occupation && (
                 <div>
-                  <span className="text-gray-400">{t("occupation")}:</span>
-                  <span className="text-white ml-2">{profile.occupation}</span>
+                  <span className="text-gray-400">{t("occupation")}: </span>
+                  <span className="text-white">{profile.occupation}</span>
                 </div>
               )}
             </CardContent>
