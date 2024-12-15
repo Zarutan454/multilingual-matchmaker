@@ -14,7 +14,15 @@ interface ProfileEditFormProps {
 
 export const ProfileEditForm = ({ profile, onProfileUpdate }: ProfileEditFormProps) => {
   const { t } = useLanguage();
-  const [editedProfile, setEditedProfile] = useState(profile || {});
+  const [editedProfile, setEditedProfile] = useState<Partial<Profile>>(profile || {
+    full_name: '',
+    bio: '',
+    location: '',
+    interests: '',
+    occupation: '',
+    height: '',
+    weight: ''
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,7 +47,7 @@ export const ProfileEditForm = ({ profile, onProfileUpdate }: ProfileEditFormPro
 
       if (error) throw error;
       
-      onProfileUpdate(data);
+      onProfileUpdate(data as Profile);
       toast.success(t("profileUpdated"));
     } catch (error) {
       console.error('Error updating profile:', error);

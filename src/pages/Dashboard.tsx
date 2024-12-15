@@ -84,6 +84,7 @@ export default function Dashboard() {
       if (error) throw error;
 
       setProfile(prev => prev ? { ...prev, gallery: newGallery } : null);
+      toast.success(t("imageAddedToGallery"));
     } catch (error) {
       console.error('Error updating gallery:', error);
       toast.error(t("errorUpdatingGallery"));
@@ -119,17 +120,19 @@ export default function Dashboard() {
 
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="w-full md:w-1/3">
-                  <div className="relative">
+                  <div className="relative group">
                     <img 
                       src={profile?.avatar_url || "/placeholder.svg"} 
                       alt={profile?.full_name || ""}
                       className="w-full aspect-square object-cover rounded-lg"
                     />
-                    <ImageUploadSection
-                      userId={user?.id || ""}
-                      onImageUploaded={handleAvatarUpdate}
-                      type="avatar"
-                    />
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/50 rounded-lg">
+                      <ImageUploadSection
+                        userId={user?.id || ""}
+                        onImageUploaded={handleAvatarUpdate}
+                        type="avatar"
+                      />
+                    </div>
                   </div>
                 </div>
 
