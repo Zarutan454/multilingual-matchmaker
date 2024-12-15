@@ -7,37 +7,51 @@ import { ProviderRatings } from "../components/provider/ProviderRatings";
 import { Button } from "@/components/ui/button";
 import { Calendar, Mail, Phone } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
+import { Loader2 } from "lucide-react";
 
 export default function ProviderProfile() {
   const { id } = useParams();
   const { t } = useLanguage();
-  
-  const mockProvider = {
-    id: id,
-    full_name: "Sophia Müller",
-    occupation: "VIP Begleitservice",
-    location: "München, Deutschland",
-    bio: "Elegante und stilvolle Begleitung für gehobene Anlässe. Ich biete diskrete Begleitung mit Niveau und Charme.",
-    availability_status: "available",
-    services: [
-      "Dinner Dates",
-      "Kulturelle Veranstaltungen",
-      "Geschäftsreisen",
-      "Private Treffen",
-      "Wellness & Spa"
-    ],
-    stats: {
-      age: "28",
-      height: "173cm",
-      languages: ["Deutsch", "Englisch", "Französisch"],
-      location: "München"
-    }
-  };
+
+  const { data: provider, isLoading } = useQuery({
+    queryKey: ['provider', id],
+    queryFn: async () => {
+      if (!id) throw new Error('No ID provided');
+      
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!id
+  });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-neutral-100 flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!provider) {
+    return (
+      <div className="min-h-screen bg-neutral-100 flex items-center justify-center">
+        <p className="text-lg text-gray-600">{t("profileNotFound")}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-neutral-100">
       <div className="container mx-auto py-8 px-4 space-y-8">
-        <ProviderInfo provider={mockProvider} />
+        <ProviderInfo provider={provider} />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
@@ -46,7 +60,7 @@ export default function ProviderProfile() {
           </div>
 
           <div className="space-y-8">
-            <ProviderServices services={mockProvider.services} providerId={id!} />
+            <ProviderServices services={provider.services || []} providerId={id!} />
             <ProviderAvailability providerId={id!} />
             
             <div className="bg-white rounded-lg shadow-md p-6 space-y-4">
