@@ -6,42 +6,48 @@ interface FavoriteProfile {
   id: string;
   profile_id: number;
   user_id: string;
-  profiles: {
-    id: number;
-    full_name: string;
-    avatar_url: string | null;
-    location: string;
-  };
+  created_at: string;
 }
 
 export const useFavorites = (user: User | null) => {
-  return useQuery<FavoriteProfile[], Error>({
+  return useQuery({
     queryKey: ['favorites', user?.id],
     queryFn: async () => {
       if (!user) return [];
 
-      const { data, error } = await supabase
+      // First get the favorites
+      const { data: favorites, error: favoritesError } = await supabase
         .from('favorites')
-        .select(`
-          id,
-          profile_id,
-          user_id,
-          profiles!profile_id(
-            id,
-            full_name,
-            avatar_url,
-            location
-          )
-        `)
-        .eq('user_id', user.id)
-        .returns<FavoriteProfile[]>();
+        .select('*')
+        .eq('user_id', user.id);
 
-      if (error) {
-        console.error('Error fetching favorites:', error);
-        throw error;
+      if (favoritesError) {
+        console.error('Error fetching favorites:', favoritesError);
+        throw favoritesError;
       }
-      
-      return data || [];
+
+      // If we have favorites, fetch the corresponding profiles
+      if (favorites && favorites.length > 0) {
+        const profileIds = favorites.map(fav => fav.profile_id);
+        
+        const { data: profiles, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, full_name, avatar_url, location')
+          .in('id', profileIds);
+
+        if (profilesError) {
+          console.error('Error fetching profiles:', profilesError);
+          throw profilesError;
+        }
+
+        // Combine the data
+        return favorites.map(favorite => ({
+          ...favorite,
+          profiles: profiles?.find(profile => profile.id === favorite.profile_id) || null
+        }));
+      }
+
+      return [];
     },
     enabled: !!user,
     staleTime: 1000 * 60 * 5, // 5 minutes
