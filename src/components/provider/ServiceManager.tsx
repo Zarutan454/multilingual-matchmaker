@@ -40,13 +40,22 @@ export const ServiceManager = () => {
     categories: string[];
   }) => {
     if (!user) {
+      console.error('No user found');
       toast.error(t("pleaseLogin"));
+      return;
+    }
+
+    if (!newService.name || !newService.description) {
+      console.error('Missing required fields');
+      toast.error(t("fillAllFields"));
       return;
     }
 
     setIsSubmitting(true);
     try {
-      const { data, error } = await supabase
+      console.log('Adding service:', newService);
+      
+      const { data: serviceData, error: serviceError } = await supabase
         .from('services')
         .insert([
           {
@@ -56,9 +65,16 @@ export const ServiceManager = () => {
             duration: newService.duration,
             categories: newService.categories
           }
-        ]);
+        ])
+        .select()
+        .single();
 
-      if (error) throw error;
+      if (serviceError) {
+        console.error('Error adding service:', serviceError);
+        throw serviceError;
+      }
+
+      console.log('Service added successfully:', serviceData);
 
       // Update the provider's profile with the service categories
       const { error: profileError } = await supabase
@@ -68,12 +84,15 @@ export const ServiceManager = () => {
         })
         .eq('id', user.id);
 
-      if (profileError) throw profileError;
+      if (profileError) {
+        console.error('Error updating profile:', profileError);
+        throw profileError;
+      }
 
       toast.success(t("serviceAdded"));
       queryClient.invalidateQueries({ queryKey: ['services', user.id] });
     } catch (error) {
-      console.error('Error adding service:', error);
+      console.error('Error in handleAddService:', error);
       toast.error(t("errorAddingService"));
     } finally {
       setIsSubmitting(false);
@@ -81,21 +100,29 @@ export const ServiceManager = () => {
   };
 
   const handleDeleteService = async (id: string) => {
-    if (!user) return;
+    if (!user) {
+      console.error('No user found');
+      return;
+    }
 
     try {
+      console.log('Deleting service:', id);
+      
       const { error } = await supabase
         .from('services')
         .delete()
         .eq('id', id)
         .eq('provider_id', user.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error deleting service:', error);
+        throw error;
+      }
 
       toast.success(t("serviceDeleted"));
       queryClient.invalidateQueries({ queryKey: ['services', user.id] });
     } catch (error) {
-      console.error('Error deleting service:', error);
+      console.error('Error in handleDeleteService:', error);
       toast.error(t("errorDeletingService"));
     }
   };
