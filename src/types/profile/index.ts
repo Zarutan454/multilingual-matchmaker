@@ -28,6 +28,8 @@ export interface Profile extends BasicInfo, Appearance, Measurements {
   services_offered?: string[];
   working_hours?: Record<string, string[]>;
   rates?: Record<string, number>;
+  membership_level?: 'bronze' | 'silver' | 'gold' | 'vip';
+  likes_count?: number;
 }
 
 export interface Service {
