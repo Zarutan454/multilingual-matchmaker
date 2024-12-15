@@ -13,6 +13,9 @@ import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard";
 import ProviderProfile from "./pages/ProviderProfile";
 import Admin from "./pages/Admin";
+import Terms from "./pages/legal/Terms";
+import Privacy from "./pages/legal/Privacy";
+import Imprint from "./pages/legal/Imprint";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +36,9 @@ const App = () => (
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/provider/:id" element={<ProviderProfile />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/imprint" element={<Imprint />} />
             </Routes>
           </BrowserRouter>
         </TooltipProvider>
