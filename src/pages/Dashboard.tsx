@@ -13,6 +13,7 @@ import { Card } from "@/components/ui/card";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { ProfileSection } from "@/components/dashboard/ProfileSection";
 import { ImageUploadSection } from "@/components/dashboard/ImageUploadSection";
+import { ProfileBanner } from "@/components/profile/sections/ProfileBanner";
 
 export default function Dashboard() {
   const { t } = useLanguage();
@@ -70,6 +71,23 @@ export default function Dashboard() {
     }
   };
 
+  const handleBannerUpdate = async (url: string) => {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ banner_url: url })
+        .eq('id', user?.id);
+
+      if (error) throw error;
+
+      setProfile(prev => prev ? { ...prev, banner_url: url } : null);
+      toast.success(t("bannerUpdated"));
+    } catch (error) {
+      console.error('Error updating banner:', error);
+      toast.error(t("errorUpdatingBanner"));
+    }
+  };
+
   const handleGalleryUpdate = async (url: string) => {
     try {
       const newGallery = [...(profile?.gallery || []), url];
@@ -99,6 +117,11 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black to-gray-900 text-white">
+      <ProfileBanner 
+        profileId={user?.id || ""} 
+        bannerUrl={profile?.banner_url} 
+        isEditable={true} 
+      />
       <div className="container mx-auto px-4 py-8">
         <DashboardHeader />
         
