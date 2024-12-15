@@ -33,7 +33,7 @@ export const ServiceCategorySelector = ({
   };
 
   return (
-    <Card className="p-4 bg-gray-900 border-gray-800">
+    <Card className="p-4 bg-black/30 border-[#9b87f5]/30 shadow-[0_0_15px_rgba(155,135,245,0.3)]">
       <h3 className="text-lg font-semibold mb-4 text-white">{t("serviceCategories")}</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {SERVICE_CATEGORIES.map((category) => (
@@ -44,10 +44,11 @@ export const ServiceCategorySelector = ({
               onCheckedChange={(checked) => 
                 handleCategoryChange(category.id, checked as boolean)
               }
+              className="border-[#9b87f5]/50 data-[state=checked]:bg-[#9b87f5] data-[state=checked]:border-[#9b87f5]"
             />
             <Label
               htmlFor={category.id}
-              className="text-sm text-gray-300 cursor-pointer"
+              className="text-sm text-gray-300 cursor-pointer hover:text-white transition-colors"
             >
               {category.label}
             </Label>
