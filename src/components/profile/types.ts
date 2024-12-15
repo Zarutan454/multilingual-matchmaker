@@ -39,6 +39,16 @@ export interface ProfileFormValues {
     max: number;
   };
   availabilityStatus: 'online' | 'offline' | 'busy';
+  gender?: 'male' | 'female' | 'other';
+  dateOfBirth?: string;
+  nationality?: string;
+  spokenLanguages?: string[];
+  preferredCommunication?: 'email' | 'phone' | 'both';
+  emergencyContact?: {
+    name: string;
+    phoneNumber: string;
+    relationship: string;
+  };
 }
 
 export interface Service {

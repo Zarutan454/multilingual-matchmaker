@@ -54,7 +54,7 @@ export const ExtendedCustomerFields = ({ form }: ExtendedCustomerFieldsProps) =>
           <FormItem>
             <FormLabel>{t("dateOfBirth")}</FormLabel>
             <FormControl>
-              <Input type="date" {...field} />
+              <Input type="date" {...field} value={field.value || ''} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -68,7 +68,7 @@ export const ExtendedCustomerFields = ({ form }: ExtendedCustomerFieldsProps) =>
           <FormItem>
             <FormLabel>{t("nationality")}</FormLabel>
             <FormControl>
-              <Input {...field} />
+              <Input {...field} value={field.value || ''} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -82,7 +82,10 @@ export const ExtendedCustomerFields = ({ form }: ExtendedCustomerFieldsProps) =>
           <FormItem>
             <FormLabel>{t("languages")}</FormLabel>
             <Select
-              onValueChange={(value) => field.onChange([...(field.value || []), value])}
+              onValueChange={(value) => {
+                const currentValues = field.value || [];
+                field.onChange([...currentValues, value]);
+              }}
               value={field.value?.[0] || ""}
             >
               <FormControl>
@@ -136,7 +139,7 @@ export const ExtendedCustomerFields = ({ form }: ExtendedCustomerFieldsProps) =>
             <FormItem>
               <FormLabel>{t("emergencyContactName")}</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} value={field.value || ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -150,7 +153,7 @@ export const ExtendedCustomerFields = ({ form }: ExtendedCustomerFieldsProps) =>
             <FormItem>
               <FormLabel>{t("emergencyContactPhone")}</FormLabel>
               <FormControl>
-                <Input type="tel" {...field} />
+                <Input type="tel" {...field} value={field.value || ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -164,7 +167,7 @@ export const ExtendedCustomerFields = ({ form }: ExtendedCustomerFieldsProps) =>
             <FormItem>
               <FormLabel>{t("emergencyContactRelationship")}</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} value={field.value || ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
