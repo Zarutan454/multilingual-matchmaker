@@ -6,7 +6,6 @@ import { toast } from "sonner";
 import { useAuth } from "../../contexts/AuthContext";
 import { supabase } from "../../lib/supabase";
 import { RegisterFormFields } from "./RegisterFormFields";
-import { RegisterFormKYC } from "./RegisterFormKYC";
 
 export const RegisterForm = () => {
   const { t } = useLanguage();
@@ -83,7 +82,6 @@ export const RegisterForm = () => {
         return;
       }
 
-      // Warten Sie einen Moment, bevor Sie die Benutzerdaten aktualisieren
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       console.log("Updating user metadata...");
@@ -92,8 +90,7 @@ export const RegisterForm = () => {
           user_type: userType,
           phone: formData.phoneNumber,
           age: formData.age,
-          country: formData.country,
-          kyc_status: userType === "provider" ? "pending" : "not_required"
+          country: formData.country
         }
       });
 
@@ -123,8 +120,6 @@ export const RegisterForm = () => {
         formData={formData}
         setFormData={setFormData}
       />
-      
-      {userType === "provider" && <RegisterFormKYC />}
 
       <Button 
         type="submit" 
