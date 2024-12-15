@@ -22,8 +22,10 @@ export const AgeVerification = ({ onVerified }: AgeVerificationProps) => {
 
   if (!isVerifying) {
     return (
-      <div className="fixed inset-0 bg-gradient-dark flex items-center justify-center p-4">
-        <div className="bg-black/80 backdrop-blur-md rounded-lg p-8 max-w-md w-full text-center animate-fade-in border border-neutral-700">
+      <div className="fixed inset-0 flex items-center justify-center p-4 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#F97316] opacity-20 animate-gradient-xy"></div>
+        <div className="absolute inset-0 backdrop-blur-sm"></div>
+        <div className="bg-black/80 backdrop-blur-md rounded-lg p-8 max-w-md w-full text-center animate-fade-in border border-neutral-700 relative z-10">
           <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-red-500 mb-4">{t("accessDenied")}</h2>
           <p className="text-neutral-300 mb-4">{t("mustBe18")}</p>
@@ -36,8 +38,10 @@ export const AgeVerification = ({ onVerified }: AgeVerificationProps) => {
   }
 
   return (
-    <div className="fixed inset-0 bg-gradient-dark flex items-center justify-center p-4">
-      <div className="bg-black/80 backdrop-blur-md rounded-lg p-8 max-w-md w-full text-center animate-fade-in border border-neutral-700">
+    <div className="fixed inset-0 flex items-center justify-center p-4 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#F97316] opacity-20 animate-gradient-xy"></div>
+      <div className="absolute inset-0 backdrop-blur-sm"></div>
+      <div className="bg-black/80 backdrop-blur-md rounded-lg p-8 max-w-md w-full text-center animate-fade-in border border-neutral-700 relative z-10">
         <Shield className="w-12 h-12 text-secondary mx-auto mb-4" />
         <h2 className="text-2xl font-bold text-white mb-4">{t("ageVerification")}</h2>
         <p className="mb-6 text-lg text-neutral-300">{t("ageQuestion")}</p>
