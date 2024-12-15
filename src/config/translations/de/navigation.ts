@@ -16,5 +16,6 @@ export const navigationTranslations = {
   favorites: "Favoriten",
   yourFavorites: "Deine Favoriten",
   errorLoadingFavorites: "Fehler beim Laden der Favoriten",
-  noFavorites: "Keine Favoriten vorhanden"
+  noFavorites: "Keine Favoriten vorhanden",
+  noFavoritesSelected: "Noch keine Favoriten ausgewählt"
 };
