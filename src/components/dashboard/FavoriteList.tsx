@@ -1,11 +1,5 @@
 import { FavoriteCard } from "./FavoriteCard";
-
-interface Profile {
-  id: string;
-  full_name: string | null;
-  avatar_url: string | null;
-  location: string | null;
-}
+import { Profile } from "@/types/favorites";
 
 interface FavoriteData {
   id: string;

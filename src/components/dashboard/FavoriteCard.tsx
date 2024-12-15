@@ -10,6 +10,10 @@ interface FavoriteCardProps {
 }
 
 export const FavoriteCard = ({ favorite, onProfileClick }: FavoriteCardProps) => {
+  if (!favorite?.profile) {
+    return null; // Or some fallback UI
+  }
+
   return (
     <div 
       className="flex items-center gap-4 p-4 rounded-lg bg-black/50 backdrop-blur-sm border border-neutral-800 cursor-pointer hover:bg-black/70 transition-colors"

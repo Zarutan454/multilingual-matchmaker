@@ -1,19 +1,24 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
-import { Profile } from "@/types/profile";
+import { Profile } from "@/types/favorites";
+
+interface FavoriteData {
+  id: string;
+  profile: Profile;
+}
 
 export const useFavorites = (user: User | null) => {
   return useQuery({
     queryKey: ['favorites', user?.id],
-    queryFn: async () => {
+    queryFn: async (): Promise<FavoriteData[]> => {
       if (!user) return [];
       
       const { data: favorites, error } = await supabase
         .from('favorites')
         .select(`
-          profile_id,
-          profiles:profile_id (
+          id,
+          profile:profiles!favorites_profile_id_fkey (
             id,
             full_name,
             avatar_url,
@@ -27,8 +32,10 @@ export const useFavorites = (user: User | null) => {
         return [];
       }
 
-      // Transform the data to match the Profile type
-      return favorites.map(favorite => favorite.profiles) as Profile[];
+      return favorites.map(favorite => ({
+        id: favorite.id,
+        profile: favorite.profile as Profile
+      }));
     },
     enabled: !!user
   });
