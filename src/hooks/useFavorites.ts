@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
-import { Profile } from "@/types/favorites";
+import { Profile } from "@/types/profile";
 
 interface FavoriteProfile {
   id: string;
-  profile: Profile;
+  profile_id: string;
+  profile: Partial<Profile>;
 }
 
 export const useFavorites = (user: User | null) => {
@@ -18,7 +19,8 @@ export const useFavorites = (user: User | null) => {
         .from('favorites')
         .select(`
           id,
-          profile:profiles!favorites_profile_id_fkey (
+          profile_id,
+          profile:profiles (
             id,
             full_name,
             avatar_url,
@@ -34,7 +36,8 @@ export const useFavorites = (user: User | null) => {
 
       return favorites.map(favorite => ({
         id: favorite.id,
-        profile: favorite.profile as Profile
+        profile_id: favorite.profile_id,
+        profile: favorite.profile || {}
       }));
     },
     enabled: !!user

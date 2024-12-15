@@ -31,8 +31,8 @@ export const useRecentChats = (user: User | null) => {
           recipient,
           created_at,
           read,
-          sender_profile:profiles!sender(full_name, avatar_url),
-          recipient_profile:profiles!recipient(full_name, avatar_url)
+          sender_profile:profiles(full_name, avatar_url),
+          recipient_profile:profiles(full_name, avatar_url)
         `)
         .or(`sender.eq.${user.id},recipient.eq.${user.id}`)
         .order('created_at', { ascending: false });
@@ -61,11 +61,11 @@ export const useRecentChats = (user: User | null) => {
         recipient: message.recipient,
         content: message.content,
         created_at: message.created_at,
-        sender_name: message.sender_profile?.full_name,
-        recipient_name: message.recipient_profile?.full_name,
+        sender_name: message.sender_profile?.[0]?.full_name,
+        recipient_name: message.recipient_profile?.[0]?.full_name,
         avatar_url: message.sender === user.id 
-          ? message.recipient_profile?.avatar_url 
-          : message.sender_profile?.avatar_url,
+          ? message.recipient_profile?.[0]?.avatar_url 
+          : message.sender_profile?.[0]?.avatar_url,
         unread: !message.read && message.recipient === user.id,
         unread_count: unreadCount || 0
       })) || [];
