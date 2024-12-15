@@ -8,7 +8,7 @@ import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import { de } from "date-fns/locale";
-import { MessageCircle, Star } from "lucide-react";
+import { MessageCircle, Star, MapPin, Users } from "lucide-react";
 
 interface ProfileCardProps {
   profile: Profile;
