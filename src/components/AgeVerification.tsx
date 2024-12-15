@@ -47,8 +47,8 @@ export const AgeVerification = ({ onVerified }: AgeVerificationProps) => {
         <div className="bg-black/80 backdrop-blur-md rounded-lg p-8 max-w-md w-full text-center animate-fade-in border border-[#FFD700]/30 relative z-10 shadow-[0_0_15px_rgba(218,165,32,0.3)]">
           <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-red-500 mb-4">{t("accessDenied")}</h2>
-          <p className="text-neutral-300 mb-4">{t("mustBe18")}</p>
-          <div className="text-sm text-neutral-400">
+          <p className="text-white mb-4 text-lg">{t("mustBe18")}</p>
+          <div className="text-sm text-white/80 hover:text-white transition-colors">
             <Link to="/terms" className="hover:text-[#FFD700] transition-colors">{t("terms")}</Link>
           </div>
         </div>
@@ -82,10 +82,10 @@ export const AgeVerification = ({ onVerified }: AgeVerificationProps) => {
       <div className="bg-black/80 backdrop-blur-md rounded-lg p-8 max-w-md w-full text-center animate-fade-in border border-[#FFD700]/30 relative z-10 shadow-[0_0_15px_rgba(218,165,32,0.3)]">
         <Shield className="w-12 h-12 text-[#FFD700] mx-auto mb-4" />
         <h2 className="text-2xl font-bold text-white mb-4">{t("ageVerification")}</h2>
-        <p className="mb-6 text-lg text-neutral-300">{t("ageQuestion")}</p>
+        <p className="mb-6 text-lg text-white">{t("ageQuestion")}</p>
         
         <div className="space-y-4">
-          <div className="text-sm text-neutral-400 mb-6">
+          <div className="text-sm text-white/90 mb-6">
             {t("legalDisclaimer")}
           </div>
           
@@ -99,13 +99,13 @@ export const AgeVerification = ({ onVerified }: AgeVerificationProps) => {
             <Button
               onClick={() => handleVerification(false)}
               variant="outline"
-              className="w-full border-[#FFD700]/30 text-neutral-300 hover:bg-[#FFD700]/10 hover:border-[#FFD700]/50 transition-all"
+              className="w-full border-[#FFD700]/30 text-white hover:bg-[#FFD700]/10 hover:border-[#FFD700]/50 transition-all"
             >
               {t("no")}
             </Button>
           </div>
 
-          <div className="text-xs text-neutral-500 mt-6">
+          <div className="text-xs text-white/90 mt-6">
             <p className="mb-2">{t("byProceeding")}</p>
             <div className="flex justify-center gap-4">
               <Link to="/terms" className="hover:text-[#FFD700] transition-colors">{t("terms")}</Link>
