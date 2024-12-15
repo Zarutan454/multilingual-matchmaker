@@ -52,8 +52,7 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-black to-gray-900 text-white">
       <div className="container mx-auto px-4 py-8">
-        {/* Header Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Main Profile Info */}
           <div className="md:col-span-2">
             <Card className="bg-black/50 backdrop-blur-sm border-neutral-800 p-6">
@@ -67,51 +66,14 @@ export default function Index() {
                 </div>
                 <div className="flex-1">
                   <h1 className="text-3xl font-bold mb-2">{profile?.full_name || ""}</h1>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {profile?.age && (
-                      <Badge variant="secondary" className="bg-pink-500/20 text-pink-300">
-                        {profile.age} Jahre
-                      </Badge>
-                    )}
-                    {profile?.measurements?.height && (
-                      <Badge variant="secondary" className="bg-blue-500/20 text-blue-300">
-                        {profile.measurements.height} cm
-                      </Badge>
-                    )}
-                    {profile?.measurements?.weight && (
-                      <Badge variant="secondary" className="bg-green-500/20 text-green-300">
-                        {profile.measurements.weight} kg
-                      </Badge>
-                    )}
-                    {profile?.measurements?.size && (
-                      <Badge variant="secondary" className="bg-purple-500/20 text-purple-300">
-                        KF {profile.measurements.size}
-                      </Badge>
-                    )}
-                    {profile?.languages?.map((lang: string) => (
-                      <Badge key={lang} variant="secondary" className="bg-yellow-500/20 text-yellow-300">
-                        {lang}
-                      </Badge>
-                    ))}
-                  </div>
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     <div className="flex items-center gap-2">
                       <MapPin className="w-5 h-5 text-gray-400" />
                       <span>{profile?.location || ""}</span>
                     </div>
-                    {profile?.contact_info?.phone && (
-                      <div className="flex items-center gap-2">
-                        <Phone className="w-5 h-5 text-gray-400" />
-                        <span>{profile.contact_info.phone}</span>
-                      </div>
-                    )}
                     <div className="flex items-center gap-2">
                       <Clock className="w-5 h-5 text-gray-400" />
                       <span>{profile?.availability_status || ""}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Star className="w-5 h-5 text-yellow-500" />
-                      <span>Neu</span>
                     </div>
                   </div>
                 </div>
@@ -143,45 +105,17 @@ export default function Index() {
             <Card className="bg-black/50 backdrop-blur-sm border-neutral-800 p-6">
               <h2 className="text-xl font-bold mb-4">{t("services")}</h2>
               <div className="space-y-4">
-                {profile?.services_offered && (
+                {profile?.service_categories && (
                   <div className="flex flex-wrap gap-2">
-                    {profile.services_offered.map((service: string) => (
+                    {profile.service_categories.map((service: string) => (
                       <Badge key={service} variant="outline">
                         {service}
                       </Badge>
                     ))}
                   </div>
                 )}
-                {profile?.rates && (
-                  <div className="mt-4">
-                    <h3 className="text-lg font-semibold mb-2">{t("rates")}</h3>
-                    <div className="space-y-2">
-                      {Object.entries(profile.rates).map(([service, rate]) => (
-                        <div key={service} className="flex justify-between">
-                          <span className="capitalize">{service}</span>
-                          <span>{rate}€</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
             </Card>
-
-            {/* Working Hours */}
-            {profile?.working_hours && (
-              <Card className="bg-black/50 backdrop-blur-sm border-neutral-800 p-6">
-                <h2 className="text-xl font-bold mb-4">{t("availability")}</h2>
-                <div className="space-y-2">
-                  {Object.entries(profile.working_hours).map(([day, hours]) => (
-                    <div key={day} className="flex justify-between">
-                      <span className="capitalize">{day}</span>
-                      <span>{Array.isArray(hours) ? hours.join(", ") : String(hours)}</span>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            )}
           </div>
         </div>
       </div>

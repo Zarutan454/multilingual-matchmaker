@@ -23,6 +23,19 @@ export interface Profile {
   services?: Service[];
   rating?: number;
   reviews_count?: number;
+  age?: number;
+  measurements?: {
+    height?: string;
+    weight?: string;
+    size?: string;
+  };
+  contact_info?: {
+    phone?: string;
+    email?: string;
+  };
+  services_offered?: string[];
+  working_hours?: Record<string, string[]>;
+  rates?: Record<string, number>;
 }
 
 export interface Service {
