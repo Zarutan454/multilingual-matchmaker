@@ -4,6 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { LocationDistance } from "../location/LocationDistance";
 import { Profile } from "./types";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/lib/supabase";
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
 
 interface ProfileCardProps {
   profile: Profile;
@@ -12,6 +16,62 @@ interface ProfileCardProps {
 
 export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  useEffect(() => {
+    const checkIfFavorite = async () => {
+      if (!user) return;
+      
+      const { data } = await supabase
+        .from('favorites')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('profile_id', profile.id)
+        .single();
+      
+      setIsFavorite(!!data);
+    };
+
+    checkIfFavorite();
+  }, [user, profile.id]);
+
+  const toggleFavorite = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    if (!user) {
+      toast.error("Bitte melden Sie sich an, um Favoriten hinzuzufügen");
+      return;
+    }
+
+    try {
+      if (isFavorite) {
+        await supabase
+          .from('favorites')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('profile_id', profile.id);
+        
+        setIsFavorite(false);
+        toast.success("Aus Favoriten entfernt");
+      } else {
+        await supabase
+          .from('favorites')
+          .insert([
+            {
+              user_id: user.id,
+              profile_id: profile.id
+            }
+          ]);
+        
+        setIsFavorite(true);
+        toast.success("Zu Favoriten hinzugefügt");
+      }
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+      toast.error("Ein Fehler ist aufgetreten");
+    }
+  };
 
   return (
     <div 
@@ -26,6 +86,16 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
         />
         <div className="absolute inset-0 bg-gradient-dark opacity-60" />
         
+        {/* Favorite Button */}
+        <button
+          onClick={toggleFavorite}
+          className={`absolute top-4 right-4 p-2 rounded-full ${
+            isFavorite ? 'bg-secondary text-white' : 'bg-gray-800/50 text-gray-300'
+          } hover:scale-110 transition-all duration-300`}
+        >
+          <Star className={`w-5 h-5 ${isFavorite ? 'fill-current' : ''}`} />
+        </button>
+
         {/* Status Badge */}
         <div className="absolute top-4 left-4">
           <Badge 
@@ -45,7 +115,7 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
 
         {/* Featured Badge */}
         <Badge 
-          className="absolute top-4 right-4 bg-secondary/90 text-white border-none"
+          className="absolute top-16 right-4 bg-secondary/90 text-white border-none"
         >
           FEATURED
         </Badge>
