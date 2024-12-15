@@ -21,7 +21,7 @@ export const useRecentChats = (user: User | null) => {
     queryFn: async (): Promise<ChatMessage[]> => {
       if (!user) return [];
       
-      // First get all messages
+      // First get all messages with profile information
       const { data: messages, error: messagesError } = await supabase
         .from('messages')
         .select(`
@@ -31,14 +31,8 @@ export const useRecentChats = (user: User | null) => {
           recipient,
           created_at,
           read,
-          profiles!messages_sender_fkey (
-            full_name,
-            avatar_url
-          ),
-          profiles!messages_recipient_fkey (
-            full_name,
-            avatar_url
-          )
+          sender_profile:profiles!sender(full_name, avatar_url),
+          recipient_profile:profiles!recipient(full_name, avatar_url)
         `)
         .or(`sender.eq.${user.id},recipient.eq.${user.id}`)
         .order('created_at', { ascending: false });
@@ -48,10 +42,10 @@ export const useRecentChats = (user: User | null) => {
         return [];
       }
 
-      // Get unread message count
-      const { data: unreadCounts, error: unreadError } = await supabase
+      // Get unread message counts
+      const { count: unreadCount, error: unreadError } = await supabase
         .from('messages')
-        .select('sender', { count: 'exact', head: false })
+        .select('*', { count: 'exact', head: true })
         .eq('recipient', user.id)
         .eq('read', false);
 
@@ -67,13 +61,13 @@ export const useRecentChats = (user: User | null) => {
         recipient: message.recipient,
         content: message.content,
         created_at: message.created_at,
-        sender_name: message.profiles?.full_name,
-        recipient_name: message.profiles?.full_name,
+        sender_name: message.sender_profile?.full_name,
+        recipient_name: message.recipient_profile?.full_name,
         avatar_url: message.sender === user.id 
-          ? message.profiles?.avatar_url 
-          : message.profiles?.avatar_url,
+          ? message.recipient_profile?.avatar_url 
+          : message.sender_profile?.avatar_url,
         unread: !message.read && message.recipient === user.id,
-        unread_count: unreadCounts?.length || 0
+        unread_count: unreadCount || 0
       })) || [];
 
       // Group by conversation and get latest message

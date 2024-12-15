@@ -3,7 +3,7 @@ import { supabase } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
 import { Profile } from "@/types/favorites";
 
-interface FavoriteData {
+interface FavoriteProfile {
   id: string;
   profile: Profile;
 }
@@ -11,9 +11,9 @@ interface FavoriteData {
 export const useFavorites = (user: User | null) => {
   return useQuery({
     queryKey: ['favorites', user?.id],
-    queryFn: async (): Promise<FavoriteData[]> => {
+    queryFn: async (): Promise<FavoriteProfile[]> => {
       if (!user) return [];
-      
+
       const { data: favorites, error } = await supabase
         .from('favorites')
         .select(`
