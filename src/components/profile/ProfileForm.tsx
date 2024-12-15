@@ -34,13 +34,9 @@ export const ProfileForm = () => {
   const onSubmit = async (data: ProfileFormValues) => {
     setIsSubmitting(true);
     try {
-      // Simulate API call to update profile
       console.log("Profile updated successfully");
       toast.success(t("profileUpdated"));
-      
-      // Weiterleitung zum Dashboard statt zur Profilseite
       navigate('/dashboard');
-      
     } catch (error) {
       console.error('Error:', error);
       if (error instanceof Error) {
@@ -54,87 +50,87 @@ export const ProfileForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-black/80 backdrop-blur-md rounded-lg p-8 max-w-md w-full text-center border border-[#FFD700]/30 shadow-[0_0_15px_rgba(218,165,32,0.3)]">
       <div className="space-y-2">
-        <Label htmlFor="fullName" className="text-neutral-300 text-sm">
+        <Label htmlFor="fullName" className="text-white text-sm">
           {t("fullName")}
         </Label>
         <Input
           id="fullName"
           {...register("fullName")}
-          className="bg-[#222222] border-neutral-700 text-white placeholder-neutral-500"
+          className="bg-black/50 border-[#FFD700]/30 text-white placeholder-neutral-400 focus:border-[#FFD700] transition-colors"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="bio" className="text-neutral-300 text-sm">
+        <Label htmlFor="bio" className="text-white text-sm">
           {t("bio")}
         </Label>
         <Input
           id="bio"
           {...register("bio")}
-          className="bg-[#222222] border-neutral-700 text-white placeholder-neutral-500"
+          className="bg-black/50 border-[#FFD700]/30 text-white placeholder-neutral-400 focus:border-[#FFD700] transition-colors"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="location" className="text-neutral-300 text-sm">
+        <Label htmlFor="location" className="text-white text-sm">
           {t("location")}
         </Label>
         <Input
           id="location"
           {...register("location")}
-          className="bg-[#222222] border-neutral-700 text-white placeholder-neutral-500"
+          className="bg-black/50 border-[#FFD700]/30 text-white placeholder-neutral-400 focus:border-[#FFD700] transition-colors"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="interests" className="text-neutral-300 text-sm">
+        <Label htmlFor="interests" className="text-white text-sm">
           {t("interests")}
         </Label>
         <Input
           id="interests"
           {...register("interests")}
-          className="bg-[#222222] border-neutral-700 text-white placeholder-neutral-500"
+          className="bg-black/50 border-[#FFD700]/30 text-white placeholder-neutral-400 focus:border-[#FFD700] transition-colors"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="occupation" className="text-neutral-300 text-sm">
+        <Label htmlFor="occupation" className="text-white text-sm">
           {t("occupation")}
         </Label>
         <Input
           id="occupation"
           {...register("occupation")}
-          className="bg-[#222222] border-neutral-700 text-white placeholder-neutral-500"
+          className="bg-black/50 border-[#FFD700]/30 text-white placeholder-neutral-400 focus:border-[#FFD700] transition-colors"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="height" className="text-neutral-300 text-sm">
+        <Label htmlFor="height" className="text-white text-sm">
           {t("height")}
         </Label>
         <Input
           id="height"
           {...register("height")}
-          className="bg-[#222222] border-neutral-700 text-white placeholder-neutral-500"
+          className="bg-black/50 border-[#FFD700]/30 text-white placeholder-neutral-400 focus:border-[#FFD700] transition-colors"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="weight" className="text-neutral-300 text-sm">
+        <Label htmlFor="weight" className="text-white text-sm">
           {t("weight")}
         </Label>
         <Input
           id="weight"
           {...register("weight")}
-          className="bg-[#222222] border-neutral-700 text-white placeholder-neutral-500"
+          className="bg-black/50 border-[#FFD700]/30 text-white placeholder-neutral-400 focus:border-[#FFD700] transition-colors"
         />
       </div>
 
       <Button 
         type="submit" 
-        className="w-full bg-secondary hover:bg-secondary/80 text-white transition-colors" 
+        className="w-full bg-[#FFD700] hover:bg-[#DAA520] text-black font-semibold transition-colors" 
         disabled={isSubmitting}
       >
         {isSubmitting ? t("savingProfile") : t("saveProfile")}

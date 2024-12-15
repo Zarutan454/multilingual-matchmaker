@@ -15,8 +15,27 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4 max-w-4xl">
+    <div className="min-h-screen bg-black py-8">
+      <div className="absolute inset-0">
+        {[...Array(50)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute animate-float"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              width: `${Math.random() * 4 + 1}px`,
+              height: `${Math.random() * 4 + 1}px`,
+              backgroundColor: '#FFD700',
+              opacity: Math.random() * 0.5 + 0.2,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${Math.random() * 10 + 5}s`,
+            }}
+          />
+        ))}
+      </div>
+      <div className="absolute inset-0 backdrop-blur-[2px]" />
+      <div className="container mx-auto px-4 flex flex-col items-center justify-center relative z-10">
         <ProfileHeader />
         <ProfileForm />
       </div>
