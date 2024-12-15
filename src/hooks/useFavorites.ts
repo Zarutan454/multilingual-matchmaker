@@ -4,13 +4,22 @@ import { User } from "@supabase/supabase-js";
 
 export const useFavorites = (user: User | null) => {
   return useQuery({
-    queryKey: ['favorites'],
+    queryKey: ['favorites', user?.id],
     queryFn: async () => {
       if (!user) return [];
 
-      const { data, error } = await supabase
+      const { data: favorites, error } = await supabase
         .from('favorites')
-        .select('*')
+        .select(`
+          id,
+          profile_id,
+          profiles:profile_id (
+            id,
+            full_name,
+            avatar_url,
+            location
+          )
+        `)
         .eq('user_id', user.id)
         .limit(5);
 
@@ -18,7 +27,7 @@ export const useFavorites = (user: User | null) => {
         console.error('Error fetching favorites:', error);
         return [];
       }
-      return data || [];
+      return favorites || [];
     },
     enabled: !!user
   });
