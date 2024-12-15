@@ -6,7 +6,9 @@ import { User } from "@supabase/supabase-js";
 import { useRecentChats } from "@/hooks/useRecentChats";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useEffect } from "react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { useState } from "react";
+import { ChatWindow } from "../messaging/ChatWindow";
 import { supabase } from "@/integrations/supabase/client";
 
 interface RecentChatsCardProps {
@@ -17,37 +19,13 @@ export const RecentChatsCard = ({ user }: RecentChatsCardProps) => {
   const { t } = useLanguage();
   const navigate = useNavigate();
   const { data: recentChats = [], refetch } = useRecentChats(user);
+  const [selectedChat, setSelectedChat] = useState<{id: string, name: string} | null>(null);
 
-  useEffect(() => {
-    if (!user) return;
-
-    // Subscribe to new messages
-    const channel = supabase
-      .channel('new_messages')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'messages',
-          filter: `recipient=eq.${user.id}`
-        },
-        () => {
-          refetch(); // Refresh the chat list when new message arrives
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [user, refetch]);
-
-  const handleChatClick = async (recipientId: string) => {
+  const handleChatClick = async (recipientId: string, recipientName: string) => {
     if (!user) return;
 
     try {
-      // Mark messages as read when clicking on the chat
+      // Nachrichten als gelesen markieren
       const { error } = await supabase
         .from('messages')
         .update({ read: true })
@@ -56,10 +34,10 @@ export const RecentChatsCard = ({ user }: RecentChatsCardProps) => {
       
       if (error) throw error;
       
-      // Navigate to the chat
-      navigate(`/messages/${recipientId}`);
+      // Chat-Dialog öffnen
+      setSelectedChat({ id: recipientId, name: recipientName });
       
-      // Refresh the chat list to update unread status
+      // Chat-Liste aktualisieren
       refetch();
     } catch (error) {
       console.error('Error marking messages as read:', error);
@@ -84,7 +62,10 @@ export const RecentChatsCard = ({ user }: RecentChatsCardProps) => {
               key={chat.id}
               variant="ghost"
               className="w-full flex items-center gap-3 p-4 hover:bg-[#9b87f5]/10"
-              onClick={() => handleChatClick(chat.sender === user?.id ? chat.recipient : chat.sender)}
+              onClick={() => handleChatClick(
+                chat.sender === user?.id ? chat.recipient : chat.sender,
+                chat.sender === user?.id ? chat.recipient_name || '' : chat.sender_name || ''
+              )}
             >
               <Avatar className="h-10 w-10">
                 <AvatarImage src={chat.avatar_url || ''} />
@@ -115,6 +96,17 @@ export const RecentChatsCard = ({ user }: RecentChatsCardProps) => {
           )}
         </div>
       </CardContent>
+
+      <Dialog open={!!selectedChat} onOpenChange={() => setSelectedChat(null)}>
+        <DialogContent className="sm:max-w-[500px]">
+          {selectedChat && (
+            <ChatWindow
+              recipientId={selectedChat.id}
+              recipientName={selectedChat.name}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 };
