@@ -19,6 +19,11 @@ export const FavoritesCard = ({ user }: FavoritesCardProps) => {
   const { data: favorites = [], isLoading, error } = useFavorites(user);
 
   const handleProfileClick = (profileId: string) => {
+    if (!profileId) {
+      console.error("No profile ID provided");
+      return;
+    }
+
     try {
       navigate(`/provider/${profileId}`);
     } catch (error) {

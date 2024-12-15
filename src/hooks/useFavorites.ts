@@ -20,18 +20,15 @@ export const useFavorites = (user: User | null) => {
             location
           )
         `)
-        .eq('user_id', user.id)
-        .single();
+        .eq('user_id', user.id);
 
       if (error) {
-        if (error.code === 'PGRST116') {
-          return [];
-        }
+        console.error('Error fetching favorites:', error);
         throw error;
       }
 
       // Transform the data to match FavoriteData type
-      const favorites: FavoriteData[] = data ? [data].map(item => ({
+      const favorites: FavoriteData[] = data?.map(item => ({
         id: item.id,
         profile: {
           id: item.profile.id,
@@ -39,7 +36,7 @@ export const useFavorites = (user: User | null) => {
           avatar_url: item.profile.avatar_url,
           location: item.profile.location
         }
-      })) : [];
+      })) || [];
 
       return favorites;
     },
