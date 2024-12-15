@@ -14,4 +14,6 @@ export type AdminTranslationKeys =
   | "updatingUserStatus"
   | "usersLoadedSuccessfully"
   | "errorFetchingUsers"
-  | "errorRefetchingUsers";
+  | "errorRefetchingUsers"
+  | "errorLoadingUsers"
+  | "tryAgain";

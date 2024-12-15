@@ -26,6 +26,15 @@ const supabase = createClient(
   import.meta.env.VITE_SUPABASE_ANON_KEY
 );
 
+interface Profile {
+  id: string;
+  full_name: string | null;
+  email: string;
+  status: string;
+  role: string;
+  created_at: string;
+}
+
 export const UserManagement = () => {
   const { t } = useLanguage();
   const [updatingUserId, setUpdatingUserId] = useState<string | null>(null);
@@ -39,16 +48,18 @@ export const UserManagement = () => {
         .order('created_at', { ascending: false });
 
       if (error) {
-        toast.error(`${t('errorFetchingUsers')}: ${error.message}`);
+        console.error('Error fetching users:', error);
         throw error;
       }
-      return data;
+      return data as Profile[];
     },
-    onSuccess: () => {
-      toast.success(t('usersLoadedSuccessfully'));
-    },
-    onError: (error: Error) => {
-      toast.error(`${t('errorFetchingUsers')}: ${error.message}`);
+    meta: {
+      onSuccess: () => {
+        toast.success(t('usersLoadedSuccessfully'));
+      },
+      onError: (error: Error) => {
+        toast.error(`${t('errorFetchingUsers')}: ${error.message}`);
+      }
     }
   });
 
@@ -68,11 +79,11 @@ export const UserManagement = () => {
       try {
         await refetch();
       } catch (refetchError) {
-        toast.error(`${t('errorRefetchingUsers')}: ${refetchError.message}`);
+        toast.error(`${t('errorRefetchingUsers')}: ${(refetchError as Error).message}`);
       }
     } catch (error) {
       console.error('Error updating user status:', error);
-      toast.error(`${t('errorUpdatingUser')}: ${error.message}`, { id: toastId });
+      toast.error(`${t('errorUpdatingUser')}: ${(error as Error).message}`, { id: toastId });
     } finally {
       setUpdatingUserId(null);
     }
