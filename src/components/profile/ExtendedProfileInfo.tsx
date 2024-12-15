@@ -52,7 +52,7 @@ export const ExtendedProfileInfo = ({ form }: ExtendedProfileInfoProps) => {
 
       <FormField
         control={form.control}
-        name="availability_status"
+        name="availabilityStatus"
         render={({ field }) => (
           <FormItem>
             <FormLabel>{t("availabilityStatus")}</FormLabel>
@@ -75,7 +75,7 @@ export const ExtendedProfileInfo = ({ form }: ExtendedProfileInfoProps) => {
 
       <FormField
         control={form.control}
-        name="service_categories"
+        name="serviceCategories"
         render={({ field }) => (
           <FormItem>
             <FormLabel>{t("serviceCategories")}</FormLabel>
