@@ -12,7 +12,7 @@ export const useFavorites = (user: User | null) => {
         .from('favorites')
         .select(`
           id,
-          profiles:profile_id (
+          profile:profiles!favorites_profile_id_fkey (
             id,
             full_name,
             avatar_url,
