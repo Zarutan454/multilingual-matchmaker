@@ -31,7 +31,7 @@ export const ProfileActions = ({
         .select('id')
         .eq('user_id', user.id)
         .eq('profile_id', profileId)
-        .single();
+        .maybeSingle();
       
       setIsLiked(!!data);
     };

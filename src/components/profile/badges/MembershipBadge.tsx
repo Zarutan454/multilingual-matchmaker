@@ -1,11 +1,11 @@
-import { Medal, Crown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Medal, Crown } from "lucide-react";
 
 interface MembershipBadgeProps {
-  level: string;
+  level: 'bronze' | 'silver' | 'gold' | 'vip';
 }
 
-export const MembershipBadge = ({ level = 'bronze' }: MembershipBadgeProps) => {
+export const MembershipBadge = ({ level }: MembershipBadgeProps) => {
   const badges = {
     bronze: {
       icon: <Medal className="w-4 h-4 text-[#CD7F32]" />,
@@ -29,7 +29,7 @@ export const MembershipBadge = ({ level = 'bronze' }: MembershipBadgeProps) => {
     }
   };
 
-  const badge = badges[level as keyof typeof badges] || badges.bronze;
+  const badge = badges[level];
 
   return (
     <Badge 

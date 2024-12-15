@@ -5,10 +5,10 @@ import { Profile } from "./types";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
-import { formatDistanceToNow } from "date-fns";
-import { de } from "date-fns/locale";
-import { MessageCircle, MapPin, Users, Star, Heart, Medal, Crown } from "lucide-react";
+import { MessageCircle, MapPin, Users } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { MembershipBadge } from "./badges/MembershipBadge";
+import { ProfileActions } from "./actions/ProfileActions";
 
 interface ProfileCardProps {
   profile: Profile;
@@ -19,8 +19,6 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [isFavorite, setIsFavorite] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(profile.likes_count || 0);
   const [isOnline, setIsOnline] = useState(profile.status === "online");
   const [lastSeen, setLastSeen] = useState<string | null>(null);
 
@@ -33,7 +31,7 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
         .select('id')
         .eq('user_id', user.id)
         .eq('profile_id', profile.id)
-        .single();
+        .maybeSingle();
       
       setIsFavorite(!!data);
     };
@@ -76,79 +74,6 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
     }
   };
 
-  const handleLikeClick = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!user) {
-      toast.error("Bitte melden Sie sich an, um Profile zu liken");
-      return;
-    }
-
-    try {
-      if (isLiked) {
-        const { error } = await supabase
-          .from('profile_likes')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('profile_id', profile.id);
-        
-        if (error) throw error;
-        setIsLiked(false);
-        setLikeCount(prev => prev - 1);
-        toast.success("Like entfernt");
-      } else {
-        const { error } = await supabase
-          .from('profile_likes')
-          .insert([
-            { user_id: user.id, profile_id: profile.id }
-          ]);
-        
-        if (error) throw error;
-        setIsLiked(true);
-        setLikeCount(prev => prev + 1);
-        toast.success("Profil geliked");
-      }
-    } catch (error) {
-      console.error('Error updating likes:', error);
-      toast.error("Fehler beim Aktualisieren des Likes");
-    }
-  };
-
-  const getMembershipBadge = () => {
-    const badges = {
-      bronze: {
-        icon: <Medal className="w-4 h-4 text-[#CD7F32]" />,
-        text: "Bronze",
-        className: "bg-gradient-to-r from-[#CD7F32]/20 to-[#CD7F32]/40 text-[#CD7F32] border-[#CD7F32]/50"
-      },
-      silver: {
-        icon: <Medal className="w-4 h-4 text-[#C0C0C0]" />,
-        text: "Silber",
-        className: "bg-gradient-to-r from-[#C0C0C0]/20 to-[#C0C0C0]/40 text-[#C0C0C0] border-[#C0C0C0]/50"
-      },
-      gold: {
-        icon: <Medal className="w-4 h-4 text-[#FFD700]" />,
-        text: "Gold",
-        className: "bg-gradient-to-r from-[#FFD700]/20 to-[#FFD700]/40 text-[#FFD700] border-[#FFD700]/50"
-      },
-      vip: {
-        icon: <Crown className="w-4 h-4 text-[#8B008B]" />,
-        text: "VIP",
-        className: "bg-gradient-to-r from-[#8B008B]/20 to-[#8B008B]/40 text-[#8B008B] border-[#8B008B]/50"
-      }
-    };
-
-    const badge = badges[profile.membership_level as keyof typeof badges] || badges.bronze;
-
-    return (
-      <Badge 
-        className={`flex items-center gap-2 px-3 py-1 font-semibold backdrop-blur-sm border ${badge.className}`}
-      >
-        {badge.icon}
-        {badge.text}
-      </Badge>
-    );
-  };
-
   return (
     <div 
       className="group relative overflow-hidden rounded-lg cursor-pointer transform transition-all duration-300 hover:scale-105 bg-gray-900/50 backdrop-blur-sm"
@@ -162,30 +87,15 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
         />
         <div className="absolute inset-0 bg-gradient-dark opacity-60" />
 
-        <div className="absolute top-4 right-4 flex flex-col gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-white hover:bg-white/20"
-            onClick={(e) => handleFavoriteClick(e)}
-          >
-            <Star className={`h-6 w-6 ${isFavorite ? 'fill-yellow-500 text-yellow-500' : ''}`} />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-white hover:bg-white/20"
-            onClick={(e) => handleLikeClick(e)}
-          >
-            <Heart className={`h-6 w-6 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
-            <span className="absolute -bottom-4 text-xs font-semibold">
-              {likeCount}
-            </span>
-          </Button>
-        </div>
+        <ProfileActions
+          profileId={profile.id}
+          initialLikeCount={profile.likes_count || 0}
+          onFavoriteClick={handleFavoriteClick}
+          isFavorite={isFavorite}
+        />
 
         <div className="absolute top-4 left-4">
-          {getMembershipBadge()}
+          <MembershipBadge level={profile.membership_level || 'bronze'} />
         </div>
 
         <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 via-black/70 to-transparent">
