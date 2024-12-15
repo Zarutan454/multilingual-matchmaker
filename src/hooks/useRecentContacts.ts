@@ -4,19 +4,17 @@ import { User } from "@supabase/supabase-js";
 
 export const useRecentContacts = (user: User | null) => {
   return useQuery({
-    queryKey: ['recentContacts'],
+    queryKey: ['recentContacts', user?.id],
     queryFn: async () => {
-      if (!user) return [];
+      if (!user?.id) return [];
 
       const { data, error } = await supabase
         .from('profiles')
-        .select('*')
+        .select('id, full_name, avatar_url, location')
+        .neq('id', user.id)
         .limit(5);
 
-      if (error) {
-        console.error('Error fetching contacts:', error);
-        return [];
-      }
+      if (error) throw error;
       return data || [];
     },
     enabled: !!user

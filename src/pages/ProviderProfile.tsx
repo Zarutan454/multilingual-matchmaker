@@ -5,14 +5,13 @@ import { ProviderAvailability } from "../components/provider/ProviderAvailabilit
 import { ProviderGallery } from "../components/provider/ProviderGallery";
 import { ProviderRatings } from "../components/provider/ProviderRatings";
 import { Button } from "@/components/ui/button";
-import { Calendar, Mail, Phone } from "lucide-react";
+import { Calendar, Mail, Phone, Loader2 } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { Loader2 } from "lucide-react";
 
 export default function ProviderProfile() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const { t } = useLanguage();
 
   const { data: provider, isLoading } = useQuery({
@@ -22,7 +21,17 @@ export default function ProviderProfile() {
       
       const { data, error } = await supabase
         .from('profiles')
-        .select('*')
+        .select(`
+          id,
+          full_name,
+          avatar_url,
+          location,
+          occupation,
+          bio,
+          availability_status,
+          services,
+          stats
+        `)
         .eq('id', id)
         .single();
 
@@ -55,13 +64,13 @@ export default function ProviderProfile() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
-            <ProviderGallery providerId={id!} />
-            <ProviderRatings providerId={id!} />
+            <ProviderGallery providerId={id} />
+            <ProviderRatings providerId={id} />
           </div>
 
           <div className="space-y-8">
-            <ProviderServices services={provider.services || []} providerId={id!} />
-            <ProviderAvailability providerId={id!} />
+            <ProviderServices services={provider.services || []} providerId={id} />
+            <ProviderAvailability providerId={id} />
             
             <div className="bg-white rounded-lg shadow-md p-6 space-y-4">
               <h2 className="text-xl font-semibold">{t("contact")}</h2>
