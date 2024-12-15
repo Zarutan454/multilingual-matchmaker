@@ -10,7 +10,7 @@ export const HeroSection = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="relative min-h-screen pt-20">
+    <div className="relative min-h-screen pt-32">
       {/* Dunkler Hintergrund */}
       <div className="absolute inset-0 w-full h-full bg-[#1A1F2C]"></div>
 
