@@ -7,4 +7,11 @@ if (!supabaseUrl || !supabaseKey) {
   throw new Error('Supabase URL und API Key müssen in den Umgebungsvariablen definiert sein.');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
+// Singleton instance
+export const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true
+  }
+});

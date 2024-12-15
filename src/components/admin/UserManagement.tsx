@@ -1,182 +1,73 @@
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { createClient } from '@supabase/supabase-js';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { Button } from '@/components/ui/button';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { toast } from 'sonner';
-import { MoreHorizontal, UserCheck, UserX } from 'lucide-react';
-import { Loader2 } from 'lucide-react';
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
-
-interface Profile {
-  id: string;
-  full_name: string | null;
-  email: string;
-  status: string;
-  role: string;
-  created_at: string;
-}
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export const UserManagement = () => {
-  const { t } = useLanguage();
-  const [updatingUserId, setUpdatingUserId] = useState<string | null>(null);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const { data: users, isLoading, error, refetch } = useQuery({
-    queryKey: ['users'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .order('created_at', { ascending: false });
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
-      if (error) {
-        console.error('Error fetching users:', error);
-        throw error;
-      }
-      return data as Profile[];
-    },
-    meta: {
-      onSuccess: () => {
-        toast.success(t('usersLoadedSuccessfully'));
-      },
-      onError: (error: Error) => {
-        toast.error(`${t('errorFetchingUsers')}: ${error.message}`);
-      }
-    }
-  });
-
-  const handleStatusUpdate = async (userId: string, newStatus: string) => {
-    setUpdatingUserId(userId);
-    const toastId = toast.loading(t('updatingUserStatus'));
-
+  const fetchUsers = async () => {
     try {
-      const { error } = await supabase
+      const { data: profiles, error } = await supabase
         .from('profiles')
-        .update({ status: newStatus })
-        .eq('id', userId);
+        .select('*');
 
       if (error) throw error;
-
-      toast.success(t('userStatusUpdated'), { id: toastId });
-      try {
-        await refetch();
-      } catch (refetchError) {
-        toast.error(`${t('errorRefetchingUsers')}: ${(refetchError as Error).message}`);
-      }
+      setUsers(profiles);
     } catch (error) {
-      console.error('Error updating user status:', error);
-      toast.error(`${t('errorUpdatingUser')}: ${(error as Error).message}`, { id: toastId });
+      console.error('Error fetching users:', error);
+      toast.error("Fehler beim Laden der Benutzer");
     } finally {
-      setUpdatingUserId(null);
+      setLoading(false);
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
-  }
+  const handleDeleteUser = async (userId: string) => {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', userId);
 
-  if (error) {
-    return (
-      <div className="flex flex-col items-center justify-center h-64 space-y-4">
-        <p className="text-red-500">{t('errorLoadingUsers')}</p>
-        <Button onClick={() => refetch()}>{t('tryAgain')}</Button>
-      </div>
-    );
+      if (error) throw error;
+      
+      toast.success("Benutzer erfolgreich gelöscht");
+      fetchUsers();
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      toast.error("Fehler beim Löschen des Benutzers");
+    }
+  };
+
+  if (loading) {
+    return <div>Laden...</div>;
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold tracking-tight">{t('userManagement')}</h2>
-      </div>
-
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>{t('name')}</TableHead>
-              <TableHead>{t('email')}</TableHead>
-              <TableHead>{t('status')}</TableHead>
-              <TableHead>{t('role')}</TableHead>
-              <TableHead>{t('actions')}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {users?.map((user) => (
-              <TableRow key={user.id}>
-                <TableCell>{user.full_name || t('notProvided')}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>
-                  <span className={`px-2 py-1 rounded-full text-sm ${
-                    user.status === 'active' ? 'bg-green-100 text-green-800' :
-                    user.status === 'suspended' ? 'bg-red-100 text-red-800' :
-                    'bg-gray-100 text-gray-800'
-                  }`}>
-                    {user.status || t('pending')}
-                  </span>
-                </TableCell>
-                <TableCell>{user.role || t('user')}</TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        className="h-8 w-8 p-0"
-                        disabled={updatingUserId === user.id}
-                      >
-                        {updatingUserId === user.id ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <MoreHorizontal className="h-4 w-4" />
-                        )}
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem
-                        onClick={() => handleStatusUpdate(user.id, 'active')}
-                        disabled={updatingUserId === user.id}
-                      >
-                        <UserCheck className="mr-2 h-4 w-4" />
-                        {t('activate')}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => handleStatusUpdate(user.id, 'suspended')}
-                        disabled={updatingUserId === user.id}
-                        className="text-red-600"
-                      >
-                        <UserX className="mr-2 h-4 w-4" />
-                        {t('suspend')}
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+    <div className="space-y-4">
+      <h2 className="text-2xl font-bold">Benutzerverwaltung</h2>
+      {users.map((user: any) => (
+        <Card key={user.id} className="p-4">
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="font-semibold">{user.full_name || 'Kein Name'}</p>
+              <p className="text-sm text-gray-500">{user.email}</p>
+            </div>
+            <Button
+              variant="destructive"
+              onClick={() => handleDeleteUser(user.id)}
+            >
+              Löschen
+            </Button>
+          </div>
+        </Card>
+      ))}
     </div>
   );
 };
