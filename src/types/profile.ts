@@ -47,6 +47,7 @@ export interface Profile {
   services_offered?: string[];
   working_hours?: Record<string, string[]>;
   rates?: Record<string, number>;
+  last_seen?: string | null;
 }
 
 export interface Service {
