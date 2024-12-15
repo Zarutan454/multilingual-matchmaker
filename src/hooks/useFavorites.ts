@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
-import { toast } from "sonner";
 
 interface FavoriteProfile {
   id: string;
@@ -32,7 +31,8 @@ export const useFavorites = (user: User | null) => {
             location
           )
         `)
-        .eq('user_id', user.id);
+        .eq('user_id', user.id)
+        .returns<FavoriteProfile[]>();
 
       if (error) {
         console.error('Error fetching favorites:', error);

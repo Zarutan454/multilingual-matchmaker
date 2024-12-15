@@ -12,4 +12,7 @@ export type DashboardTranslationKeys =
   | "editProfile"
   | "viewCalendar"
   | "viewMessages"
-  | "editSettings";
+  | "editSettings"
+  | "errorNavigating"
+  | "errorLoadingFavorites"
+  | "noFavorites";
