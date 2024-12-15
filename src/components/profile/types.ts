@@ -13,7 +13,7 @@ export interface Profile {
   status: "online" | "offline";
   rating: number;
   reviews: number;
-  languages: string[];
+  spokenLanguages?: string[];
   age: number;
   services?: string[];
   priceRange?: {
@@ -29,7 +29,6 @@ export interface Profile {
   gender?: "male" | "female" | "other";
   dateOfBirth?: string;
   nationality?: string;
-  languages?: string[];
   preferredCommunication?: "email" | "phone" | "both";
   emergencyContact?: {
     name: string;
@@ -61,7 +60,7 @@ export interface ProfileFormValues {
   gender?: "male" | "female" | "other";
   dateOfBirth?: string;
   nationality?: string;
-  languages?: string[];
+  spokenLanguages?: string[];
   preferredCommunication?: "email" | "phone" | "both";
   emergencyContact?: {
     name: string;
@@ -92,7 +91,7 @@ export interface UserMetadata {
   gender?: string;
   date_of_birth?: string;
   nationality?: string;
-  languages?: string[];
+  spoken_languages?: string[];
   preferred_communication?: string;
   emergency_contact?: {
     name: string;
@@ -122,7 +121,7 @@ export const profileSchema = z.object({
   gender: z.enum(["male", "female", "other"]).optional(),
   dateOfBirth: z.string().optional(),
   nationality: z.string().optional(),
-  languages: z.array(z.string()).optional(),
+  spokenLanguages: z.array(z.string()).optional(),
   preferredCommunication: z.enum(["email", "phone", "both"]).optional(),
   emergencyContact: z.object({
     name: z.string(),

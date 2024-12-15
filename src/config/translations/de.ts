@@ -19,6 +19,8 @@ export const deTranslations: Translations = {
   ...dashboardTranslations,
   
   // Phone verification translations
+  success: "Erfolg",
+  error: "Fehler",
   enterPhoneNumber: "Telefonnummer eingeben",
   sendVerificationCode: "Verifizierungscode senden",
   sendingCode: "Code wird gesendet...",
@@ -43,7 +45,6 @@ export const deTranslations: Translations = {
   selectLanguages: "Sprachen auswählen",
   preferredCommunication: "Bevorzugte Kommunikation",
   selectPreferredCommunication: "Bevorzugte Kommunikation auswählen",
-  email: "E-Mail",
   phone: "Telefon",
   both: "Beides",
   emergencyContact: "Notfallkontakt",

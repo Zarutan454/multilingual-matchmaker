@@ -27,7 +27,35 @@ export type TranslationKey =
   | SubscriptionTranslationKeys
   | AvailabilityTranslationKeys
   | PricingTranslationKeys
-  | DashboardTranslationKeys;
+  | DashboardTranslationKeys
+  | "success"
+  | "error"
+  | "verificationCodeSent"
+  | "errorSendingCode"
+  | "phoneVerified"
+  | "invalidVerificationCode"
+  | "sendingCode"
+  | "sendVerificationCode"
+  | "enterVerificationCode"
+  | "verifying"
+  | "verifyCode"
+  | "gender"
+  | "selectGender"
+  | "male"
+  | "female"
+  | "other"
+  | "dateOfBirth"
+  | "nationality"
+  | "languages"
+  | "selectLanguages"
+  | "preferredCommunication"
+  | "selectPreferredCommunication"
+  | "phone"
+  | "both"
+  | "emergencyContact"
+  | "emergencyContactName"
+  | "emergencyContactPhone"
+  | "emergencyContactRelationship";
 
 export type Translations = {
   [K in TranslationKey]: string;

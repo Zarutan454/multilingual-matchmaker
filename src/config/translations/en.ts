@@ -17,6 +17,8 @@ export const enTranslations: Translations = {
   ...pricingTranslations,
   
   // Phone verification translations
+  success: "Success",
+  error: "Error",
   enterPhoneNumber: "Enter phone number",
   sendVerificationCode: "Send verification code",
   sendingCode: "Sending code...",
@@ -41,7 +43,6 @@ export const enTranslations: Translations = {
   selectLanguages: "Select languages",
   preferredCommunication: "Preferred communication",
   selectPreferredCommunication: "Select preferred communication",
-  email: "Email",
   phone: "Phone",
   both: "Both",
   emergencyContact: "Emergency contact",
