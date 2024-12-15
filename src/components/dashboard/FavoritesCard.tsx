@@ -15,7 +15,6 @@ interface Profile {
 
 interface FavoriteData {
   id: string;
-  provider_id: string;
   profiles: Profile;
 }
 
