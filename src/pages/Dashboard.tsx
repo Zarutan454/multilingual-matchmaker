@@ -24,8 +24,11 @@ export default function Dashboard() {
         .order('created_at', { ascending: false })
         .limit(5);
 
-      if (error) throw error;
-      return data;
+      if (error) {
+        console.error('Error fetching messages:', error);
+        return [];
+      }
+      return data || [];
     },
     enabled: !!user
   });
@@ -39,24 +42,39 @@ export default function Dashboard() {
         .select('*')
         .limit(5);
 
-      if (error) throw error;
-      return data;
+      if (error) {
+        console.error('Error fetching contacts:', error);
+        return [];
+      }
+      return data || [];
     },
     enabled: !!user
   });
 
-  // Favoriten abrufen - Vereinfachte Version ohne Join
+  // Favoriten abrufen - Mit Fehlerbehandlung
   const { data: favorites = [] } = useQuery({
     queryKey: ['favorites'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('favorites')
-        .select('*')
-        .eq('user_id', user?.id)
-        .limit(5);
+      try {
+        const { data, error } = await supabase
+          .from('favorites')
+          .select('*')
+          .eq('user_id', user?.id)
+          .limit(5);
 
-      if (error) throw error;
-      return data;
+        if (error) {
+          // Wenn der Fehler wegen einer fehlenden Tabelle auftritt, geben wir ein leeres Array zurück
+          if (error.code === '42P01') {
+            console.log('Favorites table does not exist yet');
+            return [];
+          }
+          throw error;
+        }
+        return data || [];
+      } catch (error) {
+        console.error('Error fetching favorites:', error);
+        return [];
+      }
     },
     enabled: !!user
   });
