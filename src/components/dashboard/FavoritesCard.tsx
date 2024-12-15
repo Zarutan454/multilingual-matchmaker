@@ -42,24 +42,6 @@ export const FavoritesCard = ({ user }: FavoritesCardProps) => {
     );
   }
 
-  if (error) {
-    return (
-      <Card className="bg-gray-900 border-gray-800">
-        <CardHeader>
-          <CardTitle className="text-white flex items-center gap-2">
-            <Star className="h-5 w-5 text-secondary" />
-            {t("favorites")}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-red-400 text-center py-4">
-            {t("errorLoadingFavorites")}
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
     <Card className="bg-gray-900 border-gray-800">
       <CardHeader>
@@ -73,7 +55,7 @@ export const FavoritesCard = ({ user }: FavoritesCardProps) => {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {favorites.length === 0 ? (
+          {!favorites || favorites.length === 0 ? (
             <p className="text-gray-400 text-center py-4">{t("noFavoritesSelected")}</p>
           ) : (
             favorites.map((favorite) => (
