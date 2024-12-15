@@ -57,6 +57,4 @@ export type TranslationKey =
   | "emergencyContactPhone"
   | "emergencyContactRelationship";
 
-export type Translations = {
-  [K in TranslationKey]: string;
-};
+export type Translations = Partial<Record<TranslationKey, string>>;
