@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export interface Profile {
-  id: number;
+  id: string;
   name: string;
   image: string;
   category: string;

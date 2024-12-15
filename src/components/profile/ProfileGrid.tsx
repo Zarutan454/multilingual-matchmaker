@@ -3,7 +3,7 @@ import { ProfileCard } from "./ProfileCard";
 
 interface ProfileGridProps {
   profiles: Profile[];
-  onChatClick: (e: React.MouseEvent, profileId: number) => void;
+  onChatClick: (e: React.MouseEvent, profileId: string) => void;
 }
 
 export const ProfileGrid = ({ profiles, onChatClick }: ProfileGridProps) => {
