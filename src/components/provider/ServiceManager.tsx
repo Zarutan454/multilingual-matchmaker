@@ -6,6 +6,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/lib/supabase";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 interface Service {
   id: string;
@@ -16,32 +19,90 @@ interface Service {
 
 export const ServiceManager = () => {
   const { t } = useLanguage();
-  const [services, setServices] = useState<Service[]>([]);
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [newService, setNewService] = useState({
     name: "",
     description: "",
     duration: 30
   });
 
-  const handleAddService = () => {
+  // Fetch existing services
+  const { data: services = [], isLoading } = useQuery({
+    queryKey: ['services', user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from('services')
+        .select('*')
+        .eq('provider_id', user.id);
+      
+      if (error) {
+        console.error('Error fetching services:', error);
+        toast.error(t("errorLoadingServices"));
+        return [];
+      }
+      return data || [];
+    },
+    enabled: !!user
+  });
+
+  const handleAddService = async () => {
+    if (!user) {
+      toast.error(t("pleaseLogin"));
+      return;
+    }
+
     if (!newService.name || !newService.description) {
       toast.error(t("fillAllFields"));
       return;
     }
 
-    const service: Service = {
-      id: crypto.randomUUID(),
-      ...newService
-    };
+    setIsSubmitting(true);
+    try {
+      const { data, error } = await supabase
+        .from('services')
+        .insert([
+          {
+            provider_id: user.id,
+            name: newService.name,
+            description: newService.description,
+            duration: newService.duration
+          }
+        ]);
 
-    setServices([...services, service]);
-    setNewService({ name: "", description: "", duration: 30 });
-    toast.success(t("serviceAdded"));
+      if (error) throw error;
+
+      toast.success(t("serviceAdded"));
+      setNewService({ name: "", description: "", duration: 30 });
+      queryClient.invalidateQueries({ queryKey: ['services', user.id] });
+    } catch (error) {
+      console.error('Error adding service:', error);
+      toast.error(t("errorAddingService"));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleDeleteService = (id: string) => {
-    setServices(services.filter(service => service.id !== id));
-    toast.success(t("serviceDeleted"));
+  const handleDeleteService = async (id: string) => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('services')
+        .delete()
+        .eq('id', id)
+        .eq('provider_id', user.id);
+
+      if (error) throw error;
+
+      toast.success(t("serviceDeleted"));
+      queryClient.invalidateQueries({ queryKey: ['services', user.id] });
+    } catch (error) {
+      console.error('Error deleting service:', error);
+      toast.error(t("errorDeletingService"));
+    }
   };
 
   return (
@@ -76,37 +137,49 @@ export const ServiceManager = () => {
               className="bg-gray-800 border-gray-700 text-white"
             />
           </div>
-          <Button onClick={handleAddService} className="w-full">
+          <Button 
+            onClick={handleAddService} 
+            className="w-full"
+            disabled={isSubmitting}
+          >
             <Plus className="w-4 h-4 mr-2" />
-            {t("addService")}
+            {isSubmitting ? t("adding") : t("addService")}
           </Button>
         </CardContent>
       </Card>
 
       <div className="grid gap-4">
-        {services.map((service) => (
-          <Card key={service.id} className="bg-gray-900 border-gray-800">
-            <CardContent className="pt-6">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="text-lg font-semibold text-white">{service.name}</h3>
-                  <p className="text-gray-400 mt-1">{service.description}</p>
-                  <p className="text-sm text-gray-500 mt-2">
-                    {t("duration")}: {service.duration} {t("minutes")}
-                  </p>
+        {isLoading ? (
+          <div className="text-center py-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>
+          </div>
+        ) : services.length === 0 ? (
+          <p className="text-center text-gray-400 py-4">{t("noServices")}</p>
+        ) : (
+          services.map((service) => (
+            <Card key={service.id} className="bg-gray-900 border-gray-800">
+              <CardContent className="pt-6">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="text-lg font-semibold text-white">{service.name}</h3>
+                    <p className="text-gray-400 mt-1">{service.description}</p>
+                    <p className="text-sm text-gray-500 mt-2">
+                      {t("duration")}: {service.duration} {t("minutes")}
+                    </p>
+                  </div>
+                  <Button
+                    variant="destructive"
+                    size="icon"
+                    onClick={() => handleDeleteService(service.id)}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
                 </div>
-                <Button
-                  variant="destructive"
-                  size="icon"
-                  onClick={() => handleDeleteService(service.id)}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          ))
+        )}
       </div>
     </div>
   );
-}
+};
