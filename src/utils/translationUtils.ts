@@ -24,15 +24,14 @@ export const translateText = async (
 
     if (!response.ok) {
       console.error("Translation error:", await response.text());
-      return text; // Fallback zum Originaltext
+      return text;
     }
 
     const data = await response.json();
-    // Google Translate gibt ein verschachteltes Array zurück, wir nehmen den ersten übersetzten Text
-    return data[0][0][0];
+    return data[0][0][0] || text;
   } catch (error) {
     console.error("Translation error:", error);
-    return text; // Fallback zum Originaltext
+    return text;
   }
 };
 
