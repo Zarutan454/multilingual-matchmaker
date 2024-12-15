@@ -13,11 +13,9 @@ interface Profile {
   location: string;
 }
 
-interface FavoriteProfile {
+interface FavoriteData {
   id: string;
   provider_id: string;
-  user_id: string;
-  created_at: string;
   profiles: Profile;
 }
 
@@ -73,7 +71,7 @@ export const FavoritesCard = ({ user }: FavoritesCardProps) => {
           {!favorites || favorites.length === 0 ? (
             <p className="text-gray-400 text-center py-4">{t("noFavoritesSelected")}</p>
           ) : (
-            favorites.map((favorite: FavoriteProfile) => (
+            favorites.map((favorite: FavoriteData) => (
               <div 
                 key={favorite.id} 
                 className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-800 cursor-pointer transition-colors duration-200"

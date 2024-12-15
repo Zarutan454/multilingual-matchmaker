@@ -10,4 +10,8 @@ export type AdminTranslationKeys =
   | "pending"
   | "user"
   | "activate"
-  | "suspend";
+  | "suspend"
+  | "updatingUserStatus"
+  | "usersLoadedSuccessfully"
+  | "errorFetchingUsers"
+  | "errorRefetchingUsers";

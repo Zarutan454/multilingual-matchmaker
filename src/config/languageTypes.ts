@@ -60,6 +60,9 @@ export type TranslationKey =
   | "nicknameRequired"
   | "nicknameChangeLimit"
   | "nicknameUpdated"
-  | "errorUpdatingNickname";
+  | "errorUpdatingNickname"
+  | "updatingUserStatus"
+  | "usersLoadedSuccessfully"
+  | "errorNavigating";
 
 export type Translations = Partial<Record<TranslationKey, string>>;
