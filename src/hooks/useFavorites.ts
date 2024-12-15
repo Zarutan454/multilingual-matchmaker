@@ -28,7 +28,7 @@ export const useFavorites = (user: User | null) => {
       }
 
       // Transform the data to match FavoriteData type
-      const favorites: FavoriteData[] = data?.map(item => ({
+      const favorites: FavoriteData[] = (data || []).map(item => ({
         id: item.id,
         profile: {
           id: item.profile.id,
@@ -36,7 +36,7 @@ export const useFavorites = (user: User | null) => {
           avatar_url: item.profile.avatar_url,
           location: item.profile.location
         }
-      })) || [];
+      }));
 
       return favorites;
     },
