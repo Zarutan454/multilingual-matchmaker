@@ -1,8 +1,7 @@
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Card } from "@/components/ui/card";
 import { useLanguage } from '../contexts/LanguageContext';
 import { LoginForm } from '../components/auth/LoginForm';
-import { SocialLogin } from '../components/auth/SocialLogin';
+import { Link } from "react-router-dom";
 import { AgeVerification } from '../components/AgeVerification';
 import { useState } from "react";
 
@@ -15,48 +14,49 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-dark bg-cover bg-center px-4">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
-      
-      <div className="w-full max-w-md relative z-10">
-        <Card className="bg-black/80 border-neutral-700 shadow-xl backdrop-blur-md">
-          <CardHeader className="space-y-3">
-            <CardTitle className="text-3xl font-bold text-center text-white">
-              {t("login")}
-            </CardTitle>
-            <CardDescription className="text-center text-neutral-400">
-              {t("pleaseLoginFirst")}
-            </CardDescription>
-          </CardHeader>
-          
-          <CardContent className="space-y-6">
-            <LoginForm />
-
-            <div className="relative">
-              <Separator className="my-4 bg-neutral-700" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="bg-black/80 px-2 text-sm text-neutral-400">
-                  {t("orContinueWith")}
-                </span>
-              </div>
-            </div>
-            
-            <SocialLogin />
-          </CardContent>
-          
-          <CardFooter className="flex justify-center pb-6">
-            <p className="text-sm text-neutral-400">
-              {t("noAccount")}{' '}
-              <a 
-                href="/register" 
-                className="text-secondary hover:text-secondary/80 transition-colors duration-200 font-medium"
-              >
-                {t("registerNow")}
-              </a>
-            </p>
-          </CardFooter>
-        </Card>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#1A1F2C] to-black p-4 relative overflow-hidden">
+      {/* Animated background particles */}
+      <div className="absolute inset-0">
+        {[...Array(50)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute animate-float"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              width: `${Math.random() * 4 + 1}px`,
+              height: `${Math.random() * 4 + 1}px`,
+              backgroundColor: '#9b87f5',
+              opacity: Math.random() * 0.5 + 0.2,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${Math.random() * 10 + 5}s`,
+            }}
+          />
+        ))}
       </div>
+      <div className="absolute inset-0 backdrop-blur-[2px]" />
+      
+      <Card className="w-full max-w-md relative z-10 bg-black/80 backdrop-blur-md p-8 rounded-lg border border-[#9b87f5]/30 shadow-[0_0_15px_rgba(155,135,245,0.3)] animate-fade-in">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-white mb-2">
+            POPP<span className="text-secondary">*</span>IN
+          </h1>
+          <p className="text-gray-400 italic">
+            {t("welcomeBack")}
+          </p>
+        </div>
+
+        <LoginForm />
+        
+        <div className="text-center mt-6">
+          <Link 
+            to="/register" 
+            className="text-[#9b87f5] hover:text-[#7E69AB] transition-colors duration-200"
+          >
+            {t("noAccount")} {t("registerNow")}
+          </Link>
+        </div>
+      </Card>
     </div>
   );
 };
