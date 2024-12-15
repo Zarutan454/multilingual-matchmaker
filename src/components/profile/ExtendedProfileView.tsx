@@ -69,7 +69,7 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-gradient-to-b from-[#1A1F2C] to-black">
       <ProfileBanner 
         profileId={profile.id} 
         bannerUrl={profile.banner_url} 
@@ -82,7 +82,7 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
             <Button
               variant="ghost"
               size="icon"
-              className="pointer-events-auto bg-black/50 hover:bg-black/70 text-white rounded-full p-2 -translate-x-1/2"
+              className="pointer-events-auto bg-[#9b87f5]/20 hover:bg-[#9b87f5]/40 text-white rounded-full p-2 -translate-x-1/2 backdrop-blur-sm"
               onClick={() => handleNavigation(prevProfile.id)}
               title={t("previousProfile")}
             >
@@ -93,7 +93,7 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
             <Button
               variant="ghost"
               size="icon"
-              className="pointer-events-auto bg-black/50 hover:bg-black/70 text-white rounded-full p-2 translate-x-1/2"
+              className="pointer-events-auto bg-[#9b87f5]/20 hover:bg-[#9b87f5]/40 text-white rounded-full p-2 translate-x-1/2 backdrop-blur-sm"
               onClick={() => handleNavigation(nextProfile.id)}
               title={t("nextProfile")}
             >
@@ -105,14 +105,14 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Left Column - Main Information */}
           <div className="md:col-span-2 space-y-6">
-            <Card className="bg-black/50 backdrop-blur-sm border-neutral-800">
+            <Card className="bg-black/80 backdrop-blur-md border-[#9b87f5]/30 shadow-[0_0_15px_rgba(155,135,245,0.3)]">
               <CardHeader>
                 <ProfileHeader profile={profile} />
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
                   {profile.bio && (
-                    <p className="text-gray-300 whitespace-pre-line">{profile.bio}</p>
+                    <p className="text-gray-300 whitespace-pre-line font-sans">{profile.bio}</p>
                   )}
                   <ProfileCharacteristics profile={profile} />
                 </div>
@@ -120,9 +120,9 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
             </Card>
 
             {/* Services */}
-            <Card className="bg-black/50 backdrop-blur-sm border-neutral-800">
+            <Card className="bg-black/80 backdrop-blur-md border-[#9b87f5]/30 shadow-[0_0_15px_rgba(155,135,245,0.3)]">
               <CardHeader>
-                <CardTitle className="text-white">{t("services")}</CardTitle>
+                <CardTitle className="text-white font-sans">{t("services")}</CardTitle>
               </CardHeader>
               <CardContent>
                 <ServiceList services={services} isEditable={isEditable} />
@@ -136,9 +136,9 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
           {/* Right Column - Additional Information */}
           <div className="space-y-6">
             {/* Gallery */}
-            <Card className="bg-black/50 backdrop-blur-sm border-neutral-800">
+            <Card className="bg-black/80 backdrop-blur-md border-[#9b87f5]/30 shadow-[0_0_15px_rgba(155,135,245,0.3)]">
               <CardHeader>
-                <CardTitle className="text-white">{t("gallery")}</CardTitle>
+                <CardTitle className="text-white font-sans">{t("gallery")}</CardTitle>
               </CardHeader>
               <CardContent>
                 <Gallery images={profile.gallery || []} />
@@ -150,6 +150,6 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
