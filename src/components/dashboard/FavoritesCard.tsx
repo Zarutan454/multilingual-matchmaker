@@ -31,6 +31,17 @@ export const FavoritesCard = ({ user }: FavoritesCardProps) => {
     return <Loader />;
   }
 
+  if (error) {
+    console.error("Error fetching favorites:", error);
+    return (
+      <Card className="bg-gray-900 border-gray-800">
+        <CardContent>
+          <p className="text-red-500 text-center py-4">{t("errorLoadingFavorites")}</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="bg-gray-900 border-gray-800">
       <CardHeader>
@@ -44,7 +55,7 @@ export const FavoritesCard = ({ user }: FavoritesCardProps) => {
       </CardHeader>
       <CardContent>
         <FavoriteList
-          favorites={favorites as FavoriteData[]}
+          favorites={favorites}
           onProfileClick={handleProfileClick}
           emptyMessage={t("noFavoritesSelected")}
         />

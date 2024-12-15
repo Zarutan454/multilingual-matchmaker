@@ -9,8 +9,3 @@ export interface FavoriteData {
   id: string;
   profile: Profile;
 }
-
-export interface FavoriteResponse {
-  id: string;
-  profile: Profile;
-}

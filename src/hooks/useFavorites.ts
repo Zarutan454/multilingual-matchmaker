@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
+import { FavoriteData } from "@/types/favorites";
 
 export const useFavorites = (user: User | null) => {
   return useQuery({
@@ -19,10 +20,28 @@ export const useFavorites = (user: User | null) => {
             location
           )
         `)
-        .eq('user_id', user.id);
+        .eq('user_id', user.id)
+        .single();
 
-      if (error) throw error;
-      return data || [];
+      if (error) {
+        if (error.code === 'PGRST116') {
+          return [];
+        }
+        throw error;
+      }
+
+      // Transform the data to match FavoriteData type
+      const favorites: FavoriteData[] = data ? [data].map(item => ({
+        id: item.id,
+        profile: {
+          id: item.profile.id,
+          full_name: item.profile.full_name,
+          avatar_url: item.profile.avatar_url,
+          location: item.profile.location
+        }
+      })) : [];
+
+      return favorites;
     },
     enabled: !!user
   });
