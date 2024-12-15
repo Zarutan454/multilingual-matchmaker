@@ -23,15 +23,18 @@ export const translateText = async (
     );
 
     if (!response.ok) {
-      console.error("Translation error:", await response.text());
-      return text;
+      throw new Error(`Translation failed: ${response.statusText}`);
     }
 
     const data = await response.json();
+    if (!data || !data[0] || !data[0][0]) {
+      throw new Error("Invalid translation response");
+    }
+
     return data[0][0][0] || text;
   } catch (error) {
     console.error("Translation error:", error);
-    return text;
+    throw error;
   }
 };
 

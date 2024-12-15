@@ -14,29 +14,28 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [currentLanguage, setCurrentLanguage] = useState<Language>("de");
   const [dynamicTranslations, setDynamicTranslations] = useState<Record<string, string>>({});
   const [isTranslating, setIsTranslating] = useState(false);
-
-  // Cache für Übersetzungen
-  const translationCache = new Map<string, Promise<string>>();
+  const translationCache = new Map<string, string>();
 
   const translateAndCache = useCallback(async (text: string, targetLang: Language): Promise<string> => {
     if (!text) return "";
     
     const cacheKey = `${targetLang}:${text}`;
     
-    if (!translationCache.has(cacheKey)) {
-      const translation = translateText(text, targetLang);
-      translationCache.set(cacheKey, translation);
+    if (translationCache.has(cacheKey)) {
+      return translationCache.get(cacheKey)!;
     }
 
     try {
-      return await translationCache.get(cacheKey)!;
+      const translatedText = await translateText(text, targetLang);
+      translationCache.set(cacheKey, translatedText);
+      return translatedText;
     } catch (error) {
       console.error("Translation error:", error);
       return text;
     }
   }, []);
 
-  const t = useCallback((key: TranslationKey | string): string => {
+  const t = useCallback(async (key: TranslationKey | string): Promise<string> => {
     // Versuche zuerst statische Übersetzungen zu finden
     const staticTranslation = languages[currentLanguage]?.translations[key as TranslationKey];
     if (staticTranslation) return staticTranslation;
@@ -51,16 +50,19 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       // Verwende den englischen Text als Basis für die Übersetzung
       const textToTranslate = languages.en.translations[key as TranslationKey] || key;
       
-      translateAndCache(textToTranslate, currentLanguage)
-        .then((translatedText) => {
-          setDynamicTranslations((prev) => ({
-            ...prev,
-            [key]: translatedText,
-          }));
-        })
-        .finally(() => {
-          setIsTranslating(false);
-        });
+      try {
+        const translatedText = await translateAndCache(textToTranslate, currentLanguage);
+        setDynamicTranslations((prev) => ({
+          ...prev,
+          [key]: translatedText,
+        }));
+        return translatedText;
+      } catch (error) {
+        console.error("Translation error:", error);
+        return textToTranslate;
+      } finally {
+        setIsTranslating(false);
+      }
     }
 
     // Fallback zum englischen Text oder Original
