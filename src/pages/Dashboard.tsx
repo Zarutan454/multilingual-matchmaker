@@ -10,17 +10,21 @@ import { Button } from "@/components/ui/button";
 import { Gallery } from "@/components/profile/Gallery";
 import { FavoritesCard } from "@/components/dashboard/FavoritesCard";
 import { RecentChatsCard } from "@/components/dashboard/RecentChatsCard";
+import { Profile } from "@/types/profile";
 
 export default function Dashboard() {
   const { t } = useLanguage();
   const { user } = useAuth();
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        if (!user) return;
+        if (!user) {
+          setLoading(false);
+          return;
+        }
         
         const { data, error } = await supabase
           .from('profiles')
@@ -29,7 +33,7 @@ export default function Dashboard() {
           .single();
 
         if (error) throw error;
-        setProfile(data);
+        setProfile(data as Profile);
       } catch (error) {
         console.error('Error fetching profile:', error);
         toast.error(t("errorLoadingProfile"));
@@ -156,7 +160,7 @@ export default function Dashboard() {
                       {Object.entries(profile.rates).map(([service, rate]) => (
                         <div key={service} className="flex justify-between">
                           <span className="capitalize">{service}</span>
-                          <span>{rate}€</span>
+                          <span>{String(rate)}€</span>
                         </div>
                       ))}
                     </div>
@@ -173,7 +177,7 @@ export default function Dashboard() {
                   {Object.entries(profile.working_hours).map(([day, hours]) => (
                     <div key={day} className="flex justify-between">
                       <span className="capitalize">{day}</span>
-                      <span>{Array.isArray(hours) ? hours.join(", ") : hours}</span>
+                      <span>{Array.isArray(hours) ? hours.join(", ") : String(hours)}</span>
                     </div>
                   ))}
                 </div>
