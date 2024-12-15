@@ -1,70 +1,62 @@
-import { useState } from "react";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Trash2 } from "lucide-react";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { SERVICE_CATEGORIES } from "./ServiceCategorySelector";
-
-interface Service {
-  id: string;
-  name: string;
-  description: string;
-  duration: number;
-  categories: string[];
-}
+import { Clock, DollarSign } from "lucide-react";
+import { Service } from "@/types/profile";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ServiceListProps {
   services: Service[];
-  onDelete: (id: string) => Promise<void>;
+  isEditable?: boolean;
 }
 
-export const ServiceList = ({ services, onDelete }: ServiceListProps) => {
+export const ServiceList = ({ services, isEditable = false }: ServiceListProps) => {
   const { t } = useLanguage();
-  const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const handleDelete = async (id: string) => {
-    setDeletingId(id);
-    await onDelete(id);
-    setDeletingId(null);
-  };
+  if (!services || services.length === 0) {
+    return (
+      <div className="text-center py-4 text-gray-400">
+        {t("noServices")}
+      </div>
+    );
+  }
 
   return (
     <div className="grid gap-4">
       {services.map((service) => (
-        <Card key={service.id} className="bg-gray-900 border-gray-800">
-          <CardContent className="pt-6">
-            <div className="flex justify-between items-start">
-              <div className="space-y-2">
-                <h3 className="text-lg font-semibold text-white">{service.name}</h3>
+        <div 
+          key={service.id}
+          className="p-4 rounded-lg bg-gray-900/50 hover:bg-gray-900/70 transition-colors"
+        >
+          <div className="flex justify-between items-start">
+            <div className="space-y-2">
+              <h3 className="text-lg font-semibold text-white">
+                {service.name}
+              </h3>
+              {service.description && (
                 <p className="text-gray-400">{service.description}</p>
-                <p className="text-sm text-gray-500">
-                  {t("duration")}: {service.duration} {t("minutes")}
-                </p>
-                {service.categories && service.categories.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {service.categories.map((categoryId) => {
-                      const category = SERVICE_CATEGORIES.find(c => c.id === categoryId);
-                      return category ? (
-                        <Badge key={categoryId} variant="secondary">
-                          {category.label}
-                        </Badge>
-                      ) : null;
-                    })}
-                  </div>
-                )}
+              )}
+              <div className="flex items-center gap-4">
+                <div className="flex items-center text-gray-400">
+                  <Clock className="w-4 h-4 mr-1" />
+                  {service.duration} {t("minutes")}
+                </div>
               </div>
-              <Button
-                variant="destructive"
-                size="icon"
-                onClick={() => handleDelete(service.id)}
-                disabled={deletingId === service.id}
-              >
-                <Trash2 className="w-4 h-4" />
-              </Button>
+              {service.categories && service.categories.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {service.categories.map((category, index) => (
+                    <Badge 
+                      key={index}
+                      variant="secondary"
+                      className="bg-secondary/20 text-secondary"
+                    >
+                      {category}
+                    </Badge>
+                  ))}
+                </div>
+              )}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       ))}
     </div>
   );

@@ -8,6 +8,8 @@ import { ServiceList } from "./ServiceList";
 import { Gallery } from "./Gallery";
 import { AvailabilitySchedule } from "../availability/AvailabilitySchedule";
 import { PricingSection } from "../services/PricingSection";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
 
 interface ExtendedProfileViewProps {
   profile: Profile;
@@ -17,6 +19,24 @@ interface ExtendedProfileViewProps {
 export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedProfileViewProps) => {
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("info");
+
+  // Fetch services for this profile
+  const { data: services = [] } = useQuery({
+    queryKey: ['services', profile.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('services')
+        .select('*')
+        .eq('provider_id', profile.id);
+
+      if (error) {
+        console.error('Error fetching services:', error);
+        throw error;
+      }
+
+      return data || [];
+    }
+  });
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
@@ -85,7 +105,14 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
           </Card>
 
           {/* Services */}
-          <ServiceList services={profile.services || []} isEditable={isEditable} />
+          <Card className="bg-black/50 backdrop-blur-sm border-neutral-800">
+            <CardHeader>
+              <CardTitle className="text-white">{t("services")}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ServiceList services={services} isEditable={isEditable} />
+            </CardContent>
+          </Card>
 
           {/* Verfügbarkeit */}
           <AvailabilitySchedule />
