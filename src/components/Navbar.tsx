@@ -28,17 +28,12 @@ export const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center gap-4">
-            <img 
-              src="/lovable-uploads/fe01f460-75ee-475d-8e6c-efb6244e2622.png" 
-              alt="Logo" 
-              className="h-10 w-auto"
-            />
             <div className="flex flex-col items-start">
               <a href="/" className="text-white font-bold text-xl">
                 POPP<span className="text-secondary">*</span>IN
               </a>
               <span className="text-secondary text-sm italic font-light">
-                stein
+                Escort Made in Germany
               </span>
             </div>
           </div>
