@@ -34,7 +34,7 @@ export const FeaturedProfiles = () => {
         category: profile.service_categories?.[0] || 'VIP Begleitung',
         location: profile.location || 'Unknown',
         coordinates: { lat: 0, lng: 0 },
-        status: profile.availability_status || 'offline',
+        status: profile.availability_status || 'online', // Set default to 'online' to enable chat
         rating: 4.8,
         reviews: 0,
         spokenLanguages: profile.languages || ['Deutsch'],
