@@ -5,6 +5,7 @@ import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from "../lib/supabase";
 import { Separator } from "@/components/ui/separator";
 import { useLanguage } from "../contexts/LanguageContext";
+import { Link } from "react-router-dom";
 
 const Register = () => {
   const { t } = useLanguage();
@@ -71,7 +72,6 @@ const Register = () => {
                   gap: '1rem',
                 },
               },
-              // Add CSS classes for hover states
               className: {
                 button: 'hover:bg-[#7E69AB]',
                 anchor: 'hover:text-[#7E69AB]',
@@ -81,6 +81,15 @@ const Register = () => {
             view="sign_up"
             showLinks={false}
           />
+          
+          <div className="text-center mt-6">
+            <Link 
+              to="/login" 
+              className="text-[#9b87f5] hover:text-[#7E69AB] transition-colors duration-200"
+            >
+              {t("alreadyCustomer")}
+            </Link>
+          </div>
         </div>
       </Card>
     </div>

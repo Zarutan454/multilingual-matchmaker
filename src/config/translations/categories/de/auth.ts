@@ -44,4 +44,5 @@ export const authTranslations = {
   documentsNote: "Bitte laden Sie die erforderlichen Dokumente hoch",
   emailAlreadyExists: "Diese E-Mail-Adresse wird bereits verwendet",
   pleaseCheckEmail: "Bitte überprüfen Sie Ihre E-Mail für den Bestätigungslink",
+  alreadyCustomer: "Bereits Kunde? Hier anmelden",
 };

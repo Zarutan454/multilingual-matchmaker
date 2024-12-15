@@ -43,4 +43,5 @@ export const authTranslations = {
   seconds: "Sekunden",
   pleaseWait: "Bitte warten Sie",
   waitFor: "Warten Sie",
+  alreadyCustomer: "Already a customer? Login here",
 };
