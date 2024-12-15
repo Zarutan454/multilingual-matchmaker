@@ -109,20 +109,48 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-[#1A1F2C] to-black">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[#9b87f5]"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black to-gray-900 text-white">
+    <div className="min-h-screen bg-gradient-to-b from-[#1A1F2C] to-black text-white relative overflow-hidden">
+      {/* Animated background particles */}
+      <div className="absolute inset-0">
+        {[...Array(50)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute animate-float"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              width: `${Math.random() * 4 + 1}px`,
+              height: `${Math.random() * 4 + 1}px`,
+              backgroundColor: '#9b87f5',
+              opacity: Math.random() * 0.5 + 0.2,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${Math.random() * 10 + 5}s`,
+            }}
+          />
+        ))}
+      </div>
+      <div className="absolute inset-0 backdrop-blur-[2px]" />
+
       <ProfileBanner 
         profileId={user?.id || ""} 
         bannerUrl={profile?.banner_url} 
         isEditable={true} 
       />
-      <div className="container mx-auto px-4 py-8">
+      
+      <div className="container mx-auto px-4 py-8 relative z-10">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-white mb-2">
+            POPP<span className="text-secondary">*</span>IN
+          </h1>
+        </div>
+
         <DashboardHeader />
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -136,17 +164,17 @@ export default function Dashboard() {
               userId={user?.id || ""}
             />
 
-            <Card className="bg-black/50 backdrop-blur-sm border-neutral-800 p-6">
+            <Card className="bg-black/50 backdrop-blur-md border-[#9b87f5]/30 shadow-[0_0_15px_rgba(155,135,245,0.3)] p-6">
               <h2 className="text-xl font-bold mb-6">{t("services")}</h2>
               <ServiceManager />
             </Card>
 
-            <Card className="bg-black/50 backdrop-blur-sm border-neutral-800 p-6">
+            <Card className="bg-black/50 backdrop-blur-md border-[#9b87f5]/30 shadow-[0_0_15px_rgba(155,135,245,0.3)] p-6">
               <h2 className="text-xl font-bold mb-6">{t("availability")}</h2>
               <AvailabilitySchedule />
             </Card>
 
-            <Card className="bg-black/50 backdrop-blur-sm border-neutral-800 p-6">
+            <Card className="bg-black/50 backdrop-blur-md border-[#9b87f5]/30 shadow-[0_0_15px_rgba(155,135,245,0.3)] p-6">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">{t("gallery")}</h2>
                 <ImageUploadSection
