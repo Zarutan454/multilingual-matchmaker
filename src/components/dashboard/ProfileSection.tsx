@@ -33,6 +33,7 @@ export const ProfileSection = ({
           variant="outline"
           size="sm"
           onClick={() => setIsEditing(!isEditing)}
+          className="text-white border-[#9b87f5] hover:bg-[#9b87f5]/20 transition-colors"
         >
           <Edit className="w-4 h-4 mr-2" />
           {isEditing ? t("cancel") : t("edit")}
