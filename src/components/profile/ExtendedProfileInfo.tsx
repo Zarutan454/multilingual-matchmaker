@@ -14,7 +14,7 @@ export const ExtendedProfileInfo = ({ form }: ExtendedProfileInfoProps) => {
 
   const serviceCategories = [
     { id: "massage", name: "Massage" },
-    { id: "physio", name: "Physiotherapy" },
+    { id: "physio", name: "Physiotherapie" },
     { id: "training", name: "Personal Training" },
   ];
 
@@ -86,7 +86,6 @@ export const ExtendedProfileInfo = ({ form }: ExtendedProfileInfoProps) => {
                   field.onChange([...currentCategories, value]);
                 }
               }}
-              value={field.value?.[0] || ""}
             >
               <FormControl>
                 <SelectTrigger>
