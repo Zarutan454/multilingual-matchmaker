@@ -8,8 +8,8 @@ interface ChatMessage {
   recipient: string;
   content: string;
   created_at: string;
-  sender_name: string;
-  recipient_name: string;
+  sender_name: string | null;
+  recipient_name: string | null;
   avatar_url: string | null;
   unread: boolean;
   unread_count: number;
@@ -21,7 +21,8 @@ export const useRecentChats = (user: User | null) => {
     queryFn: async (): Promise<ChatMessage[]> => {
       if (!user) return [];
       
-      const { data, error } = await supabase
+      // First get all messages
+      const { data: messages, error: messagesError } = await supabase
         .from('messages')
         .select(`
           id,
@@ -30,11 +31,11 @@ export const useRecentChats = (user: User | null) => {
           recipient,
           created_at,
           read,
-          sender_profile:profiles!messages_sender_fkey (
+          profiles!messages_sender_fkey (
             full_name,
             avatar_url
           ),
-          recipient_profile:profiles!messages_recipient_fkey (
+          profiles!messages_recipient_fkey (
             full_name,
             avatar_url
           )
@@ -42,36 +43,38 @@ export const useRecentChats = (user: User | null) => {
         .or(`sender.eq.${user.id},recipient.eq.${user.id}`)
         .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Error fetching messages:', error);
+      if (messagesError) {
+        console.error('Error fetching messages:', messagesError);
         return [];
       }
 
-      // Get unread message counts
-      const { data: unreadCounts } = await supabase
+      // Get unread message count
+      const { data: unreadCounts, error: unreadError } = await supabase
         .from('messages')
-        .select('sender', { count: 'exact' })
+        .select('sender', { count: 'exact', head: false })
         .eq('recipient', user.id)
-        .eq('read', false)
-        .group('sender');
+        .eq('read', false);
+
+      if (unreadError) {
+        console.error('Error fetching unread counts:', unreadError);
+        return [];
+      }
 
       // Transform the data
-      const transformedData = data.map(message => ({
+      const transformedData = messages?.map(message => ({
         id: message.id,
         sender: message.sender,
         recipient: message.recipient,
         content: message.content,
         created_at: message.created_at,
-        sender_name: message.sender_profile?.full_name,
-        recipient_name: message.recipient_profile?.full_name,
+        sender_name: message.profiles?.full_name,
+        recipient_name: message.profiles?.full_name,
         avatar_url: message.sender === user.id 
-          ? message.recipient_profile?.avatar_url 
-          : message.sender_profile?.avatar_url,
+          ? message.profiles?.avatar_url 
+          : message.profiles?.avatar_url,
         unread: !message.read && message.recipient === user.id,
-        unread_count: unreadCounts?.find(count => 
-          count.sender === (message.sender === user.id ? message.recipient : message.sender)
-        )?.count || 0
-      }));
+        unread_count: unreadCounts?.length || 0
+      })) || [];
 
       // Group by conversation and get latest message
       const conversationMap = new Map<string, ChatMessage>();

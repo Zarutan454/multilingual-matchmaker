@@ -32,8 +32,7 @@ export const RecentChatsCard = ({ user }: RecentChatsCardProps) => {
           table: 'messages',
           filter: `recipient=eq.${user.id}`
         },
-        (payload) => {
-          console.log('New message received:', payload);
+        () => {
           refetch(); // Refresh the chat list when new message arrives
         }
       )
@@ -49,10 +48,13 @@ export const RecentChatsCard = ({ user }: RecentChatsCardProps) => {
 
     try {
       // Mark messages as read when clicking on the chat
-      await supabase.rpc('mark_messages_as_read', {
-        p_recipient_id: user.id,
-        p_sender_id: recipientId
-      });
+      const { error } = await supabase
+        .from('messages')
+        .update({ read: true })
+        .eq('recipient', user.id)
+        .eq('sender', recipientId);
+      
+      if (error) throw error;
       
       // Navigate to the chat
       navigate(`/messages/${recipientId}`);
@@ -85,7 +87,7 @@ export const RecentChatsCard = ({ user }: RecentChatsCardProps) => {
               onClick={() => handleChatClick(chat.sender === user?.id ? chat.recipient : chat.sender)}
             >
               <Avatar className="h-10 w-10">
-                <AvatarImage src={chat.avatar_url} />
+                <AvatarImage src={chat.avatar_url || ''} />
                 <AvatarFallback>
                   {chat.sender === user?.id 
                     ? chat.recipient_name?.[0]?.toUpperCase() 
