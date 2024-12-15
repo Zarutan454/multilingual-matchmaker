@@ -16,6 +16,20 @@ export const enTranslations: Translations = {
   ...availabilityTranslations,
   ...pricingTranslations,
   
+  // Admin translations
+  userManagement: "User Management",
+  userStatusUpdated: "User status updated",
+  errorUpdatingUser: "Error updating user",
+  name: "Name",
+  status: "Status",
+  role: "Role",
+  actions: "Actions",
+  notProvided: "Not provided",
+  pending: "Pending",
+  user: "User",
+  activate: "Activate",
+  suspend: "Suspend",
+
   // Phone verification translations
   success: "Success",
   error: "Error",

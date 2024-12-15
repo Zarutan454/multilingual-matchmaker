@@ -18,6 +18,20 @@ export const deTranslations: Translations = {
   ...pricingTranslations,
   ...dashboardTranslations,
   
+  // Admin translations
+  userManagement: "Benutzerverwaltung",
+  userStatusUpdated: "Benutzerstatus aktualisiert",
+  errorUpdatingUser: "Fehler beim Aktualisieren des Benutzers",
+  name: "Name",
+  status: "Status",
+  role: "Rolle",
+  actions: "Aktionen",
+  notProvided: "Nicht angegeben",
+  pending: "Ausstehend",
+  user: "Benutzer",
+  activate: "Aktivieren",
+  suspend: "Sperren",
+
   // Phone verification translations
   success: "Erfolg",
   error: "Fehler",
