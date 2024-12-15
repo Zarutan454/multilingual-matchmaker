@@ -1,14 +1,14 @@
 import { useNavigate } from "react-router-dom";
-import { MapPin, MessageCircle, Star, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Profile } from "./types";
 import { useAuth } from "@/contexts/AuthContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import { de } from "date-fns/locale";
+import { MessageCircle, Star } from "lucide-react";
 
 interface ProfileCardProps {
   profile: Profile;
@@ -19,6 +19,47 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isOnline, setIsOnline] = useState(profile.status === "online");
+
+  useEffect(() => {
+    // Überprüfe den initialen Online-Status
+    const checkOnlineStatus = async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('availability_status, last_seen')
+        .eq('id', profile.id)
+        .single();
+
+      if (!error && data) {
+        setIsOnline(data.availability_status === 'online');
+      }
+    };
+
+    checkOnlineStatus();
+
+    // Abonniere Änderungen am Online-Status
+    const channel = supabase
+      .channel(`presence_${profile.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'profiles',
+          filter: `id=eq.${profile.id}`
+        },
+        (payload: any) => {
+          if (payload.new) {
+            setIsOnline(payload.new.availability_status === 'online');
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [profile.id]);
 
   const handleFavoriteClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -111,13 +152,13 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
 
           <div className="mt-3 space-y-2">
             <Badge 
-              variant={profile.status === "online" ? "success" : "secondary"}
+              variant={isOnline ? "success" : "secondary"}
               className="w-full justify-center"
             >
-              {profile.status === "online" ? "Online" : lastOnline ? `Zuletzt online ${lastOnline}` : "Offline"}
+              {isOnline ? "Online" : lastOnline ? `Zuletzt online ${lastOnline}` : "Offline"}
             </Badge>
 
-            {profile.status === "online" && (
+            {isOnline && (
               <Button
                 onClick={(e) => onChatClick(e, profile.id)}
                 variant="secondary"
