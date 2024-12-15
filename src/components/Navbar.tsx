@@ -57,7 +57,7 @@ export const Navbar = () => {
             </a>
             {user ? (
               <>
-                <a href="/profile" className="text-white hover:text-[#c69963] transition-colors flex items-center gap-2">
+                <a href="/dashboard" className="text-white hover:text-[#c69963] transition-colors flex items-center gap-2">
                   <User size={18} />
                   {t("profile")}
                 </a>
@@ -119,7 +119,7 @@ export const Navbar = () => {
               </a>
               {user ? (
                 <>
-                  <a href="/profile" className="text-white hover:text-[#c69963] transition-colors flex items-center gap-2">
+                  <a href="/dashboard" className="text-white hover:text-[#c69963] transition-colors flex items-center gap-2">
                     <User size={18} />
                     {t("profile")}
                   </a>
