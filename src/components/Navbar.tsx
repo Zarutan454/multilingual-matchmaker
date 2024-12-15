@@ -1,6 +1,6 @@
 import { useLanguage } from "../contexts/LanguageContext";
 import { languages, Language } from "../config/languages";
-import { Menu, User, LogOut } from "lucide-react";
+import { Menu, User, LogOut, Home, Heart, MessageSquare, Grid } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -44,16 +44,20 @@ export const Navbar = () => {
           </div>
 
           <div className="hidden md:flex space-x-8">
-            <a href="/" className="text-white hover:text-[#c69963] transition-colors">
+            <a href="/" className="text-white hover:text-[#c69963] transition-colors flex items-center gap-2">
+              <Home size={18} />
               {t("home")}
             </a>
-            <a href="/about" className="text-white hover:text-[#c69963] transition-colors">
-              {t("about")}
+            <a href="/models" className="text-white hover:text-[#c69963] transition-colors flex items-center gap-2">
+              <Heart size={18} />
+              Models
             </a>
-            <a href="/services" className="text-white hover:text-[#c69963] transition-colors">
-              {t("services")}
+            <a href="/categories" className="text-white hover:text-[#c69963] transition-colors flex items-center gap-2">
+              <Grid size={18} />
+              {t("categories")}
             </a>
-            <a href="/contact" className="text-white hover:text-[#c69963] transition-colors">
+            <a href="/contact" className="text-white hover:text-[#c69963] transition-colors flex items-center gap-2">
+              <MessageSquare size={18} />
               {t("contact")}
             </a>
             {user ? (
@@ -90,7 +94,6 @@ export const Navbar = () => {
               ))}
             </select>
 
-            {/* Mobile Menu Button */}
             <button 
               className="md:hidden text-white"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -98,22 +101,25 @@ export const Navbar = () => {
               <Menu size={24} />
             </button>
           </div>
-
         </div>
 
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-[#333]">
             <div className="flex flex-col space-y-4">
-              <a href="/" className="text-white hover:text-[#c69963] transition-colors">
+              <a href="/" className="text-white hover:text-[#c69963] transition-colors flex items-center gap-2">
+                <Home size={18} />
                 {t("home")}
               </a>
-              <a href="/about" className="text-white hover:text-[#c69963] transition-colors">
-                {t("about")}
+              <a href="/models" className="text-white hover:text-[#c69963] transition-colors flex items-center gap-2">
+                <Heart size={18} />
+                Models
               </a>
-              <a href="/services" className="text-white hover:text-[#c69963] transition-colors">
-                {t("services")}
+              <a href="/categories" className="text-white hover:text-[#c69963] transition-colors flex items-center gap-2">
+                <Grid size={18} />
+                {t("categories")}
               </a>
-              <a href="/contact" className="text-white hover:text-[#c69963] transition-colors">
+              <a href="/contact" className="text-white hover:text-[#c69963] transition-colors flex items-center gap-2">
+                <MessageSquare size={18} />
                 {t("contact")}
               </a>
               {user ? (
