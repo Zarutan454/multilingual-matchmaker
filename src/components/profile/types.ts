@@ -19,6 +19,7 @@ export interface Profile {
     max: number;
   };
   last_seen?: string;
+  membership_level?: 'bronze' | 'silver' | 'gold' | 'vip';
 }
 
 export interface ProfileFormValues {
