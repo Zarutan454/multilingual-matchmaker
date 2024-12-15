@@ -136,5 +136,8 @@ export const enTranslations: Translations = {
   contacts: "Contacts",
   recentContacts: "Recent Contacts",
   favorites: "Favorites",
-  yourFavorites: "Your Favorites"
+  yourFavorites: "Your Favorites",
+  errorNavigating: "Error navigating",
+  errorLoadingFavorites: "Error loading favorites",
+  noFavorites: "No favorites yet"
 };

@@ -129,5 +129,9 @@ export const deTranslations: Translations = {
   // Logout related translations
   logout: "Abmelden",
   logoutSuccess: "Erfolgreich abgemeldet",
-  logoutError: "Fehler beim Abmelden"
+  logoutError: "Fehler beim Abmelden",
+
+  errorNavigating: "Fehler bei der Navigation",
+  errorLoadingFavorites: "Fehler beim Laden der Favoriten",
+  noFavorites: "Keine Favoriten vorhanden"
 };
