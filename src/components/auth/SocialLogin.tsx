@@ -2,6 +2,7 @@ import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { createClient } from '@supabase/supabase-js';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useLocation } from 'react-router-dom';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -10,6 +11,8 @@ const supabase = createClient(
 
 export const SocialLogin = () => {
   const { t } = useLanguage();
+  const location = useLocation();
+  const isRegistration = location.pathname === '/register';
   
   return (
     <div className="space-y-4">
@@ -38,7 +41,7 @@ export const SocialLogin = () => {
         providers={["google"]}
         redirectTo={`${window.location.origin}/dashboard`}
         onlyThirdPartyProviders={true}
-        view="sign_in"
+        view={isRegistration ? "sign_up" : "sign_in"}
         showLinks={false}
       />
     </div>
