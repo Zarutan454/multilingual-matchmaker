@@ -14,7 +14,7 @@ export const DashboardHeader = () => {
         variant="outline" 
         size="sm" 
         onClick={() => navigate('/')}
-        className="text-white border-[#9b87f5] hover:bg-[#9b87f5]/20 transition-colors"
+        className="text-white border-[#9b87f5] hover:bg-[#9b87f5]/20 transition-colors bg-black/30"
       >
         <Home className="w-4 h-4 mr-2" />
         {t("backToHome")}
