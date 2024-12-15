@@ -6,6 +6,16 @@ import { User } from "@supabase/supabase-js";
 import { useFavorites } from "@/hooks/useFavorites";
 import { toast } from "sonner";
 
+interface FavoriteProfile {
+  id: string;
+  profiles: {
+    id: string;
+    full_name: string;
+    avatar_url: string | null;
+    location: string;
+  };
+}
+
 interface FavoritesCardProps {
   user: User | null;
 }
@@ -15,7 +25,7 @@ export const FavoritesCard = ({ user }: FavoritesCardProps) => {
   const navigate = useNavigate();
   const { data: favorites = [], isLoading, error } = useFavorites(user);
 
-  const handleProfileClick = (profileId: number) => {
+  const handleProfileClick = (profileId: string) => {
     try {
       navigate(`/provider/${profileId}`);
     } catch (error) {
@@ -58,7 +68,7 @@ export const FavoritesCard = ({ user }: FavoritesCardProps) => {
           {!favorites || favorites.length === 0 ? (
             <p className="text-gray-400 text-center py-4">{t("noFavoritesSelected")}</p>
           ) : (
-            favorites.map((favorite) => (
+            favorites.map((favorite: FavoriteProfile) => (
               <div 
                 key={favorite.id} 
                 className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-800 cursor-pointer transition-colors duration-200"
