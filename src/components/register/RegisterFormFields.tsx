@@ -13,6 +13,7 @@ interface RegisterFormFieldsProps {
     phoneNumber: string;
     age: string;
     country: string;
+    nickname: string;
   };
   setFormData: (data: any) => void;
 }
@@ -41,6 +42,18 @@ export const RegisterFormFields = ({
           <Label htmlFor="provider" className="text-white/90">{t("providerRegistration")}</Label>
         </div>
       </RadioGroup>
+
+      <div className="space-y-2">
+        <Label htmlFor="nickname" className="text-white/90">{t("nickname")}</Label>
+        <Input
+          id="nickname"
+          type="text"
+          value={formData.nickname}
+          onChange={(e) => setFormData({ ...formData, nickname: e.target.value })}
+          required
+          className="bg-black/50 border-[#FFD700]/30 text-white placeholder-white/50 focus:border-[#FFD700] focus:ring-[#FFD700]/20"
+        />
+      </div>
 
       <div className="space-y-2">
         <Label htmlFor="email" className="text-white/90">{t("email")}</Label>

@@ -20,6 +20,7 @@ export const RegisterForm = () => {
     phoneNumber: "",
     age: "",
     country: "",
+    nickname: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [retryTimeout, setRetryTimeout] = useState(0);
@@ -32,7 +33,7 @@ export const RegisterForm = () => {
       return;
     }
 
-    if (!formData.email || !formData.password || !formData.confirmPassword) {
+    if (!formData.email || !formData.password || !formData.confirmPassword || !formData.nickname) {
       toast.error(t("fillAllFields"));
       return;
     }
@@ -82,26 +83,25 @@ export const RegisterForm = () => {
         return;
       }
 
-      // Stellen Sie sicher, dass wir eine gültige Benutzer-ID haben
       if (!signUpData?.user?.id) {
         console.error("No user ID received after signup");
         toast.error(t("registrationError"));
         return;
       }
 
-      // Metadaten direkt nach der Registrierung setzen
       const { error: metadataError } = await supabase.auth.updateUser({
         data: {
           user_type: userType,
           phone: formData.phoneNumber,
           age: formData.age,
-          country: formData.country
+          country: formData.country,
+          nickname: formData.nickname,
+          last_nickname_change: new Date().toISOString()
         }
       });
 
       if (metadataError) {
         console.error("Metadata update error:", metadataError);
-        // Fahren Sie trotz Metadaten-Fehler fort, da der Benutzer bereits erstellt wurde
       }
       
       console.log("Registration successful!");
