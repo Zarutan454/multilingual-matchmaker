@@ -10,7 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
+import { ServiceCategorySelector, SERVICE_CATEGORIES } from "./ServiceCategorySelector";
 
 interface Service {
   id: string;
@@ -20,22 +20,11 @@ interface Service {
   categories: string[];
 }
 
-const SERVICE_CATEGORIES = [
-  { id: "dinner_dates", label: "Dinner Dates" },
-  { id: "hotel_visits", label: "Hotelbesuche" },
-  { id: "home_visits", label: "Hausbesuche" },
-  { id: "events", label: "Events & Partys" },
-  { id: "travel", label: "Reisebegleitung" },
-  { id: "culture", label: "Kulturelle Veranstaltungen" },
-  { id: "wellness", label: "Wellness & Spa" }
-];
-
 export const ServiceManager = () => {
   const { t } = useLanguage();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [newService, setNewService] = useState({
     name: "",
     description: "",
@@ -62,20 +51,6 @@ export const ServiceManager = () => {
     },
     enabled: !!user
   });
-
-  const handleCategoryChange = (categoryId: string, checked: boolean) => {
-    if (checked) {
-      setNewService({
-        ...newService,
-        categories: [...newService.categories, categoryId]
-      });
-    } else {
-      setNewService({
-        ...newService,
-        categories: newService.categories.filter(id => id !== categoryId)
-      });
-    }
-  };
 
   const handleAddService = async () => {
     if (!user) {
@@ -178,28 +153,12 @@ export const ServiceManager = () => {
             />
           </div>
 
-          <div className="space-y-2">
-            <h3 className="text-sm font-medium text-white mb-2">{t("categories")}</h3>
-            <div className="grid grid-cols-2 gap-2">
-              {SERVICE_CATEGORIES.map((category) => (
-                <div key={category.id} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={category.id}
-                    checked={newService.categories.includes(category.id)}
-                    onCheckedChange={(checked) => 
-                      handleCategoryChange(category.id, checked as boolean)
-                    }
-                  />
-                  <label
-                    htmlFor={category.id}
-                    className="text-sm text-gray-300 cursor-pointer"
-                  >
-                    {category.label}
-                  </label>
-                </div>
-              ))}
-            </div>
-          </div>
+          <ServiceCategorySelector
+            selectedCategories={newService.categories}
+            onCategoryChange={(categories) => 
+              setNewService({ ...newService, categories })
+            }
+          />
 
           <Button 
             onClick={handleAddService} 
