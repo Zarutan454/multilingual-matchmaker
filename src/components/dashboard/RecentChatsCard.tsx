@@ -47,8 +47,8 @@ export const RecentChatsCard = ({ user }: RecentChatsCardProps) => {
   const handleChatClick = async (recipientId: string) => {
     if (!user) return;
 
-    // Mark messages as read when clicking on the chat
     try {
+      // Mark messages as read when clicking on the chat
       await supabase.rpc('mark_messages_as_read', {
         p_recipient_id: user.id,
         p_sender_id: recipientId
@@ -77,7 +77,7 @@ export const RecentChatsCard = ({ user }: RecentChatsCardProps) => {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {recentChats.map((chat: any) => (
+          {recentChats.map((chat) => (
             <Button
               key={chat.id}
               variant="ghost"
@@ -87,7 +87,9 @@ export const RecentChatsCard = ({ user }: RecentChatsCardProps) => {
               <Avatar className="h-10 w-10">
                 <AvatarImage src={chat.avatar_url} />
                 <AvatarFallback>
-                  <MessageCircle className="h-5 w-5 text-gray-400" />
+                  {chat.sender === user?.id 
+                    ? chat.recipient_name?.[0]?.toUpperCase() 
+                    : chat.sender_name?.[0]?.toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 text-left">
@@ -97,7 +99,12 @@ export const RecentChatsCard = ({ user }: RecentChatsCardProps) => {
                 <p className="text-sm text-gray-400 truncate">{chat.content}</p>
               </div>
               {chat.unread && chat.sender !== user?.id && (
-                <div className="h-2 w-2 rounded-full bg-[#9b87f5] animate-pulse" />
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-[#9b87f5]">
+                    {chat.unread_count}
+                  </span>
+                  <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
+                </div>
               )}
             </Button>
           ))}
