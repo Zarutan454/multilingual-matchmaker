@@ -13,13 +13,13 @@ export default function Dashboard() {
   const { t } = useLanguage();
   const navigate = useNavigate();
 
-  // Letzte Chats abrufen
+  // Letzte Chats abrufen - Vereinfachte Version ohne Join
   const { data: recentChats = [] } = useQuery({
     queryKey: ['recentChats'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('messages')
-        .select('*, profiles!messages_recipient_fkey(full_name, avatar_url)')
+        .select('*')
         .or(`sender.eq.${user?.id},recipient.eq.${user?.id}`)
         .order('created_at', { ascending: false })
         .limit(5);
@@ -45,13 +45,13 @@ export default function Dashboard() {
     enabled: !!user
   });
 
-  // Favoriten abrufen
+  // Favoriten abrufen - Vereinfachte Version ohne Join
   const { data: favorites = [] } = useQuery({
     queryKey: ['favorites'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('favorites')
-        .select('*, profiles(*)')
+        .select('*')
         .eq('user_id', user?.id)
         .limit(5);
 
@@ -96,14 +96,12 @@ export default function Dashboard() {
                     onClick={() => navigate(`/messages/${chat.sender === user?.id ? chat.recipient : chat.sender}`)}
                   >
                     <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
-                      {chat.profiles?.avatar_url ? (
-                        <img src={chat.profiles.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
-                      ) : (
-                        <MessageSquare className="h-5 w-5 text-gray-400" />
-                      )}
+                      <MessageSquare className="h-5 w-5 text-gray-400" />
                     </div>
                     <div>
-                      <p className="text-white font-medium">{chat.profiles?.full_name}</p>
+                      <p className="text-white font-medium">
+                        {chat.sender === user?.id ? chat.recipient : chat.sender}
+                      </p>
                       <p className="text-sm text-gray-400 truncate">{chat.content}</p>
                     </div>
                   </div>
@@ -165,18 +163,14 @@ export default function Dashboard() {
                   <div 
                     key={favorite.id} 
                     className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-800 cursor-pointer"
-                    onClick={() => navigate(`/provider/${favorite.profiles.id}`)}
+                    onClick={() => navigate(`/provider/${favorite.profile_id}`)}
                   >
                     <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
-                      {favorite.profiles?.avatar_url ? (
-                        <img src={favorite.profiles.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
-                      ) : (
-                        <Star className="h-5 w-5 text-gray-400" />
-                      )}
+                      <Star className="h-5 w-5 text-gray-400" />
                     </div>
                     <div>
-                      <p className="text-white font-medium">{favorite.profiles.full_name}</p>
-                      <p className="text-sm text-gray-400">{favorite.profiles.location}</p>
+                      <p className="text-white font-medium">Favorit #{favorite.id}</p>
+                      <p className="text-sm text-gray-400">{favorite.created_at}</p>
                     </div>
                   </div>
                 ))}
