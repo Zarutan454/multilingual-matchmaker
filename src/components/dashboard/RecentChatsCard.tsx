@@ -49,13 +49,10 @@ export const RecentChatsCard = ({ user }: RecentChatsCardProps) => {
 
     // Mark messages as read when clicking on the chat
     try {
-      const { error } = await supabase
-        .from('messages')
-        .update({ read: true })
-        .eq('recipient', user.id)
-        .eq('sender', recipientId);
-
-      if (error) throw error;
+      await supabase.rpc('mark_messages_as_read', {
+        p_recipient_id: user.id,
+        p_sender_id: recipientId
+      });
       
       // Navigate to the chat
       navigate(`/messages/${recipientId}`);
