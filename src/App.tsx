@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard";
+import ProviderDashboard from "./pages/ProviderDashboard";
 import ProviderProfile from "./pages/ProviderProfile";
 import Admin from "./pages/Admin";
 import Terms from "./pages/legal/Terms";
@@ -34,6 +35,7 @@ const App = () => (
               <Route path="/register" element={<Register />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/provider-dashboard" element={<ProviderDashboard />} />
               <Route path="/provider/:id" element={<ProviderProfile />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/terms" element={<Terms />} />
