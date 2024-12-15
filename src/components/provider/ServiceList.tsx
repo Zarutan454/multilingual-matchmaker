@@ -1,15 +1,17 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Clock, DollarSign } from "lucide-react";
+import { Clock, DollarSign, Trash2 } from "lucide-react";
 import { Service } from "@/types/profile";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { Button } from "@/components/ui/button";
 
 interface ServiceListProps {
   services: Service[];
   isEditable?: boolean;
+  onDelete?: (id: string) => Promise<void>;
 }
 
-export const ServiceList = ({ services, isEditable = false }: ServiceListProps) => {
+export const ServiceList = ({ services, isEditable = false, onDelete }: ServiceListProps) => {
   const { t } = useLanguage();
 
   if (!services || services.length === 0) {
@@ -55,6 +57,16 @@ export const ServiceList = ({ services, isEditable = false }: ServiceListProps) 
                 </div>
               )}
             </div>
+            {isEditable && onDelete && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                onClick={() => onDelete(service.id)}
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            )}
           </div>
         </div>
       ))}
