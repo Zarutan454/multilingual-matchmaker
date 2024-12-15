@@ -1,10 +1,10 @@
 import { Card } from "@/components/ui/card";
-import { useLanguage } from "../contexts/LanguageContext";
 import { RegisterForm } from "../components/register/RegisterForm";
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from "../lib/supabase";
 import { Separator } from "@/components/ui/separator";
+import { useLanguage } from "../contexts/LanguageContext";
 
 const Register = () => {
   const { t } = useLanguage();
