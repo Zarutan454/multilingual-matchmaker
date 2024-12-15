@@ -12,7 +12,10 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 type AuthContextType = {
   user: User | null;
-  signUp: (email: string, password: string) => Promise<{ error: AuthError | null }>;
+  signUp: (email: string, password: string) => Promise<{
+    data: { user: User | null } | null;
+    error: AuthError | null;
+  }>;
   signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
@@ -41,11 +44,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const signUp = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
     });
-    return { error };
+    return { data: { user: data.user }, error };
   };
 
   const signIn = async (email: string, password: string) => {
