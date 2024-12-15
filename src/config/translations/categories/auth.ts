@@ -38,5 +38,9 @@ export const authTranslations = {
   ageVerification: "Age Verification",
   ageQuestion: "Are you 18 or older?",
   yes: "Yes",
-  no: "No"
+  no: "No",
+  tooManyAttempts: "Zu viele Versuche. Bitte warten Sie",
+  seconds: "Sekunden",
+  pleaseWait: "Bitte warten Sie",
+  waitFor: "Warten Sie",
 };

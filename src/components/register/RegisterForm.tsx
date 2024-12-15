@@ -23,10 +23,16 @@ export const RegisterForm = () => {
     country: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [retryTimeout, setRetryTimeout] = useState(0);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (retryTimeout > 0) {
+      toast.error(`${t("pleaseWait")} ${retryTimeout} ${t("seconds")}`);
+      return;
+    }
+
     if (!formData.email || !formData.password || !formData.confirmPassword) {
       toast.error(t("fillAllFields"));
       return;
@@ -47,6 +53,26 @@ export const RegisterForm = () => {
       const { error: signUpError } = await signUp(formData.email, formData.password);
       
       if (signUpError) {
+        if (signUpError.message.includes("over_email_send_rate_limit")) {
+          // Extract the wait time from the error message (assuming it's in seconds)
+          const waitTime = 50; // Supabase's default wait time
+          setRetryTimeout(waitTime);
+          
+          // Start countdown
+          const interval = setInterval(() => {
+            setRetryTimeout((current) => {
+              if (current <= 1) {
+                clearInterval(interval);
+                return 0;
+              }
+              return current - 1;
+            });
+          }, 1000);
+
+          toast.error(`${t("tooManyAttempts")} ${waitTime} ${t("seconds")}`);
+          return;
+        }
+        
         if (signUpError.message.includes("email")) {
           toast.error(t("emailAlreadyExists"));
         } else {
@@ -99,9 +125,9 @@ export const RegisterForm = () => {
       <Button 
         type="submit" 
         className="w-full bg-[#FFD700] hover:bg-[#DAA520] text-black font-semibold transition-colors"
-        disabled={isLoading}
+        disabled={isLoading || retryTimeout > 0}
       >
-        {isLoading ? t("registering") : t("submit")}
+        {isLoading ? t("registering") : retryTimeout > 0 ? `${t("waitFor")} ${retryTimeout}s` : t("submit")}
       </Button>
     </form>
   );
