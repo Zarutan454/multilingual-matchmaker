@@ -20,6 +20,7 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
   const { user } = useAuth();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isOnline, setIsOnline] = useState(profile.status === "online");
+  const [lastSeen, setLastSeen] = useState<string | null>(null);
 
   useEffect(() => {
     // Überprüfe den initialen Online-Status
@@ -32,6 +33,12 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
 
       if (!error && data) {
         setIsOnline(data.availability_status === 'online');
+        if (data.last_seen) {
+          setLastSeen(formatDistanceToNow(new Date(data.last_seen), { 
+            addSuffix: true, 
+            locale: de 
+          }));
+        }
       }
     };
 
@@ -51,6 +58,12 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
         (payload: any) => {
           if (payload.new) {
             setIsOnline(payload.new.availability_status === 'online');
+            if (payload.new.last_seen) {
+              setLastSeen(formatDistanceToNow(new Date(payload.new.last_seen), { 
+                addSuffix: true, 
+                locale: de 
+              }));
+            }
           }
         }
       )
@@ -95,13 +108,6 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
       toast.error("Fehler beim Aktualisieren der Favoriten");
     }
   };
-
-  const lastOnline = profile.last_seen 
-    ? formatDistanceToNow(new Date(profile.last_seen), { 
-        addSuffix: true, 
-        locale: de 
-      })
-    : null;
 
   return (
     <div 
@@ -155,7 +161,7 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
               variant={isOnline ? "success" : "secondary"}
               className="w-full justify-center"
             >
-              {isOnline ? "Online" : lastOnline ? `Zuletzt online ${lastOnline}` : "Offline"}
+              {isOnline ? "Online" : lastSeen ? `Zuletzt online ${lastSeen}` : "Offline"}
             </Badge>
 
             {isOnline && (

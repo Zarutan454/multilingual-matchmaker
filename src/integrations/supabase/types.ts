@@ -69,6 +69,7 @@ export type Database = {
           id: string
           interests: string | null
           languages: string[] | null
+          last_seen: string | null
           location: string | null
           measurements: Json | null
           occupation: string | null
@@ -94,6 +95,7 @@ export type Database = {
           id: string
           interests?: string | null
           languages?: string[] | null
+          last_seen?: string | null
           location?: string | null
           measurements?: Json | null
           occupation?: string | null
@@ -119,6 +121,7 @@ export type Database = {
           id?: string
           interests?: string | null
           languages?: string[] | null
+          last_seen?: string | null
           location?: string | null
           measurements?: Json | null
           occupation?: string | null
