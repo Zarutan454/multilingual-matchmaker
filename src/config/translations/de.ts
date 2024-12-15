@@ -76,6 +76,24 @@ export const deTranslations: Translations = {
   bookAppointment: "Termin buchen",
   messages: "Nachrichten",
 
+  // Rating translations
+  ratings: "Bewertungen",
+  ratingSubmitted: "Bewertung erfolgreich übermittelt",
+  summary: "Übersicht",
+  allRatings: "Alle Bewertungen",
+  rateProvider: "Anbieter bewerten",
+  rating: "Bewertung",
+  comment: "Kommentar",
+  submitRating: "Bewertung abschicken",
+  averageRating: "Durchschnittliche Bewertung",
+  totalRatings: "Gesamtanzahl der Bewertungen",
+  ratingDistribution: "Bewertungsverteilung",
+  reviewsCount: "Bewertungen",
+  writeReview: "Bewertung schreiben",
+  noRatingsYet: "Noch keine Bewertungen",
+  thankYouForRating: "Vielen Dank für Ihre Bewertung",
+  errorSubmittingRating: "Fehler beim Übermitteln der Bewertung",
+
   // Extended profile fields translations
   gender: "Geschlecht",
   selectGender: "Geschlecht auswählen",

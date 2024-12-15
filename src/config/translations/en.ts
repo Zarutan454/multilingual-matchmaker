@@ -74,6 +74,24 @@ export const enTranslations: Translations = {
   bookAppointment: "Book Appointment",
   messages: "Messages",
 
+  // Rating translations
+  ratings: "Ratings",
+  ratingSubmitted: "Rating submitted successfully",
+  summary: "Summary",
+  allRatings: "All Ratings",
+  rateProvider: "Rate Provider",
+  rating: "Rating",
+  comment: "Comment",
+  submitRating: "Submit Rating",
+  averageRating: "Average Rating",
+  totalRatings: "Total Ratings",
+  ratingDistribution: "Rating Distribution",
+  reviewsCount: "Reviews",
+  writeReview: "Write a Review",
+  noRatingsYet: "No ratings yet",
+  thankYouForRating: "Thank you for your rating",
+  errorSubmittingRating: "Error submitting rating",
+
   // Extended profile fields translations
   gender: "Gender",
   selectGender: "Select gender",
