@@ -35,10 +35,10 @@ export const Navbar = () => {
             />
             <div className="flex flex-col items-start">
               <a href="/" className="text-white font-bold text-xl">
-                JW
+                POPP<span className="text-secondary">*</span>IN
               </a>
               <span className="text-secondary text-sm italic font-light">
-                Escort made in Germany
+                stein
               </span>
             </div>
           </div>
