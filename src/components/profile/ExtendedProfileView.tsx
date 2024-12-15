@@ -130,7 +130,7 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
             </Card>
 
             {/* Availability */}
-            <AvailabilitySchedule isEditable={isEditable} />
+            <AvailabilitySchedule isEditable={isEditable} profileId={profile.id} />
           </div>
 
           {/* Right Column - Additional Information */}

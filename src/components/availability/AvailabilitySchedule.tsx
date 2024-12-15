@@ -23,9 +23,10 @@ interface DaySchedule {
 
 interface AvailabilityScheduleProps {
   isEditable?: boolean;
+  profileId?: string;
 }
 
-export const AvailabilitySchedule = ({ isEditable = false }: AvailabilityScheduleProps) => {
+export const AvailabilitySchedule = ({ isEditable = false, profileId }: AvailabilityScheduleProps) => {
   const { t } = useLanguage();
   const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
@@ -35,6 +36,8 @@ export const AvailabilitySchedule = ({ isEditable = false }: AvailabilitySchedul
       timeSlots: [{ start: "09:00", end: "22:00" }]
     }))
   );
+
+  const canEdit = isEditable && user?.id === profileId;
 
   const handleTimeChange = (day: string, index: number, type: 'start' | 'end', value: string) => {
     setWeeklySchedule(prev => prev.map(schedule => {
@@ -79,7 +82,7 @@ export const AvailabilitySchedule = ({ isEditable = false }: AvailabilitySchedul
     return `${hour}:00`;
   });
 
-  if (!isEditable) {
+  if (!canEdit) {
     return (
       <Card className="p-6">
         <h3 className="text-xl font-semibold mb-4">{t("availability")}</h3>
