@@ -111,6 +111,33 @@ export type Database = {
         }
         Relationships: []
       }
+      services: {
+        Row: {
+          created_at: string
+          description: string | null
+          duration: number
+          id: string
+          name: string
+          provider_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          duration?: number
+          id?: string
+          name: string
+          provider_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          duration?: number
+          id?: string
+          name?: string
+          provider_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
