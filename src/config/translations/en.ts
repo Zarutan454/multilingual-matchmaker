@@ -30,6 +30,25 @@ export const enTranslations: Translations = {
   activate: "Activate",
   suspend: "Suspend",
 
+  // KYC translations
+  kycPending: "KYC verification pending",
+  kycApproved: "KYC verification approved",
+  kycRejected: "KYC verification rejected",
+  pleaseUploadAllDocuments: "Please upload all required documents",
+  kycDocumentsUploaded: "Documents uploaded successfully",
+  errorUploadingDocuments: "Error uploading documents",
+  identityDocument: "Identity Document",
+  idDocumentNote: "Please upload a valid identity document",
+  businessLicense: "Business License",
+  businessLicenseNote: "Please upload your business license",
+  uploading: "Uploading...",
+  submitDocuments: "Submit Documents",
+  kycRequired: "KYC verification required",
+  kycStatus: "KYC Status",
+  kycVerification: "KYC Verification",
+  documentsVerification: "Documents Verification",
+  documentsNote: "Please ensure all documents are clearly legible",
+
   // Phone verification translations
   success: "Success",
   error: "Error",

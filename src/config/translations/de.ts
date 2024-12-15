@@ -32,6 +32,25 @@ export const deTranslations: Translations = {
   activate: "Aktivieren",
   suspend: "Sperren",
 
+  // KYC translations
+  kycPending: "KYC Überprüfung ausstehend",
+  kycApproved: "KYC Überprüfung genehmigt",
+  kycRejected: "KYC Überprüfung abgelehnt",
+  pleaseUploadAllDocuments: "Bitte laden Sie alle erforderlichen Dokumente hoch",
+  kycDocumentsUploaded: "Dokumente erfolgreich hochgeladen",
+  errorUploadingDocuments: "Fehler beim Hochladen der Dokumente",
+  identityDocument: "Ausweisdokument",
+  idDocumentNote: "Bitte laden Sie ein gültiges Ausweisdokument hoch",
+  businessLicense: "Gewerbeschein",
+  businessLicenseNote: "Bitte laden Sie Ihren Gewerbeschein hoch",
+  uploading: "Wird hochgeladen...",
+  submitDocuments: "Dokumente einreichen",
+  kycRequired: "KYC Überprüfung erforderlich",
+  kycStatus: "KYC Status",
+  kycVerification: "KYC Verifizierung",
+  documentsVerification: "Dokumentenprüfung",
+  documentsNote: "Bitte stellen Sie sicher, dass alle Dokumente gut lesbar sind",
+
   // Phone verification translations
   success: "Erfolg",
   error: "Fehler",
