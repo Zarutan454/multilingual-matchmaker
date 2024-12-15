@@ -63,6 +63,10 @@ export type TranslationKey =
   | "errorUpdatingNickname"
   | "updatingUserStatus"
   | "usersLoadedSuccessfully"
-  | "errorNavigating";
+  | "errorNavigating"
+  | "loadingUsers"
+  | "favorites"
+  | "yourFavorites"
+  | "noFavoritesSelected";
 
 export type Translations = Partial<Record<TranslationKey, string>>;
