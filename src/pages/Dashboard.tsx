@@ -12,6 +12,7 @@ import { AvailabilitySchedule } from "@/components/availability/AvailabilitySche
 import { Card } from "@/components/ui/card";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { ProfileSection } from "@/components/dashboard/ProfileSection";
+import { ImageUploadSection } from "@/components/dashboard/ImageUploadSection";
 
 export default function Dashboard() {
   const { t } = useLanguage();
