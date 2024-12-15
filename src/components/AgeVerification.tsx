@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLanguage } from "../contexts/LanguageContext";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
@@ -12,8 +12,16 @@ export const AgeVerification = ({ onVerified }: AgeVerificationProps) => {
   const { t } = useLanguage();
   const [isVerifying, setIsVerifying] = useState(true);
 
+  useEffect(() => {
+    const isAgeVerified = localStorage.getItem('isAgeVerified');
+    if (isAgeVerified === 'true') {
+      onVerified();
+    }
+  }, [onVerified]);
+
   const handleVerification = (isOver18: boolean) => {
     if (isOver18) {
+      localStorage.setItem('isAgeVerified', 'true');
       onVerified();
     } else {
       setIsVerifying(false);
