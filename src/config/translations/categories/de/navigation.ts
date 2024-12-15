@@ -14,5 +14,7 @@ export const navigationTranslations = {
   contacts: "Kontakte",
   recentContacts: "Letzte Kontakte",
   favorites: "Favoriten",
-  yourFavorites: "Deine Favoriten"
+  yourFavorites: "Deine Favoriten",
+  backToHome: "Zurück zur Startseite",
+  dashboard: "Dashboard"
 };
