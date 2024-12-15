@@ -51,7 +51,7 @@ export const RegisterForm = () => {
       setIsLoading(true);
       console.log("Starting registration process...");
       
-      const { error: signUpError } = await signUp(formData.email, formData.password);
+      const { data: signUpData, error: signUpError } = await signUp(formData.email, formData.password);
       
       if (signUpError) {
         console.error("SignUp error:", signUpError);
@@ -82,10 +82,15 @@ export const RegisterForm = () => {
         return;
       }
 
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Stellen Sie sicher, dass wir eine gültige Benutzer-ID haben
+      if (!signUpData?.user?.id) {
+        console.error("No user ID received after signup");
+        toast.error(t("registrationError"));
+        return;
+      }
 
-      console.log("Updating user metadata...");
-      const { error: updateError } = await supabase.auth.updateUser({
+      // Metadaten direkt nach der Registrierung setzen
+      const { error: metadataError } = await supabase.auth.updateUser({
         data: {
           user_type: userType,
           phone: formData.phoneNumber,
@@ -94,10 +99,9 @@ export const RegisterForm = () => {
         }
       });
 
-      if (updateError) {
-        console.error("Update error:", updateError);
-        toast.error(t("registrationError"));
-        return;
+      if (metadataError) {
+        console.error("Metadata update error:", metadataError);
+        // Fahren Sie trotz Metadaten-Fehler fort, da der Benutzer bereits erstellt wurde
       }
       
       console.log("Registration successful!");
