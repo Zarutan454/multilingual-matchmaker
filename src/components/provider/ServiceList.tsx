@@ -42,6 +42,12 @@ export const ServiceList = ({ services, isEditable = false, onDelete }: ServiceL
                   <Clock className="w-4 h-4 mr-1" />
                   {service.duration} {t("minutes")}
                 </div>
+                {service.price && (
+                  <div className="flex items-center text-gray-400">
+                    <DollarSign className="w-4 h-4 mr-1" />
+                    {service.price}
+                  </div>
+                )}
               </div>
               {service.categories && service.categories.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-2">

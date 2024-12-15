@@ -38,6 +38,7 @@ export const ServiceManager = () => {
     description: string;
     duration: number;
     categories: string[];
+    price: number;
   }) => {
     if (!user) {
       console.error('No user found');
@@ -63,7 +64,8 @@ export const ServiceManager = () => {
             name: newService.name,
             description: newService.description,
             duration: newService.duration,
-            categories: newService.categories
+            categories: newService.categories,
+            price: newService.price
           }
         ])
         .select()
@@ -138,7 +140,7 @@ export const ServiceManager = () => {
   return (
     <div className="space-y-6">
       <ServiceForm onSubmit={handleAddService} isSubmitting={isSubmitting} />
-      <ServiceList services={services} onDelete={handleDeleteService} />
+      <ServiceList services={services} onDelete={handleDeleteService} isEditable={true} />
     </div>
   );
 };

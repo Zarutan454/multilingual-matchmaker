@@ -143,6 +143,7 @@ export type Database = {
           duration: number
           id: string
           name: string
+          price: number | null
           provider_id: string | null
         }
         Insert: {
@@ -152,6 +153,7 @@ export type Database = {
           duration?: number
           id?: string
           name: string
+          price?: number | null
           provider_id?: string | null
         }
         Update: {
@@ -161,6 +163,7 @@ export type Database = {
           duration?: number
           id?: string
           name?: string
+          price?: number | null
           provider_id?: string | null
         }
         Relationships: []

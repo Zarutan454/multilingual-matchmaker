@@ -13,6 +13,7 @@ interface ServiceFormProps {
     description: string;
     duration: number;
     categories: string[];
+    price: number;
   }) => Promise<void>;
   isSubmitting: boolean;
 }
@@ -23,7 +24,8 @@ export const ServiceForm = ({ onSubmit, isSubmitting }: ServiceFormProps) => {
     name: "",
     description: "",
     duration: 30,
-    categories: [] as string[]
+    categories: [] as string[],
+    price: 0
   });
 
   const handleSubmit = async () => {
@@ -32,7 +34,7 @@ export const ServiceForm = ({ onSubmit, isSubmitting }: ServiceFormProps) => {
     }
 
     await onSubmit(newService);
-    setNewService({ name: "", description: "", duration: 30, categories: [] });
+    setNewService({ name: "", description: "", duration: 30, categories: [], price: 0 });
   };
 
   return (
@@ -55,6 +57,13 @@ export const ServiceForm = ({ onSubmit, isSubmitting }: ServiceFormProps) => {
           placeholder={t("duration")}
           value={newService.duration}
           onChange={(e) => setNewService({ ...newService, duration: parseInt(e.target.value) })}
+          className="bg-gray-800 border-gray-700 text-white"
+        />
+        <Input
+          type="number"
+          placeholder={t("price")}
+          value={newService.price}
+          onChange={(e) => setNewService({ ...newService, price: parseFloat(e.target.value) })}
           className="bg-gray-800 border-gray-700 text-white"
         />
 
