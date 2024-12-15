@@ -6,14 +6,19 @@ import { User } from "@supabase/supabase-js";
 import { useFavorites } from "@/hooks/useFavorites";
 import { toast } from "sonner";
 
+interface Profile {
+  id: string;
+  full_name: string;
+  avatar_url: string | null;
+  location: string;
+}
+
 interface FavoriteProfile {
   id: string;
-  profiles: {
-    id: string;
-    full_name: string;
-    avatar_url: string | null;
-    location: string;
-  };
+  provider_id: string;
+  user_id: string;
+  created_at: string;
+  profiles: Profile;
 }
 
 interface FavoritesCardProps {
