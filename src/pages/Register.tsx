@@ -62,14 +62,14 @@ const Register = () => {
                   fontSize: '1rem',
                   padding: '0.75rem 1rem',
                   transition: 'all 0.2s',
-                  '&:hover': {
+                  ':hover': {
                     background: '#7E69AB',
                   }
                 },
                 anchor: {
                   color: '#9b87f5',
                   textDecoration: 'none',
-                  '&:hover': {
+                  ':hover': {
                     color: '#7E69AB',
                   }
                 },
