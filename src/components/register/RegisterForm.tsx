@@ -37,11 +37,26 @@ export const RegisterForm = () => {
       return;
     }
 
+    if (formData.password.length < 6) {
+      toast.error(t("passwordTooShort"));
+      return;
+    }
+
     try {
       setIsLoading(true);
-      const { error } = await signUp(formData.email, formData.password);
+      const { error: signUpError } = await signUp(formData.email, formData.password);
       
-      if (error) throw error;
+      if (signUpError) {
+        if (signUpError.message.includes("email")) {
+          toast.error(t("emailAlreadyExists"));
+        } else {
+          toast.error(signUpError.message);
+        }
+        return;
+      }
+
+      // Warten Sie einen Moment, bevor Sie die Benutzerdaten aktualisieren
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       const { error: updateError } = await supabase.auth.updateUser({
         data: {
@@ -53,9 +68,14 @@ export const RegisterForm = () => {
         }
       });
 
-      if (updateError) throw updateError;
+      if (updateError) {
+        console.error("Update error:", updateError);
+        toast.error(t("registrationError"));
+        return;
+      }
       
       toast.success(t("registrationSuccess"));
+      toast.info(t("pleaseCheckEmail"));
       navigate("/login");
     } catch (error) {
       console.error("Registration error:", error);
