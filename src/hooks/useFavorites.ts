@@ -6,7 +6,7 @@ interface FavoriteProfile {
   id: string;
   profile_id: number;
   user_id: string;
-  profile: {
+  profiles: {
     id: number;
     full_name: string;
     avatar_url: string | null;
@@ -26,7 +26,7 @@ export const useFavorites = (user: User | null) => {
           id,
           profile_id,
           user_id,
-          profile:profiles(
+          profiles!profile_id(
             id,
             full_name,
             avatar_url,
