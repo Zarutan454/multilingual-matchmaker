@@ -24,6 +24,18 @@ export interface Profile {
     days: string[];
     hours: string[];
   };
+  phoneNumber?: string;
+  phoneVerified?: boolean;
+  gender?: "male" | "female" | "other";
+  dateOfBirth?: string;
+  nationality?: string;
+  languages?: string[];
+  preferredCommunication?: "email" | "phone" | "both";
+  emergencyContact?: {
+    name: string;
+    phoneNumber: string;
+    relationship: string;
+  };
 }
 
 export const MAX_GALLERY_IMAGES = 10;
@@ -45,6 +57,17 @@ export interface ProfileFormValues {
   };
   availabilityStatus: "online" | "offline" | "busy";
   gallery?: (File | string)[];
+  phoneNumber?: string;
+  gender?: "male" | "female" | "other";
+  dateOfBirth?: string;
+  nationality?: string;
+  languages?: string[];
+  preferredCommunication?: "email" | "phone" | "both";
+  emergencyContact?: {
+    name: string;
+    phoneNumber: string;
+    relationship: string;
+  };
 }
 
 export interface UserMetadata {
@@ -64,6 +87,18 @@ export interface UserMetadata {
   };
   availability_status: string;
   gallery?: string[];
+  phone_number?: string;
+  phone_verified?: boolean;
+  gender?: string;
+  date_of_birth?: string;
+  nationality?: string;
+  languages?: string[];
+  preferred_communication?: string;
+  emergency_contact?: {
+    name: string;
+    phone_number: string;
+    relationship: string;
+  };
 }
 
 export const profileSchema = z.object({
@@ -82,5 +117,16 @@ export const profileSchema = z.object({
     max: z.number().min(0)
   }),
   availabilityStatus: z.enum(["online", "offline", "busy"]),
-  gallery: z.array(z.union([z.instanceof(File), z.string()])).optional()
+  gallery: z.array(z.union([z.instanceof(File), z.string()])).optional(),
+  phoneNumber: z.string().optional(),
+  gender: z.enum(["male", "female", "other"]).optional(),
+  dateOfBirth: z.string().optional(),
+  nationality: z.string().optional(),
+  languages: z.array(z.string()).optional(),
+  preferredCommunication: z.enum(["email", "phone", "both"]).optional(),
+  emergencyContact: z.object({
+    name: z.string(),
+    phoneNumber: z.string(),
+    relationship: z.string()
+  }).optional()
 });
