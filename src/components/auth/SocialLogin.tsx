@@ -39,7 +39,7 @@ export const SocialLogin = () => {
           }
         }}
         providers={["google"]}
-        redirectTo={window.location.origin}
+        redirectTo={`${window.location.origin}/dashboard`}
         onlyThirdPartyProviders={true}
         view={isRegistration ? "sign_up" : "sign_in"}
         showLinks={false}

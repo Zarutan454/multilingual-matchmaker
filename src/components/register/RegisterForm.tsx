@@ -50,15 +50,17 @@ export const RegisterForm = () => {
 
     try {
       setIsLoading(true);
+      console.log("Starting registration process...");
+      
       const { error: signUpError } = await signUp(formData.email, formData.password);
       
       if (signUpError) {
+        console.error("SignUp error:", signUpError);
+        
         if (signUpError.message.includes("over_email_send_rate_limit")) {
-          // Extract the wait time from the error message (assuming it's in seconds)
-          const waitTime = 50; // Supabase's default wait time
+          const waitTime = 50;
           setRetryTimeout(waitTime);
           
-          // Start countdown
           const interval = setInterval(() => {
             setRetryTimeout((current) => {
               if (current <= 1) {
@@ -84,6 +86,7 @@ export const RegisterForm = () => {
       // Warten Sie einen Moment, bevor Sie die Benutzerdaten aktualisieren
       await new Promise(resolve => setTimeout(resolve, 1000));
 
+      console.log("Updating user metadata...");
       const { error: updateError } = await supabase.auth.updateUser({
         data: {
           user_type: userType,
@@ -100,6 +103,7 @@ export const RegisterForm = () => {
         return;
       }
       
+      console.log("Registration successful!");
       toast.success(t("registrationSuccess"));
       toast.info(t("pleaseCheckEmail"));
       navigate("/login");
