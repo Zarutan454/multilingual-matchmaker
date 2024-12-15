@@ -1,9 +1,5 @@
 import { Card } from "@/components/ui/card";
 import { RegisterForm } from "../components/register/RegisterForm";
-import { Auth } from '@supabase/auth-ui-react';
-import { ThemeSupa } from '@supabase/auth-ui-shared';
-import { supabase } from "../lib/supabase";
-import { Separator } from "@/components/ui/separator";
 import { useLanguage } from "../contexts/LanguageContext";
 import { Link } from "react-router-dom";
 
@@ -44,52 +40,14 @@ const Register = () => {
         </div>
 
         <RegisterForm />
-
-        <Separator className="my-8 bg-[#9b87f5]/20" />
-
-        <div className="space-y-4">
-          <p className="text-sm text-white/80 text-center">{t("orContinueWith")}</p>
-          
-          <Auth
-            supabaseClient={supabase}
-            appearance={{ 
-              theme: ThemeSupa,
-              style: {
-                button: {
-                  background: '#9b87f5',
-                  color: 'white',
-                  borderRadius: '0.375rem',
-                  fontFamily: 'Playfair Display, serif',
-                  fontSize: '1rem',
-                  padding: '0.75rem 1rem',
-                  transition: 'all 0.2s',
-                },
-                anchor: {
-                  color: '#9b87f5',
-                  textDecoration: 'none',
-                },
-                container: {
-                  gap: '1rem',
-                },
-              },
-              className: {
-                button: 'hover:bg-[#7E69AB]',
-                anchor: 'hover:text-[#7E69AB]',
-              },
-            }}
-            providers={["google"]}
-            view="sign_up"
-            showLinks={false}
-          />
-          
-          <div className="text-center mt-6">
-            <Link 
-              to="/login" 
-              className="text-[#9b87f5] hover:text-[#7E69AB] transition-colors duration-200"
-            >
-              {t("alreadyCustomer")}
-            </Link>
-          </div>
+        
+        <div className="text-center mt-6">
+          <Link 
+            to="/login" 
+            className="text-[#9b87f5] hover:text-[#7E69AB] transition-colors duration-200"
+          >
+            {t("alreadyCustomer")}
+          </Link>
         </div>
       </Card>
     </div>
