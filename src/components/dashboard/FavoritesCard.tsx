@@ -4,15 +4,36 @@ import { Loader2, Star, Users } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { User } from "@supabase/supabase-js";
 import { useFavorites } from "@/hooks/useFavorites";
+import { toast } from "sonner";
 
 interface FavoritesCardProps {
   user: User | null;
+}
+
+interface FavoriteProfile {
+  id: string;
+  profile_id: number;
+  profiles: {
+    id: number;
+    full_name: string;
+    avatar_url: string | null;
+    location: string;
+  };
 }
 
 export const FavoritesCard = ({ user }: FavoritesCardProps) => {
   const { t } = useLanguage();
   const navigate = useNavigate();
   const { data: favorites = [], isLoading, error } = useFavorites(user);
+
+  const handleProfileClick = (profileId: number) => {
+    try {
+      navigate(`/provider/${profileId}`);
+    } catch (error) {
+      console.error("Navigation error:", error);
+      toast.error(t("errorNavigating"));
+    }
+  };
 
   if (isLoading) {
     return (
@@ -63,17 +84,17 @@ export const FavoritesCard = ({ user }: FavoritesCardProps) => {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {favorites.map((favorite: any) => (
+          {favorites.map((favorite: FavoriteProfile) => (
             <div 
               key={favorite.id} 
-              className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-800 cursor-pointer"
-              onClick={() => navigate(`/provider/${favorite.profiles.id}`)}
+              className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-800 cursor-pointer transition-colors duration-200"
+              onClick={() => handleProfileClick(favorite.profiles.id)}
             >
-              <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
                 {favorite.profiles.avatar_url ? (
                   <img 
                     src={favorite.profiles.avatar_url} 
-                    alt="" 
+                    alt={favorite.profiles.full_name} 
                     className="w-full h-full rounded-full object-cover" 
                   />
                 ) : (
