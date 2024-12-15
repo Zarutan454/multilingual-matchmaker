@@ -6,6 +6,8 @@ import { User } from "@supabase/supabase-js";
 import { useRecentChats } from "@/hooks/useRecentChats";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface RecentChatsCardProps {
   user: User | null;
@@ -14,7 +16,56 @@ interface RecentChatsCardProps {
 export const RecentChatsCard = ({ user }: RecentChatsCardProps) => {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const { data: recentChats = [] } = useRecentChats(user);
+  const { data: recentChats = [], refetch } = useRecentChats(user);
+
+  useEffect(() => {
+    if (!user) return;
+
+    // Subscribe to new messages
+    const channel = supabase
+      .channel('new_messages')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+          filter: `recipient=eq.${user.id}`
+        },
+        (payload) => {
+          console.log('New message received:', payload);
+          refetch(); // Refresh the chat list when new message arrives
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user, refetch]);
+
+  const handleChatClick = async (recipientId: string) => {
+    if (!user) return;
+
+    // Mark messages as read when clicking on the chat
+    try {
+      const { error } = await supabase
+        .from('messages')
+        .update({ read: true })
+        .eq('recipient', user.id)
+        .eq('sender', recipientId);
+
+      if (error) throw error;
+      
+      // Navigate to the chat
+      navigate(`/messages/${recipientId}`);
+      
+      // Refresh the chat list to update unread status
+      refetch();
+    } catch (error) {
+      console.error('Error marking messages as read:', error);
+    }
+  };
 
   return (
     <Card className="bg-black/50 backdrop-blur-sm border-[#9b87f5]/30 shadow-[0_0_15px_rgba(155,135,245,0.3)]">
@@ -34,7 +85,7 @@ export const RecentChatsCard = ({ user }: RecentChatsCardProps) => {
               key={chat.id}
               variant="ghost"
               className="w-full flex items-center gap-3 p-4 hover:bg-[#9b87f5]/10"
-              onClick={() => navigate(`/messages/${chat.sender === user?.id ? chat.recipient : chat.sender}`)}
+              onClick={() => handleChatClick(chat.sender === user?.id ? chat.recipient : chat.sender)}
             >
               <Avatar className="h-10 w-10">
                 <AvatarImage src={chat.avatar_url} />
@@ -48,8 +99,8 @@ export const RecentChatsCard = ({ user }: RecentChatsCardProps) => {
                 </p>
                 <p className="text-sm text-gray-400 truncate">{chat.content}</p>
               </div>
-              {chat.unread && (
-                <div className="h-2 w-2 rounded-full bg-[#9b87f5]" />
+              {chat.unread && chat.sender !== user?.id && (
+                <div className="h-2 w-2 rounded-full bg-[#9b87f5] animate-pulse" />
               )}
             </Button>
           ))}
