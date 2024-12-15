@@ -19,9 +19,9 @@ export const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4 text-white">{t("cities")}</h3>
             <ul className="space-y-2 text-gray-400">
-              <li><Link to="#" className="hover:text-secondary">Berlin</Link></li>
-              <li><Link to="#" className="hover:text-secondary">München</Link></li>
-              <li><Link to="#" className="hover:text-secondary">Hamburg</Link></li>
+              <li><Link to="/berlin" className="hover:text-secondary">Berlin</Link></li>
+              <li><Link to="/muenchen" className="hover:text-secondary">München</Link></li>
+              <li><Link to="/hamburg" className="hover:text-secondary">Hamburg</Link></li>
             </ul>
           </div>
           <div>
