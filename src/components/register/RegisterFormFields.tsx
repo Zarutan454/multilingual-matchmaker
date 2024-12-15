@@ -33,65 +33,65 @@ export const RegisterFormFields = ({
         className="flex flex-col space-y-2"
       >
         <div className="flex items-center space-x-2">
-          <RadioGroupItem value="customer" id="customer" />
-          <Label htmlFor="customer">{t("registerAsCustomer")}</Label>
+          <RadioGroupItem value="customer" id="customer" className="border-[#FFD700]" />
+          <Label htmlFor="customer" className="text-white/90">{t("customerRegistration")}</Label>
         </div>
         <div className="flex items-center space-x-2">
-          <RadioGroupItem value="provider" id="provider" />
-          <Label htmlFor="provider">{t("registerAsProvider")}</Label>
+          <RadioGroupItem value="provider" id="provider" className="border-[#FFD700]" />
+          <Label htmlFor="provider" className="text-white/90">{t("providerRegistration")}</Label>
         </div>
       </RadioGroup>
 
       <div className="space-y-2">
-        <Label htmlFor="email">{t("email")}</Label>
+        <Label htmlFor="email" className="text-white/90">{t("email")}</Label>
         <Input
           id="email"
           type="email"
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           required
-          className="w-full"
+          className="bg-black/50 border-[#FFD700]/30 text-white placeholder-white/50 focus:border-[#FFD700] focus:ring-[#FFD700]/20"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="password">{t("password")}</Label>
+        <Label htmlFor="password" className="text-white/90">{t("password")}</Label>
         <Input
           id="password"
           type="password"
           value={formData.password}
           onChange={(e) => setFormData({ ...formData, password: e.target.value })}
           required
-          className="w-full"
+          className="bg-black/50 border-[#FFD700]/30 text-white placeholder-white/50 focus:border-[#FFD700] focus:ring-[#FFD700]/20"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="confirmPassword">{t("confirmPassword")}</Label>
+        <Label htmlFor="confirmPassword" className="text-white/90">{t("confirmPassword")}</Label>
         <Input
           id="confirmPassword"
           type="password"
           value={formData.confirmPassword}
           onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
           required
-          className="w-full"
+          className="bg-black/50 border-[#FFD700]/30 text-white placeholder-white/50 focus:border-[#FFD700] focus:ring-[#FFD700]/20"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="phoneNumber">{t("phoneNumber")}</Label>
+        <Label htmlFor="phoneNumber" className="text-white/90">{t("phoneNumber")}</Label>
         <Input
           id="phoneNumber"
           type="tel"
           value={formData.phoneNumber}
           onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
           placeholder="+1234567890"
-          className="w-full"
+          className="bg-black/50 border-[#FFD700]/30 text-white placeholder-white/50 focus:border-[#FFD700] focus:ring-[#FFD700]/20"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="age">{t("age")}</Label>
+        <Label htmlFor="age" className="text-white/90">{t("age")}</Label>
         <Input
           id="age"
           type="number"
@@ -99,19 +99,19 @@ export const RegisterFormFields = ({
           value={formData.age}
           onChange={(e) => setFormData({ ...formData, age: e.target.value })}
           required
-          className="w-full"
+          className="bg-black/50 border-[#FFD700]/30 text-white placeholder-white/50 focus:border-[#FFD700] focus:ring-[#FFD700]/20"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="country">{t("country")}</Label>
+        <Label htmlFor="country" className="text-white/90">{t("country")}</Label>
         <Input
           id="country"
           type="text"
           value={formData.country}
           onChange={(e) => setFormData({ ...formData, country: e.target.value })}
           required
-          className="w-full"
+          className="bg-black/50 border-[#FFD700]/30 text-white placeholder-white/50 focus:border-[#FFD700] focus:ring-[#FFD700]/20"
         />
       </div>
     </div>

@@ -78,7 +78,7 @@ export const RegisterForm = () => {
 
       <Button 
         type="submit" 
-        className="w-full"
+        className="w-full bg-[#FFD700] hover:bg-[#DAA520] text-black font-semibold transition-colors"
         disabled={isLoading}
       >
         {isLoading ? t("registering") : t("submit")}
