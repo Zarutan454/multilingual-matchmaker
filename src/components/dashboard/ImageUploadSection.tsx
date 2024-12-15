@@ -49,9 +49,27 @@ export const ImageUploadSection = ({ userId, onImageUploaded, type, imageUrl, on
   };
 
   const handleDelete = async () => {
-    if (onImageDelete) {
-      onImageDelete();
-      toast.success(t("imageDeleted"));
+    try {
+      if (imageUrl && onImageDelete) {
+        // Extract the file path from the URL
+        const filePath = imageUrl.split('/').pop();
+        if (!filePath) {
+          toast.error(t("invalidFilePath"));
+          return;
+        }
+
+        const { error: deleteError } = await supabase.storage
+          .from('uploads')
+          .remove([filePath]);
+
+        if (deleteError) throw deleteError;
+
+        onImageDelete();
+        toast.success(t("imageDeleted"));
+      }
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      toast.error(t("errorDeletingImage"));
     }
   };
 

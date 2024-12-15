@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { supabase } from "@/lib/supabase";
 
 interface GalleryProps {
   images: string[];
@@ -10,6 +12,35 @@ interface GalleryProps {
 
 export const Gallery = ({ images, onDeleteImage }: GalleryProps) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  const handleDeleteImage = async (imageUrl: string) => {
+    try {
+      // Extract the file path from the URL
+      const filePath = imageUrl.split('/').pop();
+      if (!filePath) {
+        toast.error("Ungültiger Dateipfad");
+        return;
+      }
+
+      // Delete from storage
+      const { error: storageError } = await supabase.storage
+        .from('uploads')
+        .remove([filePath]);
+
+      if (storageError) {
+        throw storageError;
+      }
+
+      // Notify parent component
+      if (onDeleteImage) {
+        onDeleteImage(imageUrl);
+      }
+      toast.success("Bild erfolgreich gelöscht");
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      toast.error("Fehler beim Löschen des Bildes");
+    }
+  };
 
   return (
     <div className="grid grid-cols-3 gap-2">
@@ -35,7 +66,7 @@ export const Gallery = ({ images, onDeleteImage }: GalleryProps) => {
                 className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-red-600 hover:bg-red-700"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onDeleteImage(image);
+                  handleDeleteImage(image);
                 }}
               >
                 <Trash2 className="h-4 w-4" />
