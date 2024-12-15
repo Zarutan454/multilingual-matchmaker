@@ -35,41 +35,39 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   }, []);
 
-  const t = useCallback(async (key: TranslationKey | string): Promise<string> => {
-    // Versuche zuerst statische Übersetzungen zu finden
+  const t = useCallback((key: TranslationKey | string): string => {
+    // Try static translations first
     const staticTranslation = languages[currentLanguage]?.translations[key as TranslationKey];
     if (staticTranslation) return staticTranslation;
 
-    // Prüfe dann dynamische Übersetzungen
+    // Check dynamic translations
     if (dynamicTranslations[key]) return dynamicTranslations[key];
 
-    // Wenn keine Übersetzung gefunden wurde, starte die Übersetzung
+    // If no translation found and not currently translating, trigger translation
     if (!isTranslating) {
       setIsTranslating(true);
       
-      // Verwende den englischen Text als Basis für die Übersetzung
+      // Use English text as base for translation
       const textToTranslate = languages.en.translations[key as TranslationKey] || key;
       
-      try {
-        const translatedText = await translateAndCache(textToTranslate, currentLanguage);
-        setDynamicTranslations((prev) => ({
-          ...prev,
-          [key]: translatedText,
-        }));
-        return translatedText;
-      } catch (error) {
-        console.error("Translation error:", error);
-        return textToTranslate;
-      } finally {
-        setIsTranslating(false);
-      }
+      // Trigger async translation but return immediately
+      translateAndCache(textToTranslate, currentLanguage)
+        .then((translatedText) => {
+          setDynamicTranslations((prev) => ({
+            ...prev,
+            [key]: translatedText,
+          }));
+        })
+        .finally(() => {
+          setIsTranslating(false);
+        });
     }
 
-    // Fallback zum englischen Text oder Original
+    // Return English text or original key as fallback while translation is in progress
     return languages.en.translations[key as TranslationKey] || key;
   }, [currentLanguage, dynamicTranslations, isTranslating, translateAndCache]);
 
-  // Effekt zum Zurücksetzen des Caches beim Sprachwechsel
+  // Reset cache when language changes
   useEffect(() => {
     translationCache.clear();
     setDynamicTranslations({});
