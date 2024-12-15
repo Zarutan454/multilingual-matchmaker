@@ -1,60 +1,72 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
+import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
 import { languages, Language, TranslationKey, Translations } from "../config/languages";
 import { translateText } from "../utils/translationUtils";
 
 type LanguageContextType = {
   currentLanguage: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: TranslationKey) => string;
+  t: (key: TranslationKey | string) => string;
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentLanguage, setCurrentLanguage] = useState<Language>("de");
-  const [dynamicTranslations, setDynamicTranslations] = useState<Partial<Record<TranslationKey, string>>>({});
+  const [dynamicTranslations, setDynamicTranslations] = useState<Record<string, string>>({});
+  const [isTranslating, setIsTranslating] = useState(false);
 
-  const t = useCallback(async (key: TranslationKey): Promise<string> => {
-    // First try to get from static translations
-    const staticTranslation = languages[currentLanguage].translations[key];
+  // Cache für Übersetzungen
+  const translationCache = new Map<string, Promise<string>>();
+
+  const translateAndCache = useCallback(async (text: string): Promise<string> => {
+    if (!text) return "";
+    
+    const cacheKey = `${currentLanguage}:${text}`;
+    
+    if (!translationCache.has(cacheKey)) {
+      translationCache.set(
+        cacheKey,
+        translateText(text, currentLanguage)
+      );
+    }
+
+    return translationCache.get(cacheKey)!;
+  }, [currentLanguage]);
+
+  const t = useCallback((key: TranslationKey | string): string => {
+    // Versuche zuerst statische Übersetzungen zu finden
+    const staticTranslation = languages[currentLanguage].translations[key as TranslationKey];
     if (staticTranslation) return staticTranslation;
 
-    // Then check dynamic translations
-    if (dynamicTranslations[key]) return dynamicTranslations[key]!;
+    // Prüfe dann dynamische Übersetzungen
+    if (dynamicTranslations[key]) return dynamicTranslations[key];
 
-    // If not found, translate from English and cache
-    const englishText = languages.en.translations[key] || key;
-    try {
-      const translatedText = await translateText(englishText, currentLanguage);
-      setDynamicTranslations(prev => ({
-        ...prev,
-        [key]: translatedText
-      }));
-      return translatedText;
-    } catch (error) {
-      console.error("Translation failed:", error);
-      return englishText;
+    // Wenn keine Übersetzung gefunden wurde, starte die Übersetzung
+    if (!isTranslating) {
+      setIsTranslating(true);
+      translateAndCache(key).then((translatedText) => {
+        setDynamicTranslations((prev) => ({
+          ...prev,
+          [key]: translatedText,
+        }));
+        setIsTranslating(false);
+      });
     }
-  }, [currentLanguage, dynamicTranslations]);
+
+    // Fallback zum Originaltext
+    return key;
+  }, [currentLanguage, dynamicTranslations, isTranslating, translateAndCache]);
+
+  // Effekt zum Zurücksetzen des Caches beim Sprachwechsel
+  useEffect(() => {
+    translationCache.clear();
+    setDynamicTranslations({});
+  }, [currentLanguage]);
 
   const contextValue = {
     currentLanguage,
     setLanguage: setCurrentLanguage,
-    t: (key: TranslationKey) => {
-      const staticTranslation = languages[currentLanguage].translations[key];
-      if (staticTranslation) return staticTranslation;
-      
-      // If no static translation, try to get from dynamic translations
-      if (dynamicTranslations[key]) return dynamicTranslations[key]!;
-      
-      // If still not found, return the key and trigger async translation
-      t(key).then(() => {
-        // Translation will be stored in dynamicTranslations and component will re-render
-      });
-      
-      // Fallback to English or key itself
-      return languages.en.translations[key] || key;
-    }
+    t,
   };
 
   return (
