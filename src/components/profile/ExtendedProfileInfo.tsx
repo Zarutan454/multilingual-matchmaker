@@ -52,7 +52,7 @@ export const ExtendedProfileInfo = ({ form }: ExtendedProfileInfoProps) => {
 
       <FormField
         control={form.control}
-        name="availabilityStatus"
+        name="availability_status"
         render={({ field }) => (
           <FormItem>
             <FormLabel>{t("availabilityStatus")}</FormLabel>
@@ -75,12 +75,17 @@ export const ExtendedProfileInfo = ({ form }: ExtendedProfileInfoProps) => {
 
       <FormField
         control={form.control}
-        name="serviceCategories"
+        name="service_categories"
         render={({ field }) => (
           <FormItem>
             <FormLabel>{t("serviceCategories")}</FormLabel>
             <Select
-              onValueChange={(value) => field.onChange([...field.value || [], value])}
+              onValueChange={(value) => {
+                const currentCategories = field.value || [];
+                if (!currentCategories.includes(value)) {
+                  field.onChange([...currentCategories, value]);
+                }
+              }}
               value={field.value?.[0] || ""}
             >
               <FormControl>
