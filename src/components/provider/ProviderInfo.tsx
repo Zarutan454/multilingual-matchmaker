@@ -37,7 +37,7 @@ export const ProviderInfo = ({ provider }: ProviderInfoProps) => {
             </Badge>
             <Badge variant="secondary" className="flex items-center gap-1 px-3 py-1">
               <Star className="h-4 w-4" />
-              4.9 (32 {t("reviews")})
+              4.9 (32 {t("reviewsCount")})
             </Badge>
             <Badge 
               variant="secondary" 
