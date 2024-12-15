@@ -6,105 +6,21 @@ export interface Profile {
   image: string;
   category: string;
   location: string;
-  coordinates: {
-    lat: number;
-    lng: number;
-  };
-  status: "online" | "offline";
-  rating: number;
-  reviews: number;
-  spokenLanguages?: string[];
-  age: number;
-  services?: string[];
-  priceRange?: {
-    min: number;
-    max: number;
-  };
-  availability?: {
-    days: string[];
-    hours: string[];
-  };
-  phoneNumber?: string;
-  phoneVerified?: boolean;
-  gender?: "male" | "female" | "other";
-  dateOfBirth?: string;
-  nationality?: string;
-  preferredCommunication?: "email" | "phone" | "both";
-  emergencyContact?: {
-    name: string;
-    phoneNumber: string;
-    relationship: string;
-  };
-}
-
-export const MAX_GALLERY_IMAGES = 10;
-
-export interface ProfileFormValues {
-  fullName: string;
-  nickname: string; // Added nickname field
-  bio: string;
-  avatar?: File;
-  location: string;
-  interests: string;
-  occupation: string;
-  height: string;
-  weight: string;
-  availability: string[];
   serviceCategories: string[];
   priceRange: {
     min: number;
     max: number;
   };
-  availabilityStatus: "online" | "offline" | "busy";
-  gallery?: (File | string)[];
-  phoneNumber?: string;
-  gender?: "male" | "female" | "other";
-  dateOfBirth?: string;
-  nationality?: string;
+  status: string;
+  rating?: number;
+  reviews?: number;
   spokenLanguages?: string[];
-  preferredCommunication?: "email" | "phone" | "both";
-  emergencyContact?: {
-    name: string;
-    phoneNumber: string;
-    relationship: string;
-  };
-}
-
-export interface UserMetadata {
-  full_name: string;
-  nickname: string; // Added nickname field
-  bio: string;
-  avatar_url?: string;
-  location: string;
-  interests: string;
-  occupation: string;
-  height: string;
-  weight: string;
-  availability: string[];
-  service_categories: string[];
-  price_range: {
-    min: number;
-    max: number;
-  };
-  availability_status: string;
-  gallery?: string[];
-  phone_number?: string;
-  phone_verified?: boolean;
-  gender?: string;
-  date_of_birth?: string;
-  nationality?: string;
-  spoken_languages?: string[];
-  preferred_communication?: string;
-  emergency_contact?: {
-    name: string;
-    phone_number: string;
-    relationship: string;
-  };
+  age?: number;
 }
 
 export const profileSchema = z.object({
   fullName: z.string().min(2, "Name muss mindestens 2 Zeichen lang sein"),
-  nickname: z.string().min(2, "Nickname muss mindestens 2 Zeichen lang sein"), // Added nickname validation
+  nickname: z.string().min(2, "Nickname muss mindestens 2 Zeichen lang sein"),
   bio: z.string().min(10, "Bio muss mindestens 10 Zeichen lang sein"),
   avatar: z.instanceof(File).optional(),
   location: z.string().min(2, "Standort ist erforderlich"),
