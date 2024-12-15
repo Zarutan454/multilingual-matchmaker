@@ -4,5 +4,6 @@ export const pricingTranslations = {
   basePrice: "Grundpreis",
   duration: "Dauer",
   selectDuration: "Dauer auswählen",
-  addCategory: "Kategorie hinzufügen"
+  addCategory: "Kategorie hinzufügen",
+  pricing: "Preisgestaltung"
 };

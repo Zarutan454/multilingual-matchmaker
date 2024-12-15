@@ -4,4 +4,5 @@ export type PricingTranslationKeys =
   | "basePrice"
   | "duration"
   | "selectDuration"
-  | "addCategory";
+  | "addCategory"
+  | "pricing";
