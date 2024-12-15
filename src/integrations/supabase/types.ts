@@ -61,10 +61,19 @@ export type Database = {
           availability_status: string | null
           avatar_url: string | null
           bio: string | null
+          body_type: string | null
+          bust_size: string | null
           contact_info: Json | null
           created_at: string
+          dress_size: string | null
+          eye_color: string | null
           full_name: string | null
           gallery: string[] | null
+          gender: string | null
+          grooming: string | null
+          hair_color: string | null
+          hair_length: string | null
+          hair_type: string | null
           height: string | null
           id: string
           interests: string | null
@@ -77,6 +86,7 @@ export type Database = {
           rates: Json | null
           service_categories: string[] | null
           services_offered: string[] | null
+          skin_tone: string | null
           updated_at: string
           weight: string | null
           working_hours: Json | null
@@ -87,10 +97,19 @@ export type Database = {
           availability_status?: string | null
           avatar_url?: string | null
           bio?: string | null
+          body_type?: string | null
+          bust_size?: string | null
           contact_info?: Json | null
           created_at?: string
+          dress_size?: string | null
+          eye_color?: string | null
           full_name?: string | null
           gallery?: string[] | null
+          gender?: string | null
+          grooming?: string | null
+          hair_color?: string | null
+          hair_length?: string | null
+          hair_type?: string | null
           height?: string | null
           id: string
           interests?: string | null
@@ -103,6 +122,7 @@ export type Database = {
           rates?: Json | null
           service_categories?: string[] | null
           services_offered?: string[] | null
+          skin_tone?: string | null
           updated_at?: string
           weight?: string | null
           working_hours?: Json | null
@@ -113,10 +133,19 @@ export type Database = {
           availability_status?: string | null
           avatar_url?: string | null
           bio?: string | null
+          body_type?: string | null
+          bust_size?: string | null
           contact_info?: Json | null
           created_at?: string
+          dress_size?: string | null
+          eye_color?: string | null
           full_name?: string | null
           gallery?: string[] | null
+          gender?: string | null
+          grooming?: string | null
+          hair_color?: string | null
+          hair_length?: string | null
+          hair_type?: string | null
           height?: string | null
           id?: string
           interests?: string | null
@@ -129,6 +158,7 @@ export type Database = {
           rates?: Json | null
           service_categories?: string[] | null
           services_offered?: string[] | null
+          skin_tone?: string | null
           updated_at?: string
           weight?: string | null
           working_hours?: Json | null
