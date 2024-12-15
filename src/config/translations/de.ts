@@ -52,11 +52,12 @@ export const deTranslations: Translations = {
   emergencyContactPhone: "Telefonnummer des Notfallkontakts",
   emergencyContactRelationship: "Beziehung zum Notfallkontakt",
   
+  // Navigation and error messages
   errorNavigating: "Fehler bei der Navigation",
   errorLoadingFavorites: "Fehler beim Laden der Favoriten",
   noFavorites: "Keine Favoriten vorhanden",
 
-  // Additional required translations from the Profile type
+  // Profile related translations
   fullName: "Vollständiger Name",
   bio: "Biografie",
   location: "Standort",
@@ -75,5 +76,31 @@ export const deTranslations: Translations = {
   enterLocation: "Standort eingeben",
   logout: "Abmelden",
   logoutSuccess: "Erfolgreich abgemeldet",
-  logoutError: "Fehler beim Abmelden"
+  logoutError: "Fehler beim Abmelden",
+
+  // Additional required translations
+  saveProfile: "Profil speichern",
+  memberSince: "Mitglied seit",
+  selectAvailability: "Verfügbarkeit auswählen",
+  available: "Verfügbar",
+  busy: "Beschäftigt",
+  offline: "Offline",
+  addImage: "Bild hinzufügen",
+  viewAllPhotos: "Alle Fotos ansehen",
+  profileImage: "Profilbild",
+  selectServices: "Dienste auswählen",
+  profileUpdated: "Profil aktualisiert",
+  errorUpdatingProfile: "Fehler beim Aktualisieren des Profils",
+  savingProfile: "Profil wird gespeichert",
+  errorUploadingAvatar: "Fehler beim Hochladen des Profilbilds",
+  errorUploadingGallery: "Fehler beim Hochladen der Galerie",
+  age: "Alter",
+  country: "Land",
+  registerAsCustomer: "Als Kunde registrieren",
+  registerAsProvider: "Als Anbieter registrieren",
+  recentMessages: "Letzte Nachrichten",
+  contacts: "Kontakte",
+  recentContacts: "Letzte Kontakte",
+  favorites: "Favoriten",
+  yourFavorites: "Deine Favoriten"
 };

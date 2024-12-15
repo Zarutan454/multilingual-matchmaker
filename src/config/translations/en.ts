@@ -50,11 +50,12 @@ export const enTranslations: Translations = {
   emergencyContactPhone: "Emergency contact phone",
   emergencyContactRelationship: "Emergency contact relationship",
   
+  // Navigation and error messages
   errorNavigating: "Error navigating",
   errorLoadingFavorites: "Error loading favorites",
   noFavorites: "No favorites yet",
 
-  // Additional required translations from the Profile type
+  // Profile related translations
   fullName: "Full Name",
   bio: "Biography",
   location: "Location",
@@ -73,5 +74,31 @@ export const enTranslations: Translations = {
   enterLocation: "Enter Location",
   logout: "Logout",
   logoutSuccess: "Successfully logged out",
-  logoutError: "Error logging out"
+  logoutError: "Error logging out",
+
+  // Additional required translations
+  saveProfile: "Save Profile",
+  memberSince: "Member since",
+  selectAvailability: "Select availability",
+  available: "Available",
+  busy: "Busy",
+  offline: "Offline",
+  addImage: "Add Image",
+  viewAllPhotos: "View All Photos",
+  profileImage: "Profile Image",
+  selectServices: "Select Services",
+  profileUpdated: "Profile Updated",
+  errorUpdatingProfile: "Error Updating Profile",
+  savingProfile: "Saving Profile",
+  errorUploadingAvatar: "Error Uploading Avatar",
+  errorUploadingGallery: "Error Uploading Gallery",
+  age: "Age",
+  country: "Country",
+  registerAsCustomer: "Register as Customer",
+  registerAsProvider: "Register as Provider",
+  recentMessages: "Recent Messages",
+  contacts: "Contacts",
+  recentContacts: "Recent Contacts",
+  favorites: "Favorites",
+  yourFavorites: "Your Favorites"
 };
