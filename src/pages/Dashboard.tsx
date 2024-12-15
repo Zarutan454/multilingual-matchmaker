@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Phone, Clock, Star, Heart, Edit, Plus, Image } from "lucide-react";
+import { MapPin, Phone, Clock, Star, Heart, Edit } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
@@ -11,11 +11,10 @@ import { Gallery } from "@/components/profile/Gallery";
 import { FavoritesCard } from "@/components/dashboard/FavoritesCard";
 import { RecentChatsCard } from "@/components/dashboard/RecentChatsCard";
 import { Profile } from "@/types/profile";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { ProfileEditForm } from "@/components/dashboard/ProfileEditForm";
+import { ImageUploadSection } from "@/components/dashboard/ImageUploadSection";
 import { AvailabilitySchedule } from "@/components/availability/AvailabilitySchedule";
 import { ServiceManager } from "@/components/provider/ServiceManager";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 export default function Dashboard() {
   const { t } = useLanguage();
@@ -23,7 +22,6 @@ export default function Dashboard() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedProfile, setEditedProfile] = useState<Partial<Profile>>({});
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -41,7 +39,6 @@ export default function Dashboard() {
 
         if (error) throw error;
         setProfile(data as Profile);
-        setEditedProfile(data as Profile);
       } catch (error) {
         console.error('Error fetching profile:', error);
         toast.error(t("errorLoadingProfile"));
@@ -53,65 +50,52 @@ export default function Dashboard() {
     fetchProfile();
   }, [user]);
 
-  const handleProfileUpdate = async () => {
-    try {
-      if (!user) return;
+  const handleProfileUpdate = (updatedProfile: Profile) => {
+    setProfile(updatedProfile);
+    setIsEditing(false);
+  };
 
+  const handleAvatarUpdate = async (url: string) => {
+    try {
       const { error } = await supabase
         .from('profiles')
-        .update(editedProfile)
-        .eq('id', user.id);
+        .update({ avatar_url: url })
+        .eq('id', user?.id);
 
       if (error) throw error;
 
-      setProfile(editedProfile as Profile);
-      setIsEditing(false);
-      toast.success(t("profileUpdated"));
+      setProfile(prev => prev ? { ...prev, avatar_url: url } : null);
+      toast.success(t("profileImageUpdated"));
     } catch (error) {
-      console.error('Error updating profile:', error);
-      toast.error(t("errorUpdatingProfile"));
+      console.error('Error updating avatar:', error);
+      toast.error(t("errorUpdatingProfileImage"));
     }
   };
 
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleGalleryUpdate = async (url: string) => {
     try {
-      const file = event.target.files?.[0];
-      if (!file || !user) return;
-
-      const fileExt = file.name.split('.').pop();
-      const filePath = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('uploads')
-        .upload(filePath, file);
-
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('uploads')
-        .getPublicUrl(filePath);
-
-      const gallery = [...(profile?.gallery || []), publicUrl];
+      const newGallery = [...(profile?.gallery || []), url];
       
-      const { error: updateError } = await supabase
+      const { error } = await supabase
         .from('profiles')
-        .update({ gallery })
-        .eq('id', user.id);
+        .update({ gallery: newGallery })
+        .eq('id', user?.id);
 
-      if (updateError) throw updateError;
+      if (error) throw error;
 
-      setProfile(prev => prev ? { ...prev, gallery } : null);
-      toast.success(t("imageUploaded"));
+      setProfile(prev => prev ? { ...prev, gallery: newGallery } : null);
     } catch (error) {
-      console.error('Error uploading image:', error);
-      toast.error(t("errorUploadingImage"));
+      console.error('Error updating gallery:', error);
+      toast.error(t("errorUpdatingGallery"));
     }
   };
 
   if (loading) {
-    return <div className="flex items-center justify-center min-h-screen">
-      <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
-    </div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      </div>
+    );
   }
 
   return (
@@ -141,56 +125,20 @@ export default function Dashboard() {
                       alt={profile?.full_name || ""}
                       className="w-full aspect-square object-cover rounded-lg"
                     />
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          className="absolute bottom-2 right-2"
-                        >
-                          <Image className="w-4 h-4 mr-2" />
-                          {t("uploadImage")}
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>{t("uploadImage")}</DialogTitle>
-                        </DialogHeader>
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageUpload}
-                        />
-                      </DialogContent>
-                    </Dialog>
+                    <ImageUploadSection
+                      userId={user?.id || ""}
+                      onImageUploaded={handleAvatarUpdate}
+                      type="avatar"
+                    />
                   </div>
                 </div>
 
                 <div className="flex-1">
                   {isEditing ? (
-                    <div className="space-y-4">
-                      <Input
-                        value={editedProfile.full_name || ''}
-                        onChange={(e) => setEditedProfile({ ...editedProfile, full_name: e.target.value })}
-                        placeholder={t("fullName")}
-                        className="bg-gray-800 border-gray-700"
-                      />
-                      <Textarea
-                        value={editedProfile.bio || ''}
-                        onChange={(e) => setEditedProfile({ ...editedProfile, bio: e.target.value })}
-                        placeholder={t("bio")}
-                        className="bg-gray-800 border-gray-700"
-                      />
-                      <Input
-                        value={editedProfile.location || ''}
-                        onChange={(e) => setEditedProfile({ ...editedProfile, location: e.target.value })}
-                        placeholder={t("location")}
-                        className="bg-gray-800 border-gray-700"
-                      />
-                      <Button onClick={handleProfileUpdate}>
-                        {t("saveChanges")}
-                      </Button>
-                    </div>
+                    <ProfileEditForm
+                      profile={profile}
+                      onProfileUpdate={handleProfileUpdate}
+                    />
                   ) : (
                     <>
                       <h1 className="text-3xl font-bold mb-2">{profile?.full_name || ""}</h1>
@@ -226,32 +174,17 @@ export default function Dashboard() {
             </Card>
 
             {/* Gallery */}
-            {profile?.gallery && profile.gallery.length > 0 && (
-              <Card className="bg-black/50 backdrop-blur-sm border-neutral-800 p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-bold">{t("gallery")}</h2>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button variant="outline" size="sm">
-                        <Plus className="w-4 h-4 mr-2" />
-                        {t("addImage")}
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>{t("uploadImage")}</DialogTitle>
-                      </DialogHeader>
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                      />
-                    </DialogContent>
-                  </Dialog>
-                </div>
-                <Gallery images={profile.gallery} />
-              </Card>
-            )}
+            <Card className="bg-black/50 backdrop-blur-sm border-neutral-800 p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">{t("gallery")}</h2>
+                <ImageUploadSection
+                  userId={user?.id || ""}
+                  onImageUploaded={handleGalleryUpdate}
+                  type="gallery"
+                />
+              </div>
+              <Gallery images={profile?.gallery || []} />
+            </Card>
           </div>
 
           {/* Sidebar */}
