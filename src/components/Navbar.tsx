@@ -26,12 +26,12 @@ export const Navbar = () => {
   return (
     <nav className="fixed w-full z-50 bg-black/80 backdrop-blur-sm">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center h-16">
           <div className="flex items-center gap-4">
             <img 
               src="/lovable-uploads/fe01f460-75ee-475d-8e6c-efb6244e2622.png" 
               alt="Logo" 
-              className="h-12 w-auto"
+              className="h-10 w-auto"
             />
             <div className="flex flex-col items-start">
               <a href="/" className="text-white font-bold text-xl">
@@ -43,7 +43,6 @@ export const Navbar = () => {
             </div>
           </div>
 
-          {/* Desktop Menu */}
           <div className="hidden md:flex space-x-8">
             <a href="/" className="text-white hover:text-[#c69963] transition-colors">
               {t("home")}
@@ -99,9 +98,9 @@ export const Navbar = () => {
               <Menu size={24} />
             </button>
           </div>
+
         </div>
 
-        {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-[#333]">
             <div className="flex flex-col space-y-4">
