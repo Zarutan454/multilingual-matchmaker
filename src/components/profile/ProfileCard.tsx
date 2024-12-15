@@ -23,12 +23,17 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
     const checkIfFavorite = async () => {
       if (!user) return;
       
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('favorites')
         .select('*')
         .eq('user_id', user.id)
         .eq('profile_id', profile.id)
-        .single();
+        .maybeSingle();
+      
+      if (error) {
+        console.error('Error checking favorite status:', error);
+        return;
+      }
       
       setIsFavorite(!!data);
     };
@@ -46,16 +51,18 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
 
     try {
       if (isFavorite) {
-        await supabase
+        const { error } = await supabase
           .from('favorites')
           .delete()
           .eq('user_id', user.id)
           .eq('profile_id', profile.id);
+          
+        if (error) throw error;
         
         setIsFavorite(false);
         toast.success("Aus Favoriten entfernt");
       } else {
-        await supabase
+        const { error } = await supabase
           .from('favorites')
           .insert([
             {
@@ -63,6 +70,8 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
               profile_id: profile.id
             }
           ]);
+          
+        if (error) throw error;
         
         setIsFavorite(true);
         toast.success("Zu Favoriten hinzugefügt");
