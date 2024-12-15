@@ -5,6 +5,11 @@ import { useLanguage } from "../../contexts/LanguageContext";
 import { toast } from "sonner";
 import { TimeSlotSelector } from "./TimeSlotSelector";
 import { TimeSlotList } from "./TimeSlotList";
+import { Button } from "../ui/button";
+import { Edit2, Save } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface TimeSlot {
   start: string;
@@ -12,7 +17,7 @@ interface TimeSlot {
 }
 
 interface DaySchedule {
-  date: Date;
+  day: string;
   timeSlots: TimeSlot[];
 }
 
@@ -22,105 +27,74 @@ interface AvailabilityScheduleProps {
 
 export const AvailabilitySchedule = ({ isEditable = false }: AvailabilityScheduleProps) => {
   const { t } = useLanguage();
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
-  const [schedule, setSchedule] = useState<DaySchedule[]>([]);
-  const [selectedStartTime, setSelectedStartTime] = useState("09:00");
-  const [selectedEndTime, setSelectedEndTime] = useState("17:00");
+  const { user } = useAuth();
+  const [isEditing, setIsEditing] = useState(false);
+  const [weeklySchedule, setWeeklySchedule] = useState<DaySchedule[]>(
+    ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map(day => ({
+      day,
+      timeSlots: [{ start: "09:00", end: "22:00" }]
+    }))
+  );
 
-  const validateTimeSlot = (start: string, end: string): boolean => {
-    const startHour = parseInt(start.split(":")[0]);
-    const endHour = parseInt(end.split(":")[0]);
-    return startHour < endHour;
-  };
-
-  const addTimeSlot = () => {
-    if (!selectedDate) {
-      toast.error(t("selectDate"));
-      return;
-    }
-
-    if (!validateTimeSlot(selectedStartTime, selectedEndTime)) {
-      toast.error(t("invalidTimeRange"));
-      return;
-    }
-
-    const newSchedule = [...schedule];
-    const daySchedule = newSchedule.find(
-      (day) => day.date.toDateString() === selectedDate.toDateString()
-    );
-
-    if (daySchedule) {
-      const hasOverlap = daySchedule.timeSlots.some((slot) => {
-        const slotStart = parseInt(slot.start.split(":")[0]);
-        const slotEnd = parseInt(slot.end.split(":")[0]);
-        const newStart = parseInt(selectedStartTime.split(":")[0]);
-        const newEnd = parseInt(selectedEndTime.split(":")[0]);
-        return (
-          (newStart >= slotStart && newStart < slotEnd) ||
-          (newEnd > slotStart && newEnd <= slotEnd)
-        );
-      });
-
-      if (hasOverlap) {
-        toast.error(t("timeSlotOverlap"));
-        return;
-      }
-
-      daySchedule.timeSlots.push({
-        start: selectedStartTime,
-        end: selectedEndTime,
-      });
-      daySchedule.timeSlots.sort((a, b) => 
-        parseInt(a.start) - parseInt(b.start)
-      );
-    } else {
-      newSchedule.push({
-        date: selectedDate,
-        timeSlots: [
-          {
-            start: selectedStartTime,
-            end: selectedEndTime,
-          },
-        ],
-      });
-    }
-
-    setSchedule(newSchedule);
-    toast.success(t("timeSlotAdded"));
-  };
-
-  const removeTimeSlot = (date: Date, index: number) => {
-    const newSchedule = schedule.map((day) => {
-      if (day.date.toDateString() === date.toDateString()) {
-        return {
-          ...day,
-          timeSlots: day.timeSlots.filter((_, i) => i !== index),
+  const handleTimeChange = (day: string, index: number, type: 'start' | 'end', value: string) => {
+    setWeeklySchedule(prev => prev.map(schedule => {
+      if (schedule.day === day) {
+        const newTimeSlots = [...schedule.timeSlots];
+        newTimeSlots[index] = {
+          ...newTimeSlots[index],
+          [type]: value
         };
+        return { ...schedule, timeSlots: newTimeSlots };
       }
-      return day;
-    });
-    setSchedule(newSchedule.filter((day) => day.timeSlots.length > 0));
-    toast.success(t("timeSlotRemoved"));
+      return schedule;
+    }));
   };
 
-  const getTimeSlotsForDate = (date: Date): TimeSlot[] => {
-    const daySchedule = schedule.find(
-      (day) => day.date.toDateString() === date.toDateString()
-    );
-    return daySchedule?.timeSlots || [];
+  const saveSchedule = async () => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          working_hours: weeklySchedule.reduce((acc, { day, timeSlots }) => ({
+            ...acc,
+            [day.toLowerCase()]: timeSlots.map(slot => `${slot.start}-${slot.end}`)
+          }), {})
+        })
+        .eq('id', user.id);
+
+      if (error) throw error;
+
+      toast.success(t("scheduleUpdated"));
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error saving schedule:', error);
+      toast.error(t("errorSavingSchedule"));
+    }
   };
 
-  const weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  const timeOptions = Array.from({ length: 24 }, (_, i) => {
+    const hour = i.toString().padStart(2, "0");
+    return `${hour}:00`;
+  });
 
   if (!isEditable) {
     return (
       <Card className="p-6">
         <h3 className="text-xl font-semibold mb-4">{t("availability")}</h3>
         <div className="space-y-2">
-          {weekDays.map((day) => (
+          {weeklySchedule.map(({ day, timeSlots }) => (
             <div key={day} className="flex justify-between items-center py-2 border-b border-gray-700">
               <span className="font-medium">{t(day.toLowerCase())}</span>
-              <span className="text-gray-300">09:00 - 22:00</span>
+              <span className="text-gray-300">
+                {timeSlots.map((slot, index) => (
+                  <span key={index}>
+                    {slot.start} - {slot.end}
+                    {index < timeSlots.length - 1 ? ", " : ""}
+                  </span>
+                ))}
+              </span>
             </div>
           ))}
         </div>
@@ -130,34 +104,68 @@ export const AvailabilitySchedule = ({ isEditable = false }: AvailabilitySchedul
 
   return (
     <Card className="p-6">
-      <h3 className="text-xl font-semibold mb-4">{t("availability")}</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <Calendar
-            mode="single"
-            selected={selectedDate}
-            onSelect={setSelectedDate}
-            className="rounded-md border"
-          />
-        </div>
-
-        <div className="space-y-4">
-          <TimeSlotSelector
-            selectedStartTime={selectedStartTime}
-            selectedEndTime={selectedEndTime}
-            onStartTimeChange={setSelectedStartTime}
-            onEndTimeChange={setSelectedEndTime}
-            onAddTimeSlot={addTimeSlot}
-          />
-
-          {selectedDate && (
-            <TimeSlotList
-              date={selectedDate}
-              timeSlots={getTimeSlotsForDate(selectedDate)}
-              onRemoveTimeSlot={(index) => removeTimeSlot(selectedDate, index)}
-            />
-          )}
-        </div>
+      <div className="flex justify-between items-center mb-6">
+        <h3 className="text-xl font-semibold">{t("availability")}</h3>
+        {isEditing ? (
+          <Button onClick={saveSchedule} variant="secondary">
+            <Save className="w-4 h-4 mr-2" />
+            {t("save")}
+          </Button>
+        ) : (
+          <Button onClick={() => setIsEditing(true)} variant="secondary">
+            <Edit2 className="w-4 h-4 mr-2" />
+            {t("edit")}
+          </Button>
+        )}
+      </div>
+      <div className="space-y-4">
+        {weeklySchedule.map(({ day, timeSlots }) => (
+          <div key={day} className="space-y-2">
+            <h4 className="font-medium">{t(day.toLowerCase())}</h4>
+            {timeSlots.map((slot, index) => (
+              <div key={index} className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm text-gray-400">{t("startTime")}</label>
+                  <Select
+                    value={slot.start}
+                    onValueChange={(value) => handleTimeChange(day, index, 'start', value)}
+                    disabled={!isEditing}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={t("selectStartTime")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {timeOptions.map((time) => (
+                        <SelectItem key={time} value={time}>
+                          {time}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-sm text-gray-400">{t("endTime")}</label>
+                  <Select
+                    value={slot.end}
+                    onValueChange={(value) => handleTimeChange(day, index, 'end', value)}
+                    disabled={!isEditing}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={t("selectEndTime")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {timeOptions.map((time) => (
+                        <SelectItem key={time} value={time}>
+                          {time}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            ))}
+          </div>
+        ))}
       </div>
     </Card>
   );
