@@ -9,3 +9,8 @@ export interface FavoriteData {
   id: string;
   profile: Profile;
 }
+
+export interface FavoriteResponse {
+  id: string;
+  profiles: Profile[];
+}
