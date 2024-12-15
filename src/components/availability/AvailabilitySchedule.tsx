@@ -16,7 +16,11 @@ interface DaySchedule {
   timeSlots: TimeSlot[];
 }
 
-export const AvailabilitySchedule = () => {
+interface AvailabilityScheduleProps {
+  isEditable?: boolean;
+}
+
+export const AvailabilitySchedule = ({ isEditable = false }: AvailabilityScheduleProps) => {
   const { t } = useLanguage();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [schedule, setSchedule] = useState<DaySchedule[]>([]);
@@ -105,6 +109,24 @@ export const AvailabilitySchedule = () => {
     );
     return daySchedule?.timeSlots || [];
   };
+
+  const weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+  if (!isEditable) {
+    return (
+      <Card className="p-6">
+        <h3 className="text-xl font-semibold mb-4">{t("availability")}</h3>
+        <div className="space-y-2">
+          {weekDays.map((day) => (
+            <div key={day} className="flex justify-between items-center py-2 border-b border-gray-700">
+              <span className="font-medium">{t(day.toLowerCase())}</span>
+              <span className="text-gray-300">09:00 - 22:00</span>
+            </div>
+          ))}
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card className="p-6">
