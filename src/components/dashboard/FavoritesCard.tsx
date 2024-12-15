@@ -2,20 +2,15 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Star } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { User } from "@supabase/supabase-js";
 import { useFavorites } from "@/hooks/useFavorites";
 import { toast } from "sonner";
 import { Loader } from "./Loader";
 import { FavoriteList } from "./FavoriteList";
 
-interface FavoritesCardProps {
-  user: User | null;
-}
-
-export const FavoritesCard = ({ user }: FavoritesCardProps) => {
+export const FavoritesCard = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const { data: favorites = [], isLoading, error } = useFavorites(user);
+  const { data: favorites = [], isLoading, error } = useFavorites();
 
   const handleProfileClick = (profileId: string) => {
     if (!profileId) {

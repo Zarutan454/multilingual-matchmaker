@@ -1,15 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
-import { Profile } from "@/types/profile";
+import { Profile } from "@/types/favorites";
 
 interface FavoriteProfile {
   id: string;
   profile: {
     id: string;
-    full_name: string;
-    avatar_url: string;
-    location: string;
+    full_name: string | null;
+    avatar_url: string | null;
+    location: string | null;
   };
 }
 
@@ -39,7 +39,7 @@ export const useFavorites = () => {
         throw error;
       }
 
-      return favorites.map((favorite: FavoriteProfile) => ({
+      return (favorites || []).map((favorite: any) => ({
         id: favorite.id,
         profile: {
           id: favorite.profile.id,
