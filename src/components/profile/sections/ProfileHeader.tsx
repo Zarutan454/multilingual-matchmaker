@@ -2,6 +2,10 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, Star, Clock, Globe2 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Profile } from "@/types/profile";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
+import { formatDistanceToNow } from "date-fns";
+import { de } from "date-fns/locale";
 
 interface ProfileHeaderProps {
   profile: Profile;
@@ -9,6 +13,47 @@ interface ProfileHeaderProps {
 
 export const ProfileHeader = ({ profile }: ProfileHeaderProps) => {
   const { t } = useLanguage();
+  const [isOnline, setIsOnline] = useState(profile.availability_status === 'online');
+  const [lastSeen, setLastSeen] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Initial check of online status and last seen
+    if (profile.last_seen) {
+      setLastSeen(formatDistanceToNow(new Date(profile.last_seen), { 
+        addSuffix: true,
+        locale: de 
+      }));
+    }
+
+    // Subscribe to presence changes
+    const channel = supabase
+      .channel(`presence_${profile.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'profiles',
+          filter: `id=eq.${profile.id}`
+        },
+        (payload: any) => {
+          if (payload.new) {
+            setIsOnline(payload.new.availability_status === 'online');
+            if (payload.new.last_seen) {
+              setLastSeen(formatDistanceToNow(new Date(payload.new.last_seen), { 
+                addSuffix: true,
+                locale: de 
+              }));
+            }
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [profile.id, profile.last_seen]);
 
   return (
     <div className="flex items-start gap-6">
@@ -25,12 +70,17 @@ export const ProfileHeader = ({ profile }: ProfileHeaderProps) => {
           <p className="text-gray-400">{profile.age} {t("years")}</p>
         )}
         <div className="flex flex-wrap gap-2 mt-3">
-          {profile.availability_status && (
-            <Badge variant="outline" className="bg-green-500/20 text-green-300">
-              <Clock className="w-3 h-3 mr-1" />
-              {t(profile.availability_status)}
-            </Badge>
-          )}
+          <Badge 
+            variant="outline" 
+            className={`${
+              isOnline 
+                ? "bg-green-500/20 text-green-300" 
+                : "bg-gray-500/20 text-gray-300"
+            }`}
+          >
+            <Clock className="w-3 h-3 mr-1" />
+            {isOnline ? t("online") : lastSeen ? `${t("lastSeen")} ${lastSeen}` : t("offline")}
+          </Badge>
           {profile.location && (
             <Badge variant="outline" className="bg-blue-500/20 text-blue-300">
               <MapPin className="w-3 h-3 mr-1" />
