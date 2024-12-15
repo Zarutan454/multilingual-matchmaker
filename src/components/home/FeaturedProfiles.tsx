@@ -4,95 +4,70 @@ import { ChatWindow } from "../messaging/ChatWindow";
 import { SearchBar } from "../search/SearchBar";
 import { ProfileGrid } from "../profile/ProfileGrid";
 import { Profile } from "../profile/types";
-
-const featuredProfiles: Profile[] = [
-  {
-    id: 1,
-    name: "Sophie",
-    image: "/lovable-uploads/da17ddfa-149e-442c-bd33-ea6287b02581.png",
-    category: "VIP Begleitung",
-    location: "München",
-    coordinates: { lat: 48.137154, lng: 11.576124 },
-    status: "online",
-    rating: 4.9,
-    reviews: 124,
-    spokenLanguages: ["Deutsch", "Englisch"],
-    age: 25
-  },
-  {
-    id: 2,
-    name: "Emma",
-    image: "/lovable-uploads/fe01f460-75ee-475d-8e6c-efb6244e2622.png",
-    category: "Premium Escort",
-    location: "Berlin",
-    coordinates: { lat: 52.520008, lng: 13.404954 },
-    status: "offline",
-    rating: 4.8,
-    reviews: 89,
-    spokenLanguages: ["Deutsch", "Französisch"],
-    age: 23
-  },
-  {
-    id: 3,
-    name: "Julia",
-    image: "/lovable-uploads/5a72d1e4-e990-4665-8f3a-c72bef742a3c.png",
-    category: "Dinner Date",
-    location: "Hamburg",
-    coordinates: { lat: 53.551086, lng: 9.993682 },
-    status: "online",
-    rating: 4.7,
-    reviews: 156,
-    spokenLanguages: ["Deutsch", "Italienisch"],
-    age: 27
-  },
-  {
-    id: 4,
-    name: "Laura",
-    image: "/lovable-uploads/0fee5c22-13f5-4317-835d-751e10816c40.png",
-    category: "Event Begleitung",
-    location: "Frankfurt",
-    coordinates: { lat: 50.110924, lng: 8.682127 },
-    status: "offline",
-    rating: 4.9,
-    reviews: 201,
-    spokenLanguages: ["Deutsch", "Spanisch"],
-    age: 24
-  },
-  {
-    id: 5,
-    name: "Marie",
-    image: "/lovable-uploads/3f84bf9b-9940-48fd-b090-c8c4ff825b87.png",
-    category: "Reisebegleitung",
-    location: "Köln",
-    coordinates: { lat: 50.937531, lng: 6.960279 },
-    status: "online",
-    rating: 4.8,
-    reviews: 167,
-    spokenLanguages: ["Deutsch", "Russisch"],
-    age: 26
-  }
-];
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 export const FeaturedProfiles = () => {
-  const [selectedProfile, setSelectedProfile] = useState<number | null>(null);
+  const [selectedProfile, setSelectedProfile] = useState<string | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [filteredProfiles, setFilteredProfiles] = useState(featuredProfiles);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [location, setLocation] = useState("");
+  const [category, setCategory] = useState("");
 
-  const handleChatClick = (e: React.MouseEvent, profileId: number) => {
+  // Fetch profiles from Supabase
+  const { data: profiles = [], isLoading } = useQuery({
+    queryKey: ['profiles'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .not('avatar_url', 'is', null); // Only get profiles with avatars
+
+      if (error) {
+        console.error('Error fetching profiles:', error);
+        throw error;
+      }
+
+      // Transform the data to match our Profile type
+      return data.map((profile: any) => ({
+        id: profile.id,
+        name: profile.full_name || 'Anonymous',
+        image: profile.avatar_url,
+        category: profile.service_categories?.[0] || 'VIP Begleitung',
+        location: profile.location || 'Unknown',
+        coordinates: { lat: 0, lng: 0 }, // You might want to add these to your profiles table
+        status: profile.availability_status || 'offline',
+        rating: 4.8, // You might want to add a ratings table in the future
+        reviews: 0, // You might want to add a reviews table in the future
+        spokenLanguages: profile.languages || ['Deutsch'],
+        age: profile.age || 25
+      }));
+    }
+  });
+
+  const handleChatClick = (e: React.MouseEvent, profileId: string) => {
     e.stopPropagation();
     setSelectedProfile(profileId);
     setIsChatOpen(true);
   };
 
   const handleSearch = (searchTerm: string, location: string, category: string) => {
-    const filtered = featuredProfiles.filter((profile) => {
-      const matchesSearch = profile.name.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesLocation = location === "" || profile.location.toLowerCase().includes(location.toLowerCase());
-      const matchesCategory = category === "" || profile.category.toLowerCase().includes(category.toLowerCase());
-      return matchesSearch && matchesLocation && matchesCategory;
-    });
-    setFilteredProfiles(filtered);
+    setSearchTerm(searchTerm);
+    setLocation(location);
+    setCategory(category);
   };
+
+  // Filter profiles based on search criteria
+  const filteredProfiles = profiles.filter((profile: Profile) => {
+    const matchesSearch = profile.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesLocation = location === "" || profile.location.toLowerCase().includes(location.toLowerCase());
+    const matchesCategory = category === "" || profile.category.toLowerCase().includes(category.toLowerCase());
+    return matchesSearch && matchesLocation && matchesCategory;
+  });
+
+  if (isLoading) {
+    return <div className="text-center py-8">Loading profiles...</div>;
+  }
 
   return (
     <section id="featured" className="py-8 bg-gradient-dark">
@@ -115,8 +90,8 @@ export const FeaturedProfiles = () => {
         <DialogContent className="sm:max-w-[500px]">
           {selectedProfile && (
             <ChatWindow
-              recipientId={selectedProfile.toString()}
-              recipientName={featuredProfiles.find(p => p.id === selectedProfile)?.name || ""}
+              recipientId={selectedProfile}
+              recipientName={profiles.find(p => p.id === selectedProfile)?.name || ""}
             />
           )}
         </DialogContent>
