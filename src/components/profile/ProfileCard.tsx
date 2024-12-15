@@ -25,21 +25,56 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
   const [lastSeen, setLastSeen] = useState<string | null>(null);
 
   useEffect(() => {
-    const checkLikeStatus = async () => {
+    const checkFavoriteStatus = async () => {
       if (!user) return;
       
       const { data } = await supabase
-        .from('profile_likes')
+        .from('favorites')
         .select('id')
         .eq('user_id', user.id)
         .eq('profile_id', profile.id)
         .single();
       
-      setIsLiked(!!data);
+      setIsFavorite(!!data);
     };
 
-    checkLikeStatus();
+    checkFavoriteStatus();
   }, [user, profile.id]);
+
+  const handleFavoriteClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!user) {
+      toast.error("Bitte melden Sie sich an, um Profile zu favorisieren");
+      return;
+    }
+
+    try {
+      if (isFavorite) {
+        const { error } = await supabase
+          .from('favorites')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('profile_id', profile.id);
+        
+        if (error) throw error;
+        setIsFavorite(false);
+        toast.success("Von Favoriten entfernt");
+      } else {
+        const { error } = await supabase
+          .from('favorites')
+          .insert([
+            { user_id: user.id, profile_id: profile.id }
+          ]);
+        
+        if (error) throw error;
+        setIsFavorite(true);
+        toast.success("Zu Favoriten hinzugefügt");
+      }
+    } catch (error) {
+      console.error('Error updating favorites:', error);
+      toast.error("Fehler beim Aktualisieren der Favoriten");
+    }
+  };
 
   const handleLikeClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -128,19 +163,25 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
         <div className="absolute inset-0 bg-gradient-dark opacity-60" />
 
         <div className="absolute top-4 right-4 flex flex-col gap-2">
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-white hover:bg-white/20"
-              onClick={(e) => handleLikeClick(e)}
-            >
-              <Heart className={`h-6 w-6 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
-              <span className="absolute -bottom-4 text-xs font-semibold">
-                {likeCount}
-              </span>
-            </Button>
-          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-white hover:bg-white/20"
+            onClick={(e) => handleFavoriteClick(e)}
+          >
+            <Star className={`h-6 w-6 ${isFavorite ? 'fill-yellow-500 text-yellow-500' : ''}`} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-white hover:bg-white/20"
+            onClick={(e) => handleLikeClick(e)}
+          >
+            <Heart className={`h-6 w-6 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+            <span className="absolute -bottom-4 text-xs font-semibold">
+              {likeCount}
+            </span>
+          </Button>
         </div>
 
         <div className="absolute top-4 left-4">
