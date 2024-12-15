@@ -62,6 +62,35 @@ export type Database = {
         }
         Relationships: []
       }
+      profile_likes: {
+        Row: {
+          created_at: string
+          id: string
+          profile_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          profile_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          profile_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_likes_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           age: number | null
@@ -88,6 +117,7 @@ export type Database = {
           interests: string | null
           languages: string[] | null
           last_seen: string | null
+          likes_count: number | null
           location: string | null
           measurements: Json | null
           occupation: string | null
@@ -125,6 +155,7 @@ export type Database = {
           interests?: string | null
           languages?: string[] | null
           last_seen?: string | null
+          likes_count?: number | null
           location?: string | null
           measurements?: Json | null
           occupation?: string | null
@@ -162,6 +193,7 @@ export type Database = {
           interests?: string | null
           languages?: string[] | null
           last_seen?: string | null
+          likes_count?: number | null
           location?: string | null
           measurements?: Json | null
           occupation?: string | null

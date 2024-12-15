@@ -20,6 +20,7 @@ export interface Profile {
   };
   last_seen?: string;
   membership_level?: 'bronze' | 'silver' | 'gold' | 'vip';
+  likes_count?: number;
 }
 
 export interface ProfileFormValues {
