@@ -8,20 +8,21 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { ImagePlus } from "lucide-react";
 
 export const ProfileForm = () => {
   const { t } = useLanguage();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
 
   const { register, handleSubmit } = useForm<ProfileFormValues>({
     defaultValues: {
       fullName: user?.user_metadata?.full_name || "",
-      bio: user?.user_metadata?.bio || "",
+      nickname: user?.user_metadata?.nickname || "",
       location: user?.user_metadata?.location || "",
-      interests: user?.user_metadata?.interests || "",
-      occupation: user?.user_metadata?.occupation || "",
       height: user?.user_metadata?.height || "",
       weight: user?.user_metadata?.weight || "",
       availability: user?.user_metadata?.availability || [],
@@ -30,6 +31,17 @@ export const ProfileForm = () => {
       availabilityStatus: user?.user_metadata?.availability_status || "offline",
     },
   });
+
+  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatarPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const onSubmit = async (data: ProfileFormValues) => {
     setIsSubmitting(true);
@@ -51,9 +63,30 @@ export const ProfileForm = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-black/80 backdrop-blur-md rounded-lg p-8 max-w-md w-full text-center border border-[#FFD700]/30 shadow-[0_0_15px_rgba(218,165,32,0.3)]">
+      <div className="flex flex-col items-center space-y-4">
+        <div className="relative">
+          <Avatar className="h-24 w-24 border-2 border-[#FFD700]/30">
+            <AvatarImage src={avatarPreview || user?.user_metadata?.avatar_url} />
+            <AvatarFallback className="bg-black/50 text-white">
+              {user?.user_metadata?.nickname?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <label htmlFor="avatar" className="absolute bottom-0 right-0 bg-black/80 rounded-full p-1 cursor-pointer border border-[#FFD700]/30">
+            <ImagePlus className="h-4 w-4 text-[#FFD700]" />
+            <input
+              type="file"
+              id="avatar"
+              accept="image/*"
+              className="hidden"
+              onChange={handleAvatarChange}
+            />
+          </label>
+        </div>
+      </div>
+
       <div className="space-y-2">
         <Label htmlFor="fullName" className="text-white text-sm">
-          {t("fullName")}
+          {t("vollständiger Name")}
         </Label>
         <Input
           id="fullName"
@@ -63,12 +96,12 @@ export const ProfileForm = () => {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="bio" className="text-white text-sm">
-          {t("bio")}
+        <Label htmlFor="nickname" className="text-white text-sm">
+          {t("nickname")}
         </Label>
         <Input
-          id="bio"
-          {...register("bio")}
+          id="nickname"
+          {...register("nickname")}
           className="bg-black/50 border-[#FFD700]/30 text-white placeholder-neutral-400 focus:border-[#FFD700] transition-colors"
         />
       </div>
@@ -80,28 +113,6 @@ export const ProfileForm = () => {
         <Input
           id="location"
           {...register("location")}
-          className="bg-black/50 border-[#FFD700]/30 text-white placeholder-neutral-400 focus:border-[#FFD700] transition-colors"
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="interests" className="text-white text-sm">
-          {t("interests")}
-        </Label>
-        <Input
-          id="interests"
-          {...register("interests")}
-          className="bg-black/50 border-[#FFD700]/30 text-white placeholder-neutral-400 focus:border-[#FFD700] transition-colors"
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="occupation" className="text-white text-sm">
-          {t("occupation")}
-        </Label>
-        <Input
-          id="occupation"
-          {...register("occupation")}
           className="bg-black/50 border-[#FFD700]/30 text-white placeholder-neutral-400 focus:border-[#FFD700] transition-colors"
         />
       </div>
@@ -133,7 +144,7 @@ export const ProfileForm = () => {
         className="w-full bg-[#FFD700] hover:bg-[#DAA520] text-black font-semibold transition-colors" 
         disabled={isSubmitting}
       >
-        {isSubmitting ? t("savingProfile") : t("saveProfile")}
+        {isSubmitting ? t("savingProfile") : "Speichern"}
       </Button>
     </form>
   );
