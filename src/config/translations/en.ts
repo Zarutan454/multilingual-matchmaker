@@ -64,6 +64,16 @@ export const enTranslations: Translations = {
   errorSendingCode: "Error sending code",
   invalidVerificationCode: "Invalid verification code",
 
+  // Messaging translations
+  typeMessage: "Type a message...",
+  noMessages: "No messages",
+  errorLoadingMessages: "Error loading messages",
+  errorSendingMessage: "Error sending message",
+  requestCall: "Request Call",
+  sendMessage: "Send Message",
+  bookAppointment: "Book Appointment",
+  messages: "Messages",
+
   // Extended profile fields translations
   gender: "Gender",
   selectGender: "Select gender",

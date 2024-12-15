@@ -66,6 +66,16 @@ export const deTranslations: Translations = {
   errorSendingCode: "Fehler beim Senden des Codes",
   invalidVerificationCode: "Ungültiger Verifizierungscode",
 
+  // Messaging translations
+  typeMessage: "Nachricht eingeben...",
+  noMessages: "Keine Nachrichten",
+  errorLoadingMessages: "Fehler beim Laden der Nachrichten",
+  errorSendingMessage: "Fehler beim Senden der Nachricht",
+  requestCall: "Anruf anfordern",
+  sendMessage: "Nachricht senden",
+  bookAppointment: "Termin buchen",
+  messages: "Nachrichten",
+
   // Extended profile fields translations
   gender: "Geschlecht",
   selectGender: "Geschlecht auswählen",
