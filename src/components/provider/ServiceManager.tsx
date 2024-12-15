@@ -9,23 +9,38 @@ import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface Service {
   id: string;
   name: string;
   description: string;
   duration: number;
+  categories: string[];
 }
+
+const SERVICE_CATEGORIES = [
+  { id: "dinner_dates", label: "Dinner Dates" },
+  { id: "hotel_visits", label: "Hotelbesuche" },
+  { id: "home_visits", label: "Hausbesuche" },
+  { id: "events", label: "Events & Partys" },
+  { id: "travel", label: "Reisebegleitung" },
+  { id: "culture", label: "Kulturelle Veranstaltungen" },
+  { id: "wellness", label: "Wellness & Spa" }
+];
 
 export const ServiceManager = () => {
   const { t } = useLanguage();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [newService, setNewService] = useState({
     name: "",
     description: "",
-    duration: 30
+    duration: 30,
+    categories: [] as string[]
   });
 
   // Fetch existing services
@@ -48,6 +63,20 @@ export const ServiceManager = () => {
     enabled: !!user
   });
 
+  const handleCategoryChange = (categoryId: string, checked: boolean) => {
+    if (checked) {
+      setNewService({
+        ...newService,
+        categories: [...newService.categories, categoryId]
+      });
+    } else {
+      setNewService({
+        ...newService,
+        categories: newService.categories.filter(id => id !== categoryId)
+      });
+    }
+  };
+
   const handleAddService = async () => {
     if (!user) {
       toast.error(t("pleaseLogin"));
@@ -68,14 +97,25 @@ export const ServiceManager = () => {
             provider_id: user.id,
             name: newService.name,
             description: newService.description,
-            duration: newService.duration
+            duration: newService.duration,
+            categories: newService.categories
           }
         ]);
 
       if (error) throw error;
 
+      // Update the provider's profile with the service categories
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          service_categories: newService.categories
+        })
+        .eq('id', user.id);
+
+      if (profileError) throw profileError;
+
       toast.success(t("serviceAdded"));
-      setNewService({ name: "", description: "", duration: 30 });
+      setNewService({ name: "", description: "", duration: 30, categories: [] });
       queryClient.invalidateQueries({ queryKey: ['services', user.id] });
     } catch (error) {
       console.error('Error adding service:', error);
@@ -137,6 +177,30 @@ export const ServiceManager = () => {
               className="bg-gray-800 border-gray-700 text-white"
             />
           </div>
+
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium text-white mb-2">{t("categories")}</h3>
+            <div className="grid grid-cols-2 gap-2">
+              {SERVICE_CATEGORIES.map((category) => (
+                <div key={category.id} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={category.id}
+                    checked={newService.categories.includes(category.id)}
+                    onCheckedChange={(checked) => 
+                      handleCategoryChange(category.id, checked as boolean)
+                    }
+                  />
+                  <label
+                    htmlFor={category.id}
+                    className="text-sm text-gray-300 cursor-pointer"
+                  >
+                    {category.label}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <Button 
             onClick={handleAddService} 
             className="w-full"
@@ -156,16 +220,28 @@ export const ServiceManager = () => {
         ) : services.length === 0 ? (
           <p className="text-center text-gray-400 py-4">{t("noServices")}</p>
         ) : (
-          services.map((service) => (
+          services.map((service: Service) => (
             <Card key={service.id} className="bg-gray-900 border-gray-800">
               <CardContent className="pt-6">
                 <div className="flex justify-between items-start">
-                  <div>
+                  <div className="space-y-2">
                     <h3 className="text-lg font-semibold text-white">{service.name}</h3>
-                    <p className="text-gray-400 mt-1">{service.description}</p>
-                    <p className="text-sm text-gray-500 mt-2">
+                    <p className="text-gray-400">{service.description}</p>
+                    <p className="text-sm text-gray-500">
                       {t("duration")}: {service.duration} {t("minutes")}
                     </p>
+                    {service.categories && service.categories.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {service.categories.map((categoryId) => {
+                          const category = SERVICE_CATEGORIES.find(c => c.id === categoryId);
+                          return category ? (
+                            <Badge key={categoryId} variant="secondary">
+                              {category.label}
+                            </Badge>
+                          ) : null;
+                        })}
+                      </div>
+                    )}
                   </div>
                   <Button
                     variant="destructive"

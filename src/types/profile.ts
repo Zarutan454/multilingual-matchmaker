@@ -45,6 +45,7 @@ export interface Service {
   duration: number;
   price?: number;
   category?: string;
+  categories?: string[];
 }
 
 export interface ProfileFormValues {
@@ -67,3 +68,5 @@ export interface ProfileFormValues {
   };
   availability_status: 'online' | 'offline' | 'busy';
 }
+
+export const MAX_GALLERY_IMAGES = 10;
