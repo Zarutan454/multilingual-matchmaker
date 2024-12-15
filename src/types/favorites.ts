@@ -12,5 +12,5 @@ export interface FavoriteData {
 
 export interface FavoriteResponse {
   id: string;
-  profiles: Profile[];
+  profile: Profile;
 }

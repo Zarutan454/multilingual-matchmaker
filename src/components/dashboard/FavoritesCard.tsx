@@ -16,13 +16,7 @@ interface FavoritesCardProps {
 export const FavoritesCard = ({ user }: FavoritesCardProps) => {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const { data: favoritesResponse = [], isLoading, error } = useFavorites(user);
-
-  // Transform the response to match FavoriteData structure
-  const favorites: FavoriteData[] = favoritesResponse.map((item: FavoriteResponse) => ({
-    id: item.id,
-    profile: item.profiles[0]
-  }));
+  const { data: favorites = [], isLoading, error } = useFavorites(user);
 
   const handleProfileClick = (profileId: string) => {
     try {

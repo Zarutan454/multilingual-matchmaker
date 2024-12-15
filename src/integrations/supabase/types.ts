@@ -13,22 +13,30 @@ export type Database = {
         Row: {
           created_at: string
           id: string
-          profile_id: number
+          profile_id: string
           user_id: string
         }
         Insert: {
           created_at?: string
           id?: string
-          profile_id: number
+          profile_id: string
           user_id: string
         }
         Update: {
           created_at?: string
           id?: string
-          profile_id?: number
+          profile_id?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "favorites_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       messages: {
         Row: {
