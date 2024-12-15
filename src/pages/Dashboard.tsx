@@ -4,6 +4,8 @@ import { Navbar } from "../components/Navbar";
 import { RecentChatsCard } from "@/components/dashboard/RecentChatsCard";
 import { RecentContactsCard } from "@/components/dashboard/RecentContactsCard";
 import { FavoritesCard } from "@/components/dashboard/FavoritesCard";
+import { ServiceManager } from "@/components/provider/ServiceManager";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -25,11 +27,24 @@ export default function Dashboard() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <RecentChatsCard user={user} />
-          <RecentContactsCard user={user} />
-          <FavoritesCard user={user} />
-        </div>
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="bg-gray-900">
+            <TabsTrigger value="overview">{t("overview")}</TabsTrigger>
+            <TabsTrigger value="services">{t("services")}</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="overview">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <RecentChatsCard user={user} />
+              <RecentContactsCard user={user} />
+              <FavoritesCard user={user} />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="services">
+            <ServiceManager />
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   );

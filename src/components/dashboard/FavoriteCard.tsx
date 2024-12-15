@@ -1,19 +1,11 @@
 import { Users } from "lucide-react";
-
-interface Profile {
-  id: string;
-  full_name: string | null;
-  avatar_url: string | null;
-  location: string | null;
-}
-
-interface FavoriteData {
-  id: string;
-  profile: Profile;
-}
+import { Profile } from "@/types/favorites";
 
 interface FavoriteCardProps {
-  favorite: FavoriteData;
+  favorite: {
+    id: string;
+    profile: Profile;
+  };
   onProfileClick: (profileId: string) => void;
 }
 
