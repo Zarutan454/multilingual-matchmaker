@@ -127,7 +127,7 @@ export const RegisterForm = () => {
 
       <Button 
         type="submit" 
-        className="w-full bg-[#FFD700] hover:bg-[#DAA520] text-black font-semibold transition-colors"
+        className="w-full bg-secondary hover:bg-secondary/80 text-white transition-colors"
         disabled={isLoading || retryTimeout > 0}
       >
         {isLoading ? t("registering") : retryTimeout > 0 ? `${t("waitFor")} ${retryTimeout}s` : t("submit")}
