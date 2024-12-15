@@ -107,6 +107,18 @@ export default function Dashboard() {
     }
   };
 
+  const handleGalleryDelete = async (imageUrl: string) => {
+    try {
+      const newGallery = profile?.gallery?.filter(url => url !== imageUrl) || [];
+      
+      setProfile(prev => prev ? { ...prev, gallery: newGallery } : null);
+      toast.success(t("imageDeletedFromGallery"));
+    } catch (error) {
+      console.error('Error updating gallery:', error);
+      toast.error(t("errorUpdatingGallery"));
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-[#1A1F2C] to-black">
@@ -183,7 +195,10 @@ export default function Dashboard() {
                   type="gallery"
                 />
               </div>
-              <Gallery images={profile?.gallery || []} />
+              <Gallery 
+                images={profile?.gallery || []} 
+                onDeleteImage={handleGalleryDelete}
+              />
             </Card>
           </div>
 

@@ -16,7 +16,7 @@ export const Gallery = ({ images, onDeleteImage }: GalleryProps) => {
   const handleDeleteImage = async (imageUrl: string) => {
     try {
       // Extract the file path from the URL
-      const filePath = imageUrl.split('/').pop();
+      const filePath = imageUrl.split('/uploads/').pop();
       if (!filePath) {
         toast.error("Ungültiger Dateipfad");
         return;
@@ -29,6 +29,27 @@ export const Gallery = ({ images, onDeleteImage }: GalleryProps) => {
 
       if (storageError) {
         throw storageError;
+      }
+
+      // Update profile's gallery in the database
+      const { data: profile } = await supabase.auth.getUser();
+      if (profile?.user?.id) {
+        const { data: currentProfile } = await supabase
+          .from('profiles')
+          .select('gallery')
+          .eq('id', profile.user.id)
+          .single();
+
+        if (currentProfile?.gallery) {
+          const updatedGallery = currentProfile.gallery.filter((img: string) => img !== imageUrl);
+          
+          const { error: updateError } = await supabase
+            .from('profiles')
+            .update({ gallery: updatedGallery })
+            .eq('id', profile.user.id);
+
+          if (updateError) throw updateError;
+        }
       }
 
       // Notify parent component
