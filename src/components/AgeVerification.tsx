@@ -24,9 +24,24 @@ export const AgeVerification = ({ onVerified }: AgeVerificationProps) => {
     return (
       <div className="fixed inset-0 flex items-center justify-center p-4 overflow-hidden">
         <div className="absolute inset-0 bg-black">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#FFD700]/20 via-transparent to-transparent animate-[pulse_4s_ease-in-out_infinite]" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#B8860B]/20 via-transparent to-transparent animate-[pulse_6s_ease-in-out_infinite_1s]" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#DAA520]/20 via-transparent to-transparent animate-[pulse_5s_ease-in-out_infinite_0.5s]" />
+          <div className="absolute inset-0">
+            {[...Array(50)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute animate-float"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  width: `${Math.random() * 4 + 1}px`,
+                  height: `${Math.random() * 4 + 1}px`,
+                  backgroundColor: '#FFD700',
+                  opacity: Math.random() * 0.5 + 0.2,
+                  animationDelay: `${Math.random() * 5}s`,
+                  animationDuration: `${Math.random() * 10 + 5}s`,
+                }}
+              />
+            ))}
+          </div>
         </div>
         <div className="absolute inset-0 backdrop-blur-[2px]"></div>
         <div className="bg-black/80 backdrop-blur-md rounded-lg p-8 max-w-md w-full text-center animate-fade-in border border-[#FFD700]/30 relative z-10 shadow-[0_0_15px_rgba(218,165,32,0.3)]">
@@ -44,9 +59,24 @@ export const AgeVerification = ({ onVerified }: AgeVerificationProps) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center p-4 overflow-hidden">
       <div className="absolute inset-0 bg-black">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#FFD700]/20 via-transparent to-transparent animate-[pulse_4s_ease-in-out_infinite]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#B8860B]/20 via-transparent to-transparent animate-[pulse_6s_ease-in-out_infinite_1s]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#DAA520]/20 via-transparent to-transparent animate-[pulse_5s_ease-in-out_infinite_0.5s]" />
+        <div className="absolute inset-0">
+          {[...Array(50)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute animate-float"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                width: `${Math.random() * 4 + 1}px`,
+                height: `${Math.random() * 4 + 1}px`,
+                backgroundColor: '#FFD700',
+                opacity: Math.random() * 0.5 + 0.2,
+                animationDelay: `${Math.random() * 5}s`,
+                animationDuration: `${Math.random() * 10 + 5}s`,
+              }}
+            />
+          ))}
+        </div>
       </div>
       <div className="absolute inset-0 backdrop-blur-[2px]"></div>
       <div className="bg-black/80 backdrop-blur-md rounded-lg p-8 max-w-md w-full text-center animate-fade-in border border-[#FFD700]/30 relative z-10 shadow-[0_0_15px_rgba(218,165,32,0.3)]">

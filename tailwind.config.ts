@@ -55,9 +55,16 @@ export default {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
         },
+        float: {
+          "0%, 100%": { transform: "translateY(0) translateX(0)" },
+          "25%": { transform: "translateY(-15px) translateX(15px)" },
+          "50%": { transform: "translateY(-25px) translateX(-15px)" },
+          "75%": { transform: "translateY(-15px) translateX(15px)" },
+        }
       },
       animation: {
         "fade-in": "fade-in 0.3s ease-in-out",
+        "float": "float 8s ease-in-out infinite",
       },
     },
   },
