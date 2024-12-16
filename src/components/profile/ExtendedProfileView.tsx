@@ -10,7 +10,7 @@ import { ProfileHeader } from "./sections/ProfileHeader";
 import { ProfileCharacteristics } from "./sections/ProfileCharacteristics";
 import { AdditionalInfo } from "./sections/AdditionalInfo";
 import { ProfileBanner } from "./sections/ProfileBanner";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 
@@ -41,24 +41,6 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
     }
   });
 
-  // Fetch services for this profile
-  const { data: services = [] } = useQuery({
-    queryKey: ['services', profile.id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('services')
-        .select('*')
-        .eq('provider_id', profile.id);
-
-      if (error) {
-        console.error('Error fetching services:', error);
-        throw error;
-      }
-
-      return data || [];
-    }
-  });
-
   // Find current profile index and determine prev/next profiles
   const currentIndex = profiles.findIndex(p => p.id === profile.id);
   const prevProfile = currentIndex > 0 ? profiles[currentIndex - 1] : null;
@@ -76,6 +58,17 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
         isEditable={isEditable} 
       />
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-8 relative">
+        {/* Home Button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute left-4 top-0 bg-[#9b87f5]/20 hover:bg-[#9b87f5]/40 text-white rounded-full p-2 backdrop-blur-sm"
+          onClick={() => navigate('/')}
+          title={t("backToHome")}
+        >
+          <Home className="h-6 w-6" />
+        </Button>
+
         {/* Navigation Arrows */}
         <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none">
           {prevProfile && (
@@ -103,7 +96,6 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Left Column - Main Information */}
           <div className="md:col-span-2 space-y-6">
             <Card className="bg-black/80 backdrop-blur-md border-[#9b87f5]/30 shadow-[0_0_15px_rgba(155,135,245,0.3)]">
               <CardHeader>
