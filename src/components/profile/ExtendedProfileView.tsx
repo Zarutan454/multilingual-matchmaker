@@ -76,7 +76,7 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
         isEditable={isEditable} 
       />
 
-      {/* Navigation Arrows - Moved under banner */}
+      {/* Navigation Arrows - Under banner */}
       <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
         {prevProfile ? (
           <Button
@@ -85,7 +85,7 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
             onClick={() => handleNavigation(prevProfile.id)}
           >
             <ArrowLeft className="h-6 w-6" />
-            <span>{t("previousProfile")}</span>
+            <span>Vorheriges Profil</span>
           </Button>
         ) : (
           <div></div> // Empty div for spacing
@@ -97,14 +97,14 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
             className="flex items-center gap-2 bg-[#9b87f5]/20 hover:bg-[#9b87f5]/40 text-white rounded-full p-2 backdrop-blur-sm"
             onClick={() => handleNavigation(nextProfile.id)}
           >
-            <span>{t("nextProfile")}</span>
+            <span>Nächstes Profil</span>
             <ArrowRight className="h-6 w-6" />
           </Button>
         )}
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-8 relative">
-        {/* Centered Home Button */}
+        {/* Centered Home Button with navigation */}
         <div className="flex justify-center mb-4">
           <Button
             variant="ghost"
@@ -112,7 +112,7 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
             onClick={() => navigate('/')}
           >
             <Home className="h-6 w-6" />
-            <span>{t("backToHome")}</span>
+            <span>Zurück zur Startseite</span>
           </Button>
         </div>
 
