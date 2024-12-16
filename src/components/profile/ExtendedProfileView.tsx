@@ -41,6 +41,24 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
     }
   });
 
+  // Fetch services for this profile
+  const { data: services = [] } = useQuery({
+    queryKey: ['services', profile.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('services')
+        .select('*')
+        .eq('provider_id', profile.id);
+
+      if (error) {
+        console.error('Error fetching services:', error);
+        throw error;
+      }
+
+      return data || [];
+    }
+  });
+
   // Find current profile index and determine prev/next profiles
   const currentIndex = profiles.findIndex(p => p.id === profile.id);
   const prevProfile = currentIndex > 0 ? profiles[currentIndex - 1] : null;
