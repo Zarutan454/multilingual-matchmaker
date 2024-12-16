@@ -31,29 +31,6 @@ export const usePresence = () => {
       }
     };
 
-    // Subscribe to presence events
-    channel
-      .on('presence', { event: 'sync' }, () => {
-        const state = channel.presenceState();
-        console.log('Presence state:', state);
-      })
-      .on('presence', { event: 'join' }, ({ key, newPresences }) => {
-        console.log('User joined:', key, newPresences);
-      })
-      .on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
-        console.log('User left:', key, leftPresences);
-      })
-      .subscribe(async (status) => {
-        if (status === 'SUBSCRIBED') {
-          // Track user's presence
-          await channel.track({
-            user_id: user.id,
-            online_at: new Date().toISOString(),
-          });
-          await updateUserStatus('online');
-        }
-      });
-
     // Handle page visibility changes
     const handleVisibilityChange = async () => {
       if (document.hidden) {
@@ -68,13 +45,40 @@ export const usePresence = () => {
       await updateUserStatus('offline');
     };
 
+    // Subscribe to presence events
+    channel
+      .on('presence', { event: 'sync' }, () => {
+        const state = channel.presenceState();
+        console.log('Presence state:', state);
+      })
+      .on('presence', { event: 'join' }, ({ key, newPresences }) => {
+        console.log('User joined:', key, newPresences);
+        updateUserStatus('online');
+      })
+      .on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
+        console.log('User left:', key, leftPresences);
+        updateUserStatus('offline');
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          // Track user's presence
+          await channel.track({
+            user_id: user.id,
+            online_at: new Date().toISOString(),
+          });
+          await updateUserStatus('online');
+        }
+      });
+
+    // Add event listeners for page visibility and unload
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('beforeunload', handleBeforeUnload);
 
-    // Cleanup
+    // Cleanup function
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('beforeunload', handleBeforeUnload);
+      updateUserStatus('offline');
       channel.unsubscribe();
     };
   }, [user]);
