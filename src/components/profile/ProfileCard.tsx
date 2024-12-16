@@ -11,6 +11,7 @@ import { MembershipBadge } from "./badges/MembershipBadge";
 import { ProfileActions } from "./actions/ProfileActions";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ChatWindow } from "@/components/messaging/ChatWindow";
+import { usePresence } from "@/hooks/usePresence"; // Add this import
 
 interface ProfileCardProps {
   profile: Profile;
@@ -25,22 +26,36 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
   const [lastSeen, setLastSeen] = useState<string | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
 
-  useEffect(() => {
-    const checkFavoriteStatus = async () => {
-      if (!user) return;
-      
-      const { data } = await supabase
-        .from('favorites')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq('profile_id', profile.id)
-        .maybeSingle();
-      
-      setIsFavorite(!!data);
-    };
+  // Use the presence hook
+  usePresence();
 
-    checkFavoriteStatus();
-  }, [user, profile.id]);
+  useEffect(() => {
+    // Subscribe to real-time updates for this profile's status
+    const channel = supabase
+      .channel(`profile-${profile.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'profiles',
+          filter: `id=eq.${profile.id}`
+        },
+        (payload: any) => {
+          if (payload.new) {
+            setIsOnline(payload.new.availability_status === 'online');
+            if (payload.new.last_seen) {
+              setLastSeen(payload.new.last_seen);
+            }
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [profile.id]);
 
   const handleFavoriteClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -135,7 +150,7 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
                 variant={isOnline ? "success" : "secondary"}
                 className="w-full justify-center"
               >
-                {isOnline ? "Online" : lastSeen ? `Zuletzt online ${lastSeen}` : "Offline"}
+                {isOnline ? "Online" : lastSeen ? `Zuletzt online ${new Date(lastSeen).toLocaleString()}` : "Offline"}
               </Badge>
 
               <Button

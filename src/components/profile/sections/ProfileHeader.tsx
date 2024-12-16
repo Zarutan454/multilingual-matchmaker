@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { formatDistanceToNow } from "date-fns";
 import { de } from "date-fns/locale";
+import { usePresence } from "@/hooks/usePresence"; // Add this import
 
 interface ProfileHeaderProps {
   profile: Profile;
@@ -16,16 +17,11 @@ export const ProfileHeader = ({ profile }: ProfileHeaderProps) => {
   const [isOnline, setIsOnline] = useState(profile.availability_status === 'online');
   const [lastSeen, setLastSeen] = useState<string | null>(null);
 
-  useEffect(() => {
-    // Initial check of online status and last seen
-    if (profile.last_seen) {
-      setLastSeen(formatDistanceToNow(new Date(profile.last_seen), { 
-        addSuffix: true,
-        locale: de 
-      }));
-    }
+  // Use the presence hook
+  usePresence();
 
-    // Subscribe to presence changes
+  useEffect(() => {
+    // Subscribe to presence changes for this profile
     const channel = supabase
       .channel(`presence_${profile.id}`)
       .on(
@@ -53,7 +49,7 @@ export const ProfileHeader = ({ profile }: ProfileHeaderProps) => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [profile.id, profile.last_seen]);
+  }, [profile.id]);
 
   return (
     <div className="flex items-start gap-6">
