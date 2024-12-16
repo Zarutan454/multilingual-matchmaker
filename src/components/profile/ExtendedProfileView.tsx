@@ -88,7 +88,7 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
             <span>{t("previousProfile")}</span>
           </Button>
         ) : (
-          <div /> {/* Empty div for spacing */}
+          <div></div> // Empty div for spacing
         )}
         
         {nextProfile && (
