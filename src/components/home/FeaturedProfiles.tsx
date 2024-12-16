@@ -6,6 +6,7 @@ import { ProfileGrid } from "../profile/ProfileGrid";
 import { Profile } from "../profile/types";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { usePresence } from "@/hooks/usePresence"; // Add this import
 
 export const FeaturedProfiles = () => {
   const [selectedProfile, setSelectedProfile] = useState<string | null>(null);
@@ -13,6 +14,9 @@ export const FeaturedProfiles = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [location, setLocation] = useState("");
   const [category, setCategory] = useState("");
+
+  // Use the presence hook to enable real-time status updates
+  usePresence();
 
   const { data: profiles = [], isLoading } = useQuery({
     queryKey: ['profiles'],
@@ -34,7 +38,7 @@ export const FeaturedProfiles = () => {
         category: profile.service_categories?.[0] || 'VIP Begleitung',
         location: profile.location || 'Unknown',
         coordinates: { lat: 0, lng: 0 },
-        status: profile.availability_status || 'online',
+        status: profile.availability_status || 'offline',
         rating: 4.8,
         reviews: 0,
         spokenLanguages: profile.languages || ['Deutsch'],
@@ -58,9 +62,12 @@ export const FeaturedProfiles = () => {
   };
 
   const filteredProfiles = profiles.filter((profile: Profile) => {
-    const matchesSearch = !searchTerm || (profile.name && profile.name.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesLocation = !location || (profile.location && profile.location.toLowerCase().includes(location.toLowerCase()));
-    const matchesCategory = !category || (profile.category && profile.category.toLowerCase().includes(category.toLowerCase()));
+    const matchesSearch = !searchTerm || 
+      (profile.name && profile.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesLocation = !location || 
+      (profile.location && profile.location.toLowerCase().includes(location.toLowerCase()));
+    const matchesCategory = !category || 
+      (profile.category && profile.category.toLowerCase().includes(category.toLowerCase()));
     return matchesSearch && matchesLocation && matchesCategory;
   });
 
