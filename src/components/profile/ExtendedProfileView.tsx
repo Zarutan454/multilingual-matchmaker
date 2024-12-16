@@ -75,42 +75,45 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
         bannerUrl={profile.banner_url} 
         isEditable={isEditable} 
       />
-      <div className="max-w-7xl mx-auto px-4 py-8 space-y-8 relative">
-        {/* Home Button */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute left-4 top-0 bg-[#9b87f5]/20 hover:bg-[#9b87f5]/40 text-white rounded-full p-2 backdrop-blur-sm"
-          onClick={() => navigate('/')}
-          title={t("backToHome")}
-        >
-          <Home className="h-6 w-6" />
-        </Button>
 
-        {/* Navigation Arrows */}
-        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none">
-          {prevProfile && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="pointer-events-auto bg-[#9b87f5]/20 hover:bg-[#9b87f5]/40 text-white rounded-full p-2 -translate-x-1/2 backdrop-blur-sm"
-              onClick={() => handleNavigation(prevProfile.id)}
-              title={t("previousProfile")}
-            >
-              <ArrowLeft className="h-6 w-6" />
-            </Button>
-          )}
-          {nextProfile && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="pointer-events-auto bg-[#9b87f5]/20 hover:bg-[#9b87f5]/40 text-white rounded-full p-2 translate-x-1/2 backdrop-blur-sm"
-              onClick={() => handleNavigation(nextProfile.id)}
-              title={t("nextProfile")}
-            >
-              <ArrowRight className="h-6 w-6" />
-            </Button>
-          )}
+      {/* Navigation Arrows - Moved under banner */}
+      <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        {prevProfile ? (
+          <Button
+            variant="ghost"
+            className="flex items-center gap-2 bg-[#9b87f5]/20 hover:bg-[#9b87f5]/40 text-white rounded-full p-2 backdrop-blur-sm"
+            onClick={() => handleNavigation(prevProfile.id)}
+          >
+            <ArrowLeft className="h-6 w-6" />
+            <span>{t("previousProfile")}</span>
+          </Button>
+        ) : (
+          <div /> {/* Empty div for spacing */}
+        )}
+        
+        {nextProfile && (
+          <Button
+            variant="ghost"
+            className="flex items-center gap-2 bg-[#9b87f5]/20 hover:bg-[#9b87f5]/40 text-white rounded-full p-2 backdrop-blur-sm"
+            onClick={() => handleNavigation(nextProfile.id)}
+          >
+            <span>{t("nextProfile")}</span>
+            <ArrowRight className="h-6 w-6" />
+          </Button>
+        )}
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 py-8 space-y-8 relative">
+        {/* Centered Home Button */}
+        <div className="flex justify-center mb-4">
+          <Button
+            variant="ghost"
+            className="flex items-center gap-2 bg-[#9b87f5]/20 hover:bg-[#9b87f5]/40 text-white rounded-full p-2 backdrop-blur-sm"
+            onClick={() => navigate('/')}
+          >
+            <Home className="h-6 w-6" />
+            <span>{t("backToHome")}</span>
+          </Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
