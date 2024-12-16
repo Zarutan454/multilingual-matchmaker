@@ -34,7 +34,7 @@ export const FeaturedProfiles = () => {
         category: profile.service_categories?.[0] || 'VIP Begleitung',
         location: profile.location || 'Unknown',
         coordinates: { lat: 0, lng: 0 },
-        status: profile.availability_status || 'online', // Set default to 'online' to enable chat
+        status: profile.availability_status || 'online',
         rating: 4.8,
         reviews: 0,
         spokenLanguages: profile.languages || ['Deutsch'],
@@ -58,9 +58,9 @@ export const FeaturedProfiles = () => {
   };
 
   const filteredProfiles = profiles.filter((profile: Profile) => {
-    const matchesSearch = profile.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesLocation = location === "" || profile.location.toLowerCase().includes(location.toLowerCase());
-    const matchesCategory = category === "" || profile.category.toLowerCase().includes(category.toLowerCase());
+    const matchesSearch = !searchTerm || (profile.name && profile.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesLocation = !location || (profile.location && profile.location.toLowerCase().includes(location.toLowerCase()));
+    const matchesCategory = !category || (profile.category && profile.category.toLowerCase().includes(category.toLowerCase()));
     return matchesSearch && matchesLocation && matchesCategory;
   });
 
