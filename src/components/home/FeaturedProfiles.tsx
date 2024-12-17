@@ -1,15 +1,13 @@
 import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ChatWindow } from "../messaging/ChatWindow";
-import { SearchBar } from "../search/SearchBar";
 import { ProfileGrid } from "../profile/ProfileGrid";
-import { Profile } from "../profile/types";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabase";
 import { usePresence } from "@/hooks/usePresence";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { RefreshCw } from "lucide-react";
+import { ProfileFilters } from "./featured/ProfileFilters";
+import { ProfilePagination } from "./featured/ProfilePagination";
+import { useProfiles } from "./featured/useProfiles";
+
+const ITEMS_PER_PAGE = 12;
 
 export const FeaturedProfiles = () => {
   const [selectedProfile, setSelectedProfile] = useState<string | null>(null);
@@ -17,77 +15,18 @@ export const FeaturedProfiles = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [location, setLocation] = useState("");
   const [category, setCategory] = useState("");
-  const [country, setCountry] = useState("");
-  const [state, setState] = useState("");
   const [orientation, setOrientation] = useState("");
   const [page, setPage] = useState(0);
-  const ITEMS_PER_PAGE = 12;
 
   usePresence();
 
-  const { data: profiles = [], isLoading, error, refetch } = useQuery({
-    queryKey: ['profiles', page, searchTerm, location, category, country, state, orientation],
-    queryFn: async () => {
-      try {
-        console.log('Fetching profiles...');
-        let query = supabase
-          .from('profiles')
-          .select('*')
-          .not('avatar_url', 'is', null)
-          .range(page * ITEMS_PER_PAGE, (page + 1) * ITEMS_PER_PAGE - 1)
-          .order('created_at', { ascending: false });
-
-        // Apply filters only if they exist
-        if (searchTerm) {
-          query = query.ilike('full_name', `%${searchTerm}%`);
-        }
-        if (location) {
-          query = query.ilike('location', `%${location}%`);
-        }
-        if (category) {
-          query = query.contains('service_categories', [category]);
-        }
-        if (orientation) {
-          query = query.contains('service_categories', [orientation]);
-        }
-
-        const { data, error } = await query;
-
-        if (error) {
-          console.error('Supabase error:', error);
-          if (error.message?.includes('timeout')) {
-            toast.error('Die Anfrage hat zu lange gedauert. Bitte versuchen Sie es erneut.');
-          } else {
-            toast.error('Fehler beim Laden der Profile');
-          }
-          throw error;
-        }
-
-        console.log('Profiles fetched successfully:', data?.length);
-        return data.map((profile: any): Profile => ({
-          id: profile.id,
-          name: profile.full_name || 'Anonymous',
-          image: profile.avatar_url,
-          category: profile.service_categories?.[0] || 'VIP Begleitung',
-          location: profile.location || 'Unknown',
-          coordinates: { lat: 0, lng: 0 },
-          status: profile.availability_status || 'offline',
-          rating: 4.8,
-          reviews: 0,
-          spokenLanguages: profile.languages || ['Deutsch'],
-          age: profile.age || 25,
-          serviceCategories: profile.service_categories || [],
-          priceRange: profile.price_range || { min: 0, max: 0 }
-        }));
-      } catch (err) {
-        console.error('Error fetching profiles:', err);
-        throw err;
-      }
-    },
-    retry: 3,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-    staleTime: 30000,
-    gcTime: 300000,
+  const { data: profiles = [], isLoading, error, refetch } = useProfiles({
+    page,
+    searchTerm,
+    location,
+    category,
+    orientation,
+    itemsPerPage: ITEMS_PER_PAGE
   });
 
   const handleChatClick = (e: React.MouseEvent, profileId: string) => {
@@ -107,26 +46,20 @@ export const FeaturedProfiles = () => {
     setSearchTerm(searchTerm);
     setLocation(location);
     setCategory(category);
-    setCountry(country);
-    setState(state);
     setOrientation(orientation);
     setPage(0);
   };
-
-  const filteredProfiles = profiles;
 
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] text-red-500 space-y-4">
         <p>Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.</p>
-        <Button 
+        <button 
           onClick={() => refetch()} 
-          variant="outline"
-          className="flex items-center gap-2"
+          className="px-4 py-2 bg-[#9b87f5] text-white rounded hover:bg-[#7a68c3]"
         >
-          <RefreshCw className="w-4 h-4" />
           Erneut versuchen
-        </Button>
+        </button>
       </div>
     );
   }
@@ -143,35 +76,22 @@ export const FeaturedProfiles = () => {
     <section className="py-20 relative overflow-hidden">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
       <div className="container mx-auto px-4 relative z-10">
-        <div className="-mt-16 mb-12">
-          <SearchBar onSearch={handleSearch} />
-        </div>
+        <ProfileFilters onSearch={handleSearch} />
         
         <h2 className="text-4xl font-bold text-center mb-12 text-white">
           UNSERE <span className="text-[#9b87f5]">PREMIUM</span> BEGLEITUNG
         </h2>
 
         <ProfileGrid 
-          profiles={filteredProfiles}
+          profiles={profiles}
           onChatClick={handleChatClick}
         />
 
-        <div className="flex justify-center mt-8 gap-4">
-          <button
-            onClick={() => setPage(p => Math.max(0, p - 1))}
-            disabled={page === 0}
-            className="px-4 py-2 bg-[#9b87f5] text-white rounded disabled:opacity-50"
-          >
-            Zurück
-          </button>
-          <button
-            onClick={() => setPage(p => p + 1)}
-            disabled={profiles.length < ITEMS_PER_PAGE}
-            className="px-4 py-2 bg-[#9b87f5] text-white rounded disabled:opacity-50"
-          >
-            Weiter
-          </button>
-        </div>
+        <ProfilePagination 
+          page={page}
+          setPage={setPage}
+          hasMore={profiles.length >= ITEMS_PER_PAGE}
+        />
       </div>
 
       <Dialog open={isChatOpen} onOpenChange={setIsChatOpen}>
