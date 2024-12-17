@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { AdminLayout } from '@/components/admin/AdminLayout';
 import { UserManagement } from '@/components/admin/UserManagement';
 
 const Admin = () => {
@@ -18,9 +19,12 @@ const Admin = () => {
   }
 
   return (
-    <div className="container mx-auto py-10">
-      <UserManagement />
-    </div>
+    <AdminLayout>
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold text-white">Dashboard</h2>
+        <UserManagement />
+      </div>
+    </AdminLayout>
   );
 };
 

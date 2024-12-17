@@ -97,6 +97,7 @@ export type Database = {
       profiles: {
         Row: {
           age: number | null
+          audit_log: Json[] | null
           availability: string[] | null
           availability_status: string | null
           avatar_url: string | null
@@ -104,6 +105,7 @@ export type Database = {
           bio: string | null
           body_type: string | null
           bust_size: string | null
+          category: string | null
           contact_info: Json | null
           created_at: string
           dress_size: string | null
@@ -118,7 +120,9 @@ export type Database = {
           height: string | null
           id: string
           interests: string | null
+          is_active: boolean | null
           languages: string[] | null
+          last_login: string | null
           last_seen: string | null
           likes_count: number | null
           location: string | null
@@ -126,6 +130,7 @@ export type Database = {
           occupation: string | null
           price_range: Json | null
           rates: Json | null
+          role: string | null
           service_categories: string[] | null
           services_offered: string[] | null
           skin_tone: string | null
@@ -135,6 +140,7 @@ export type Database = {
         }
         Insert: {
           age?: number | null
+          audit_log?: Json[] | null
           availability?: string[] | null
           availability_status?: string | null
           avatar_url?: string | null
@@ -142,6 +148,7 @@ export type Database = {
           bio?: string | null
           body_type?: string | null
           bust_size?: string | null
+          category?: string | null
           contact_info?: Json | null
           created_at?: string
           dress_size?: string | null
@@ -156,7 +163,9 @@ export type Database = {
           height?: string | null
           id: string
           interests?: string | null
+          is_active?: boolean | null
           languages?: string[] | null
+          last_login?: string | null
           last_seen?: string | null
           likes_count?: number | null
           location?: string | null
@@ -164,6 +173,7 @@ export type Database = {
           occupation?: string | null
           price_range?: Json | null
           rates?: Json | null
+          role?: string | null
           service_categories?: string[] | null
           services_offered?: string[] | null
           skin_tone?: string | null
@@ -173,6 +183,7 @@ export type Database = {
         }
         Update: {
           age?: number | null
+          audit_log?: Json[] | null
           availability?: string[] | null
           availability_status?: string | null
           avatar_url?: string | null
@@ -180,6 +191,7 @@ export type Database = {
           bio?: string | null
           body_type?: string | null
           bust_size?: string | null
+          category?: string | null
           contact_info?: Json | null
           created_at?: string
           dress_size?: string | null
@@ -194,7 +206,9 @@ export type Database = {
           height?: string | null
           id?: string
           interests?: string | null
+          is_active?: boolean | null
           languages?: string[] | null
+          last_login?: string | null
           last_seen?: string | null
           likes_count?: number | null
           location?: string | null
@@ -202,6 +216,7 @@ export type Database = {
           occupation?: string | null
           price_range?: Json | null
           rates?: Json | null
+          role?: string | null
           service_categories?: string[] | null
           services_offered?: string[] | null
           skin_tone?: string | null
