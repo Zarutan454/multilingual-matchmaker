@@ -94,6 +94,17 @@ export type TranslationKey =
   | "price"
   | "categories"
   | "applyFilters"
-  | "resetFilters";
+  | "resetFilters"
+  | "userStatusUpdated"
+  | "errorUpdatingUser"
+  | "name"
+  | "status"
+  | "role"
+  | "actions"
+  | "notProvided"
+  | "pending"
+  | "user"
+  | "activate"
+  | "suspend";
 
 export type Translations = Partial<Record<TranslationKey, string>>;
