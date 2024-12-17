@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { toast } from "sonner";
 import { useLanguage } from '../../contexts/LanguageContext';
 import { Loader2 } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 export const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -35,8 +36,22 @@ export const LoginForm = () => {
         console.error('Login error:', error);
         return;
       }
-      toast.success(t("loginSuccess"));
-      navigate('/dashboard');
+
+      // Überprüfe die Benutzerrolle
+      const { data: { user } } = await supabase.auth.getUser();
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user?.id)
+        .single();
+
+      if (profile?.role === 'admin') {
+        navigate('/admin');
+        toast.success('Willkommen im Admin-Bereich');
+      } else {
+        navigate('/dashboard');
+        toast.success(t("loginSuccess"));
+      }
     } catch (error) {
       console.error('Login error:', error);
       toast.error(t("loginError"));
