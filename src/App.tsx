@@ -15,6 +15,9 @@ import Admin from "./pages/Admin";
 import Terms from "./pages/legal/Terms";
 import Privacy from "./pages/legal/Privacy";
 import Imprint from "./pages/legal/Imprint";
+import Listings from "./pages/Listings";
+import Vips from "./pages/Vips";
+import Membership from "./pages/Membership";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +40,9 @@ const App = () => (
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/imprint" element={<Imprint />} />
+              <Route path="/listings" element={<Listings />} />
+              <Route path="/vips" element={<Vips />} />
+              <Route path="/membership" element={<Membership />} />
             </Routes>
           </BrowserRouter>
         </TooltipProvider>

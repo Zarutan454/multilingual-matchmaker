@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Home, Heart, Grid, MessageSquare, User, LogOut } from "lucide-react";
+import { Home, Search, Crown, CreditCard, User, LogOut } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -35,31 +35,31 @@ export const NavLinks: FC<NavLinksProps> = ({ className = "", onItemClick }) => 
         onClick={onItemClick}
       >
         <Home size={18} />
-        {t("home")}
+        Startseite
       </a>
       <a 
-        href="/models" 
+        href="/listings" 
         className="text-white hover:text-[#c69963] transition-colors flex items-center gap-2"
         onClick={onItemClick}
       >
-        <Heart size={18} />
-        Models
+        <Search size={18} />
+        Anzeigen
       </a>
       <a 
-        href="/categories" 
+        href="/vips" 
         className="text-white hover:text-[#c69963] transition-colors flex items-center gap-2"
         onClick={onItemClick}
       >
-        <Grid size={18} />
-        {t("categories")}
+        <Crown size={18} />
+        VIP's
       </a>
       <a 
-        href="/contact" 
+        href="/membership" 
         className="text-white hover:text-[#c69963] transition-colors flex items-center gap-2"
         onClick={onItemClick}
       >
-        <MessageSquare size={18} />
-        {t("contact")}
+        <CreditCard size={18} />
+        Mitgliedschaft
       </a>
       {user ? (
         <>
