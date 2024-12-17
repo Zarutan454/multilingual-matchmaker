@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useNavigate } from 'react-router-dom';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,13 +17,15 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Loader2 } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 export const AccountSettings = () => {
   const [newPassword, setNewPassword] = useState('');
   const [newEmail, setNewEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { updatePassword, updateEmail, deleteAccount } = useAuth();
+  const { user, updatePassword, updateEmail, deleteAccount } = useAuth();
   const { t } = useLanguage();
+  const navigate = useNavigate();
 
   const handlePasswordUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,9 +68,26 @@ export const AccountSettings = () => {
   const handleAccountDeletion = async () => {
     setIsLoading(true);
     try {
-      await deleteAccount();
-      toast.success(t('accountDeleted'));
+      // First, delete all related data
+      if (user) {
+        // Delete profile data first
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .delete()
+          .eq('id', user.id);
+          
+        if (profileError) {
+          console.error('Error deleting profile:', profileError);
+          throw new Error(profileError.message);
+        }
+
+        // Then delete the user account
+        await deleteAccount();
+        toast.success(t('accountDeleted'));
+        navigate('/');
+      }
     } catch (error) {
+      console.error('Error during account deletion:', error);
       toast.error(t('errorDeletingAccount'));
     } finally {
       setIsLoading(false);
