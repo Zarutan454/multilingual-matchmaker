@@ -6,6 +6,7 @@ import { usePresence } from "@/hooks/usePresence";
 import { ProfileFilters } from "./featured/ProfileFilters";
 import { ProfilePagination } from "./featured/ProfilePagination";
 import { useProfiles } from "./featured/useProfiles";
+import { toast } from "sonner";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -20,7 +21,7 @@ export const FeaturedProfiles = () => {
 
   usePresence();
 
-  const { data: profiles = [], isLoading, error, refetch } = useProfiles({
+  const { data: profiles = [], isLoading, error } = useProfiles({
     page,
     searchTerm,
     location,
@@ -55,19 +56,11 @@ export const FeaturedProfiles = () => {
       <div className="flex flex-col items-center justify-center min-h-[400px] text-red-500 space-y-4">
         <p>Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.</p>
         <button 
-          onClick={() => refetch()} 
+          onClick={() => window.location.reload()} 
           className="px-4 py-2 bg-[#9b87f5] text-white rounded hover:bg-[#7a68c3]"
         >
           Erneut versuchen
         </button>
-      </div>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#9b87f5]"></div>
       </div>
     );
   }
@@ -82,16 +75,24 @@ export const FeaturedProfiles = () => {
           UNSERE <span className="text-[#9b87f5]">PREMIUM</span> BEGLEITUNG
         </h2>
 
-        <ProfileGrid 
-          profiles={profiles}
-          onChatClick={handleChatClick}
-        />
+        {isLoading ? (
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#9b87f5]"></div>
+          </div>
+        ) : (
+          <>
+            <ProfileGrid 
+              profiles={profiles}
+              onChatClick={handleChatClick}
+            />
 
-        <ProfilePagination 
-          page={page}
-          setPage={setPage}
-          hasMore={profiles.length >= ITEMS_PER_PAGE}
-        />
+            <ProfilePagination 
+              page={page}
+              setPage={setPage}
+              hasMore={profiles.length >= ITEMS_PER_PAGE}
+            />
+          </>
+        )}
       </div>
 
       <Dialog open={isChatOpen} onOpenChange={setIsChatOpen}>

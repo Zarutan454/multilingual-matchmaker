@@ -24,11 +24,19 @@ export const useProfiles = ({
     queryKey: ['profiles', page, searchTerm, location, category, orientation],
     queryFn: async () => {
       try {
-        console.log('Fetching profiles...');
+        console.log('Fetching profiles with params:', {
+          page,
+          searchTerm,
+          location,
+          category,
+          orientation,
+          itemsPerPage
+        });
+
         let query = supabase
           .from('profiles')
           .select('*')
-          .not('avatar_url', 'is', null)
+          .eq('is_active', true)
           .range(page * itemsPerPage, (page + 1) * itemsPerPage - 1)
           .order('created_at', { ascending: false });
 
@@ -56,8 +64,8 @@ export const useProfiles = ({
         return data.map((profile: any): Profile => ({
           id: profile.id,
           name: profile.full_name || 'Anonymous',
-          image: profile.avatar_url,
-          category: profile.service_categories?.[0] || 'VIP Begleitung',
+          image: profile.avatar_url || '/placeholder.svg',
+          category: profile.category || 'VIP Begleitung',
           location: profile.location || 'Unknown',
           coordinates: { lat: 0, lng: 0 },
           status: profile.availability_status || 'offline',
@@ -66,15 +74,18 @@ export const useProfiles = ({
           spokenLanguages: profile.languages || ['Deutsch'],
           age: profile.age || 25,
           serviceCategories: profile.service_categories || [],
-          priceRange: profile.price_range || { min: 0, max: 0 }
+          priceRange: profile.price_range || { min: 0, max: 0 },
+          last_seen: profile.last_seen,
+          membership_level: profile.role === 'vip' ? 'vip' : 'bronze',
+          likes_count: profile.likes_count || 0
         }));
       } catch (err) {
         console.error('Error fetching profiles:', err);
+        toast.error('Fehler beim Laden der Profile');
         throw err;
       }
     },
-    retry: 3,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    retry: 1,
     staleTime: 30000,
     gcTime: 300000,
   });
