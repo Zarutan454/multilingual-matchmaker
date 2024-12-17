@@ -18,6 +18,7 @@ import Imprint from "./pages/legal/Imprint";
 import Listings from "./pages/Listings";
 import Vips from "./pages/Vips";
 import Membership from "./pages/Membership";
+import News from "./pages/News";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,7 @@ const App = () => (
               <Route path="/listings" element={<Listings />} />
               <Route path="/vips" element={<Vips />} />
               <Route path="/membership" element={<Membership />} />
+              <Route path="/news" element={<News />} />
             </Routes>
           </BrowserRouter>
         </TooltipProvider>

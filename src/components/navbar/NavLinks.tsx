@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Home, Search, Crown, CreditCard, User, LogOut } from "lucide-react";
+import { Home, Search, Crown, CreditCard, User, LogOut, Newspaper } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -60,6 +60,14 @@ export const NavLinks: FC<NavLinksProps> = ({ className = "", onItemClick }) => 
       >
         <CreditCard size={18} />
         Mitgliedschaft
+      </a>
+      <a 
+        href="/news" 
+        className="text-white hover:text-[#c69963] transition-colors flex items-center gap-2"
+        onClick={onItemClick}
+      >
+        <Newspaper size={18} />
+        News
       </a>
       {user ? (
         <>
