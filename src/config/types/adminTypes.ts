@@ -11,4 +11,15 @@ export type AdminTranslationKeys =
   | "userManagement"
   | "contentModeration"
   | "statistics"
-  | "configuration";
+  | "configuration"
+  | "userStatusUpdated"
+  | "errorUpdatingUser"
+  | "name"
+  | "status"
+  | "role"
+  | "actions"
+  | "notProvided"
+  | "pending"
+  | "user"
+  | "activate"
+  | "suspend";
