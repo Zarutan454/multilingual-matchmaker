@@ -7,7 +7,6 @@ import { Label } from '@/components/ui/label';
 import { toast } from "sonner";
 import { useLanguage } from '../../contexts/LanguageContext';
 import { Loader2 } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
 
 export const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -37,34 +36,8 @@ export const LoginForm = () => {
         return;
       }
 
-      // Get the current user
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast.error('User not found');
-        return;
-      }
-
-      // Fetch the user's profile with error handling
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .single();
-
-      if (profileError) {
-        console.error('Error fetching profile:', profileError);
-        toast.error('Error fetching user profile');
-        return;
-      }
-
-      // Navigate based on role
-      if (profile?.role === 'admin') {
-        navigate('/admin');
-        toast.success('Welcome to Admin Dashboard');
-      } else {
-        navigate('/dashboard');
-        toast.success(t("loginSuccess"));
-      }
+      navigate('/dashboard');
+      toast.success(t("loginSuccess"));
     } catch (error) {
       console.error('Login error:', error);
       toast.error(t("loginError"));
