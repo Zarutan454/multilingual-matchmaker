@@ -26,28 +26,41 @@ export const LoginForm = () => {
     
     setIsLoading(true);
     try {
-      const { error } = await signIn(email, password);
-      if (error) {
-        if (error.message.includes('Invalid login credentials')) {
+      const { error: signInError } = await signIn(email, password);
+      if (signInError) {
+        if (signInError.message.includes('Invalid login credentials')) {
           toast.error(t("invalidCredentials"));
         } else {
           toast.error(t("loginError"));
         }
-        console.error('Login error:', error);
+        console.error('Login error:', signInError);
         return;
       }
 
-      // Überprüfe die Benutzerrolle
+      // Get the current user
       const { data: { user } } = await supabase.auth.getUser();
-      const { data: profile } = await supabase
+      if (!user) {
+        toast.error('User not found');
+        return;
+      }
+
+      // Fetch the user's profile with error handling
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('role')
-        .eq('id', user?.id)
+        .eq('id', user.id)
         .single();
 
+      if (profileError) {
+        console.error('Error fetching profile:', profileError);
+        toast.error('Error fetching user profile');
+        return;
+      }
+
+      // Navigate based on role
       if (profile?.role === 'admin') {
         navigate('/admin');
-        toast.success('Willkommen im Admin-Bereich');
+        toast.success('Welcome to Admin Dashboard');
       } else {
         navigate('/dashboard');
         toast.success(t("loginSuccess"));
