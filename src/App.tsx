@@ -5,7 +5,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { AuthProvider } from "./contexts/AuthContext";
-import { LanguageSelector } from "./components/LanguageSelector";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -25,7 +24,6 @@ const App = () => (
       <AuthProvider>
         <TooltipProvider>
           <BrowserRouter>
-            <LanguageSelector />
             <Toaster />
             <Sonner />
             <Routes>
