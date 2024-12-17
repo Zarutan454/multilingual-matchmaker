@@ -29,3 +29,8 @@ export const handleSupabaseError = (error: any) => {
   console.error('Supabase error:', error);
   return error;
 };
+
+// Helper function to check if we're running locally
+export const isLocalDevelopment = () => {
+  return import.meta.env.VITE_SUPABASE_URL.includes('localhost');
+};
