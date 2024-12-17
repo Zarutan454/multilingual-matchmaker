@@ -16,8 +16,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
   },
   global: {
     headers: {
-      'Content-Type': 'application/json',
-      'Prefer': 'return=minimal'
+      'Content-Type': 'application/json'
     }
   },
   db: {
@@ -31,7 +30,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
   }
 });
 
-// Utility function for error handling
+// Enhanced error handling utility
 export const handleSupabaseError = (error: any) => {
   console.error('Supabase error:', error);
   
