@@ -24,21 +24,37 @@ export const FeaturedProfiles = () => {
   usePresence();
 
   const { data: profiles = [], isLoading, error } = useQuery({
-    queryKey: ['profiles', page],
+    queryKey: ['profiles', page, searchTerm, location, category, country, state, orientation],
     queryFn: async () => {
       try {
-        const { data, error } = await supabase
+        let query = supabase
           .from('profiles')
           .select('*')
           .not('avatar_url', 'is', null)
           .range(page * ITEMS_PER_PAGE, (page + 1) * ITEMS_PER_PAGE - 1)
           .order('created_at', { ascending: false });
 
+        // Apply filters only if they exist
+        if (searchTerm) {
+          query = query.ilike('full_name', `%${searchTerm}%`);
+        }
+        if (location) {
+          query = query.ilike('location', `%${location}%`);
+        }
+        if (category) {
+          query = query.contains('service_categories', [category]);
+        }
+        if (orientation) {
+          query = query.contains('service_categories', [orientation]);
+        }
+
+        const { data, error } = await query;
+
         if (error) {
           if (error.message?.includes('timeout')) {
-            toast.error('Request timed out. Please try again.');
+            toast.error('Zeitüberschreitung bei der Anfrage. Bitte versuchen Sie es erneut.');
           } else {
-            toast.error('Error loading profiles');
+            toast.error('Fehler beim Laden der Profile');
           }
           throw error;
         }
@@ -64,7 +80,8 @@ export const FeaturedProfiles = () => {
       }
     },
     retry: 1,
-    staleTime: 30000 // Cache for 30 seconds
+    staleTime: 30000, // Cache for 30 seconds
+    gcTime: 300000,   // Keep unused data in cache for 5 minutes
   });
 
   const handleChatClick = (e: React.MouseEvent, profileId: string) => {
@@ -87,30 +104,10 @@ export const FeaturedProfiles = () => {
     setCountry(country);
     setState(state);
     setOrientation(orientation);
+    setPage(0); // Reset to first page when searching
   };
 
-  const filteredProfiles = profiles.filter((profile: Profile) => {
-    const matchesSearch = !searchTerm || 
-      (profile.name && profile.name.toLowerCase().includes(searchTerm.toLowerCase()));
-    
-    const matchesLocation = !location || 
-      (profile.location && profile.location.toLowerCase().includes(location.toLowerCase()));
-    
-    const matchesCategory = !category || 
-      (profile.category && profile.category.toLowerCase().includes(category.toLowerCase()));
-    
-    const matchesCountry = !country || 
-      (profile.location && profile.location.toLowerCase().includes(country.toLowerCase()));
-    
-    const matchesState = !state || 
-      (profile.location && profile.location.toLowerCase().includes(state.toLowerCase()));
-    
-    const matchesOrientation = !orientation || 
-      (profile.serviceCategories && profile.serviceCategories.includes(orientation));
-
-    return matchesSearch && matchesLocation && matchesCategory && 
-           matchesCountry && matchesState && matchesOrientation;
-  });
+  const filteredProfiles = profiles;
 
   if (error) {
     return (
@@ -145,21 +142,20 @@ export const FeaturedProfiles = () => {
           onChatClick={handleChatClick}
         />
 
-        {/* Pagination controls */}
         <div className="flex justify-center mt-8 gap-4">
           <button
             onClick={() => setPage(p => Math.max(0, p - 1))}
             disabled={page === 0}
             className="px-4 py-2 bg-[#9b87f5] text-white rounded disabled:opacity-50"
           >
-            Previous
+            Zurück
           </button>
           <button
             onClick={() => setPage(p => p + 1)}
             disabled={profiles.length < ITEMS_PER_PAGE}
             className="px-4 py-2 bg-[#9b87f5] text-white rounded disabled:opacity-50"
           >
-            Next
+            Weiter
           </button>
         </div>
       </div>
