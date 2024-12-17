@@ -2,31 +2,32 @@ import { Star, Heart, UserPlus } from "lucide-react";
 
 export const InfoSection = () => {
   return (
-    <section id="features" className="py-20 bg-gradient-to-b from-black to-gray-900">
-      <div className="container mx-auto px-4 text-center">
+    <section className="py-20 relative overflow-hidden">
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+      <div className="container mx-auto px-4 relative z-10 text-center">
         <h2 className="text-4xl font-bold mb-16 text-white">
-          WARUM POPP<span className="text-secondary">*</span>IN?
+          WARUM <span className="text-[#9b87f5]">POPP*IN</span>?
         </h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mx-auto">
-          <div className="bg-black/40 p-8 rounded-lg backdrop-blur-sm border border-gray-800 transform hover:scale-105 transition-transform duration-300">
-            <Star className="w-12 h-12 text-secondary mx-auto mb-6" />
+          <div className="bg-[#1A1F2C]/80 p-8 rounded-lg backdrop-blur-md border border-[#9b87f5]/30 transform hover:scale-105 transition-transform duration-300 shadow-[0_0_15px_rgba(155,135,245,0.2)]">
+            <Star className="w-12 h-12 text-[#9b87f5] mx-auto mb-6" />
             <h3 className="text-xl font-semibold mb-4 text-white">Premium Service</h3>
             <p className="text-gray-300">
               Handverlesene Begleiter:innen mit Stil, Charme und Niveau für jeden Anlass
             </p>
           </div>
 
-          <div className="bg-black/40 p-8 rounded-lg backdrop-blur-sm border border-gray-800 transform hover:scale-105 transition-transform duration-300">
-            <Heart className="w-12 h-12 text-secondary mx-auto mb-6" />
+          <div className="bg-[#1A1F2C]/80 p-8 rounded-lg backdrop-blur-md border border-[#9b87f5]/30 transform hover:scale-105 transition-transform duration-300 shadow-[0_0_15px_rgba(155,135,245,0.2)]">
+            <Heart className="w-12 h-12 text-[#9b87f5] mx-auto mb-6" />
             <h3 className="text-xl font-semibold mb-4 text-white">Diskret & Sicher</h3>
             <p className="text-gray-300">
               Höchste Sicherheitsstandards und absolute Diskretion für Ihre Privatsphäre
             </p>
           </div>
 
-          <div className="bg-black/40 p-8 rounded-lg backdrop-blur-sm border border-gray-800 transform hover:scale-105 transition-transform duration-300">
-            <UserPlus className="w-12 h-12 text-secondary mx-auto mb-6" />
+          <div className="bg-[#1A1F2C]/80 p-8 rounded-lg backdrop-blur-md border border-[#9b87f5]/30 transform hover:scale-105 transition-transform duration-300 shadow-[0_0_15px_rgba(155,135,245,0.2)]">
+            <UserPlus className="w-12 h-12 text-[#9b87f5] mx-auto mb-6" />
             <h3 className="text-xl font-semibold mb-4 text-white">Einfache Buchung</h3>
             <p className="text-gray-300">
               Unkomplizierte Terminvereinbarung und flexible Buchungsoptionen

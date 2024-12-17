@@ -6,7 +6,7 @@ import { ProfileGrid } from "../profile/ProfileGrid";
 import { Profile } from "../profile/types";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { usePresence } from "@/hooks/usePresence"; // Add this import
+import { usePresence } from "@/hooks/usePresence";
 
 export const FeaturedProfiles = () => {
   const [selectedProfile, setSelectedProfile] = useState<string | null>(null);
@@ -15,7 +15,6 @@ export const FeaturedProfiles = () => {
   const [location, setLocation] = useState("");
   const [category, setCategory] = useState("");
 
-  // Use the presence hook to enable real-time status updates
   usePresence();
 
   const { data: profiles = [], isLoading } = useQuery({
@@ -72,18 +71,23 @@ export const FeaturedProfiles = () => {
   });
 
   if (isLoading) {
-    return <div className="text-center py-8">Loading profiles...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#9b87f5]"></div>
+      </div>
+    );
   }
 
   return (
-    <section id="featured" className="py-8 bg-gradient-dark">
-      <div className="container mx-auto px-4">
+    <section className="py-20 relative overflow-hidden">
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+      <div className="container mx-auto px-4 relative z-10">
         <div className="-mt-16 mb-12">
           <SearchBar onSearch={handleSearch} />
         </div>
         
-        <h2 className="text-3xl font-bold text-center mb-12 text-white">
-          UNSERE PREMIUM BEGLEITUNG
+        <h2 className="text-4xl font-bold text-center mb-12 text-white">
+          UNSERE <span className="text-[#9b87f5]">PREMIUM</span> BEGLEITUNG
         </h2>
 
         <ProfileGrid 
@@ -93,7 +97,7 @@ export const FeaturedProfiles = () => {
       </div>
 
       <Dialog open={isChatOpen} onOpenChange={setIsChatOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-[500px] bg-[#1A1F2C]/95 backdrop-blur-md border-[#9b87f5]/30">
           {selectedProfile && (
             <ChatWindow
               recipientId={selectedProfile}
