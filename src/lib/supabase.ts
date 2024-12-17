@@ -16,17 +16,38 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
   },
   global: {
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal'
     }
   },
   db: {
     schema: 'public'
+  },
+  // Add retry configuration
+  realtime: {
+    params: {
+      eventsPerSecond: 10
+    }
   }
 });
 
 // Utility function for error handling
 export const handleSupabaseError = (error: any) => {
   console.error('Supabase error:', error);
+  
+  // Check if it's a network error
+  if (error.message === 'Failed to fetch') {
+    console.error('Network error - please check your connection');
+    throw new Error('Netzwerkfehler - bitte überprüfen Sie Ihre Internetverbindung');
+  }
+
+  // Check if it's an authentication error
+  if (error.status === 401) {
+    console.error('Authentication error - please log in again');
+    supabase.auth.signOut();
+    throw new Error('Authentifizierungsfehler - bitte melden Sie sich erneut an');
+  }
+
   return error;
 };
 
