@@ -14,6 +14,9 @@ export const FeaturedProfiles = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [location, setLocation] = useState("");
   const [category, setCategory] = useState("");
+  const [country, setCountry] = useState("");
+  const [state, setState] = useState("");
+  const [orientation, setOrientation] = useState("");
 
   usePresence();
 
@@ -54,20 +57,44 @@ export const FeaturedProfiles = () => {
     setIsChatOpen(true);
   };
 
-  const handleSearch = (searchTerm: string, location: string, category: string) => {
+  const handleSearch = (
+    searchTerm: string,
+    location: string,
+    category: string,
+    country: string,
+    state: string,
+    orientation: string
+  ) => {
     setSearchTerm(searchTerm);
     setLocation(location);
     setCategory(category);
+    setCountry(country);
+    setState(state);
+    setOrientation(orientation);
   };
 
   const filteredProfiles = profiles.filter((profile: Profile) => {
     const matchesSearch = !searchTerm || 
       (profile.name && profile.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    
     const matchesLocation = !location || 
       (profile.location && profile.location.toLowerCase().includes(location.toLowerCase()));
+    
     const matchesCategory = !category || 
       (profile.category && profile.category.toLowerCase().includes(category.toLowerCase()));
-    return matchesSearch && matchesLocation && matchesCategory;
+    
+    const matchesCountry = !country || 
+      (profile.location && profile.location.toLowerCase().includes(country.toLowerCase()));
+    
+    const matchesState = !state || 
+      (profile.location && profile.location.toLowerCase().includes(state.toLowerCase()));
+    
+    // Wenn Orientierung ausgewählt wurde, prüfe ob das Profil diese Orientierung hat
+    const matchesOrientation = !orientation || 
+      (profile.serviceCategories && profile.serviceCategories.includes(orientation));
+
+    return matchesSearch && matchesLocation && matchesCategory && 
+           matchesCountry && matchesState && matchesOrientation;
   });
 
   if (isLoading) {
