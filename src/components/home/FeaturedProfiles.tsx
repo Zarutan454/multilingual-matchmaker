@@ -8,6 +8,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { usePresence } from "@/hooks/usePresence";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { RefreshCw } from "lucide-react";
 
 export const FeaturedProfiles = () => {
   const [selectedProfile, setSelectedProfile] = useState<string | null>(null);
@@ -23,10 +25,11 @@ export const FeaturedProfiles = () => {
 
   usePresence();
 
-  const { data: profiles = [], isLoading, error } = useQuery({
+  const { data: profiles = [], isLoading, error, refetch } = useQuery({
     queryKey: ['profiles', page, searchTerm, location, category, country, state, orientation],
     queryFn: async () => {
       try {
+        console.log('Fetching profiles...');
         let query = supabase
           .from('profiles')
           .select('*')
@@ -51,14 +54,16 @@ export const FeaturedProfiles = () => {
         const { data, error } = await query;
 
         if (error) {
+          console.error('Supabase error:', error);
           if (error.message?.includes('timeout')) {
-            toast.error('Zeitüberschreitung bei der Anfrage. Bitte versuchen Sie es erneut.');
+            toast.error('Die Anfrage hat zu lange gedauert. Bitte versuchen Sie es erneut.');
           } else {
             toast.error('Fehler beim Laden der Profile');
           }
           throw error;
         }
 
+        console.log('Profiles fetched successfully:', data?.length);
         return data.map((profile: any): Profile => ({
           id: profile.id,
           name: profile.full_name || 'Anonymous',
@@ -79,9 +84,10 @@ export const FeaturedProfiles = () => {
         throw err;
       }
     },
-    retry: 1,
-    staleTime: 30000, // Cache for 30 seconds
-    gcTime: 300000,   // Keep unused data in cache for 5 minutes
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    staleTime: 30000,
+    gcTime: 300000,
   });
 
   const handleChatClick = (e: React.MouseEvent, profileId: string) => {
@@ -104,15 +110,23 @@ export const FeaturedProfiles = () => {
     setCountry(country);
     setState(state);
     setOrientation(orientation);
-    setPage(0); // Reset to first page when searching
+    setPage(0);
   };
 
   const filteredProfiles = profiles;
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-[400px] text-red-500">
-        Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.
+      <div className="flex flex-col items-center justify-center min-h-[400px] text-red-500 space-y-4">
+        <p>Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.</p>
+        <Button 
+          onClick={() => refetch()} 
+          variant="outline"
+          className="flex items-center gap-2"
+        >
+          <RefreshCw className="w-4 h-4" />
+          Erneut versuchen
+        </Button>
       </div>
     );
   }
