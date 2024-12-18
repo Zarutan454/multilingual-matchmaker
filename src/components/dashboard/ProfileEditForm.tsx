@@ -37,7 +37,8 @@ export const ProfileEditForm = ({ profile, onProfileUpdate }: ProfileEditFormPro
           full_name: editedProfile.full_name,
           location: editedProfile.location,
           age: editedProfile.age,
-          interests: editedProfile.interests
+          interests: editedProfile.interests,
+          gender: editedProfile.gender
         })
         .eq('id', profile?.id)
         .select()
@@ -56,18 +57,24 @@ export const ProfileEditForm = ({ profile, onProfileUpdate }: ProfileEditFormPro
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <BasicInfoForm 
-        profile={editedProfile}
-        onFieldChange={handleFieldChange}
-      />
-      
-      <InterestsForm
-        profile={editedProfile}
-        onFieldChange={handleFieldChange}
-      />
+    <form onSubmit={handleSubmit} className="space-y-8">
+      <div className="space-y-6">
+        <BasicInfoForm 
+          profile={editedProfile}
+          onFieldChange={handleFieldChange}
+        />
+        
+        <InterestsForm
+          profile={editedProfile}
+          onFieldChange={handleFieldChange}
+        />
+      </div>
 
-      <Button type="submit" disabled={isSubmitting}>
+      <Button 
+        type="submit" 
+        disabled={isSubmitting}
+        className="w-full bg-[#9b87f5] hover:bg-[#7E69AB] text-white"
+      >
         {isSubmitting ? t("saving") : t("saveChanges")}
       </Button>
     </form>
