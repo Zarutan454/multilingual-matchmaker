@@ -24,14 +24,14 @@ export const SubscriptionPlans = () => {
         {regularPlans.map(([id, plan]) => (
           <div 
             key={id} 
-            className="relative group"
+            className="relative group h-full"
           >
             {/* Decorative Border */}
             <div className="absolute inset-0 bg-gradient-to-b from-secondary/20 via-secondary/10 to-secondary/20 rounded-lg p-[1px] transition-all duration-300 group-hover:from-secondary/40 group-hover:via-secondary/20 group-hover:to-secondary/40">
               <div className="absolute inset-0 bg-gradient-to-r from-secondary/20 via-secondary/10 to-secondary/20 rounded-lg opacity-75 group-hover:opacity-100 transition-opacity duration-300"></div>
             </div>
             
-            <Card className="relative p-6 backdrop-blur-lg border transition-all duration-300 hover:scale-105 bg-gradient-to-b from-gray-900/80 to-black/80 border-gray-800 group-hover:border-secondary/50">
+            <Card className="relative h-full flex flex-col p-6 backdrop-blur-lg border transition-all duration-300 hover:scale-105 bg-gradient-to-b from-gray-900/80 to-black/80 border-gray-800 group-hover:border-secondary/50">
               <div className="text-center mb-6">
                 <h3 className="text-xl font-bold mb-2 text-white">
                   {plan.name}
@@ -45,7 +45,7 @@ export const SubscriptionPlans = () => {
                 </div>
               </div>
 
-              <div className="space-y-3 mb-6">
+              <div className="space-y-3 flex-grow">
                 {Object.entries(plan.features).map(([feature, value]) => (
                   <div key={feature} className="flex items-center gap-2">
                     <div className="flex-shrink-0 rounded-full p-1 bg-secondary/20">
@@ -64,18 +64,20 @@ export const SubscriptionPlans = () => {
                 ))}
               </div>
 
-              <Button 
-                className="w-full bg-secondary hover:bg-secondary/90"
-                onClick={() => handleSubscribe(id)}
-              >
-                {t('bookNow')}
-              </Button>
+              <div className="mt-6">
+                <Button 
+                  className="w-full bg-secondary hover:bg-secondary/90"
+                  onClick={() => handleSubscribe(id)}
+                >
+                  {t('bookNow')}
+                </Button>
 
-              {plan.trial_days > 0 && (
-                <p className="text-xs text-center mt-3 text-gray-400">
-                  {plan.trial_days} Tage kostenlos testen
-                </p>
-              )}
+                {plan.trial_days > 0 && (
+                  <p className="text-xs text-center mt-3 text-gray-400">
+                    {plan.trial_days} Tage kostenlos testen
+                  </p>
+                )}
+              </div>
             </Card>
           </div>
         ))}
