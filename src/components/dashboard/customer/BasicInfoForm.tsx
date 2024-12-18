@@ -2,11 +2,14 @@ import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useFormContext } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 
-export const BasicInfoForm = () => {
+interface BasicInfoFormProps {
+  form: UseFormReturn<any>;
+}
+
+export const BasicInfoForm = ({ form }: BasicInfoFormProps) => {
   const { t } = useLanguage();
-  const form = useFormContext();
 
   return (
     <div className="space-y-6">
