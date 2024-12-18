@@ -18,13 +18,13 @@ export const NavLinks: FC<NavLinksProps> = ({ className = "", onItemClick }) => 
   const handleLogout = async () => {
     try {
       await signOut();
-      toast.success(t("logoutSuccess"));
       navigate('/');
+      toast.success(t("logoutSuccess"));
+      onItemClick?.();
     } catch (error) {
       console.error('Logout error:', error);
       toast.error(t("logoutError"));
     }
-    onItemClick?.();
   };
 
   return (
