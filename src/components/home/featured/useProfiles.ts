@@ -33,13 +33,21 @@ export const useProfiles = ({
           itemsPerPage
         });
 
-        // Erste Abfrage ohne Filter, um zu sehen, ob überhaupt Profile existieren
-        const { data: allProfiles, error: countError } = await supabase
+        // Erste Abfrage, um alle Profile zu zählen
+        const { data: totalProfiles, error: countError } = await supabase
           .from('profiles')
-          .select('*');
+          .select('*')
+          .eq('user_type', 'provider')
+          .eq('is_active', true);
 
-        console.log('Total profiles in database:', allProfiles?.length);
+        if (countError) {
+          console.error('Error counting profiles:', countError);
+          throw countError;
+        }
 
+        console.log('Total provider profiles:', totalProfiles?.length);
+
+        // Hauptabfrage mit Filtern
         let query = supabase
           .from('profiles')
           .select(`
@@ -56,11 +64,10 @@ export const useProfiles = ({
             last_seen,
             role,
             likes_count,
-            user_type,
-            is_active
+            user_type
           `)
-          .eq('is_active', true)
           .eq('user_type', 'provider')
+          .eq('is_active', true)
           .range(page * itemsPerPage, (page + 1) * itemsPerPage - 1)
           .order('created_at', { ascending: false });
 
@@ -85,7 +92,7 @@ export const useProfiles = ({
           throw error;
         }
 
-        console.log('Filtered profiles:', {
+        console.log('Filtered provider profiles:', {
           total: data?.length,
           profiles: data
         });
