@@ -52,6 +52,7 @@ export const FeaturedProfiles = () => {
   };
 
   if (error) {
+    console.error('Error in FeaturedProfiles:', error);
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] text-red-500 space-y-4">
         <p>Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.</p>

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabase";
+import { supabase, handleSupabaseError } from "@/lib/supabase";
 import { Profile } from "@/components/profile/types";
 import { toast } from "sonner";
 
@@ -51,7 +51,6 @@ export const useProfiles = ({
             likes_count
           `)
           .eq('is_active', true)
-          // Nur Provider-Profile anzeigen
           .eq('user_type', 'provider')
           .range(page * itemsPerPage, (page + 1) * itemsPerPage - 1)
           .order('created_at', { ascending: false });
@@ -72,7 +71,6 @@ export const useProfiles = ({
         const { data, error } = await query;
 
         if (error) {
-          console.error('Supabase error:', error);
           throw error;
         }
 
@@ -95,18 +93,10 @@ export const useProfiles = ({
           membership_level: profile.role === 'vip' ? 'vip' : 'bronze',
           likes_count: profile.likes_count || 0
         }));
-      } catch (err: any) {
-        console.error('Error fetching profiles:', err);
-        
-        if (err.code === '57014') {
-          toast.error('Die Anfrage hat zu lange gedauert. Bitte versuchen Sie es erneut.');
-        } else if (err.message === 'Failed to fetch') {
-          toast.error('Verbindungsfehler. Bitte überprüfen Sie Ihre Internetverbindung.');
-        } else {
-          toast.error('Fehler beim Laden der Profile');
-        }
-        
-        throw err;
+      } catch (error: any) {
+        console.error('Error fetching profiles:', error);
+        handleSupabaseError(error);
+        throw error;
       }
     },
     retry: 1,
