@@ -3,8 +3,12 @@ import { ImageUploadSection } from "./ImageUploadSection";
 import { ProfileEditForm } from "./ProfileEditForm";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Edit } from "lucide-react";
+import { Edit, UserCog } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
 interface ProfileSectionProps {
   profile: Profile | null;
@@ -25,19 +29,60 @@ export const ProfileSection = ({
 }: ProfileSectionProps) => {
   const { t } = useLanguage();
 
+  const handleUserTypeChange = async (checked: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ 
+          user_type: checked ? 'provider' : 'customer',
+          category: checked ? 'VIP Begleitung' : null,
+          service_categories: checked ? ['Dinner Dates', 'Events & Partys', 'Reisebegleitung'] : null
+        })
+        .eq('id', userId);
+
+      if (error) throw error;
+
+      // Update local profile state
+      handleProfileUpdate({
+        ...profile!,
+        user_type: checked ? 'provider' : 'customer',
+        category: checked ? 'VIP Begleitung' : null,
+        service_categories: checked ? ['Dinner Dates', 'Events & Partys', 'Reisebegleitung'] : null
+      } as Profile);
+
+      toast.success(checked ? t("switchedToProvider") : t("switchedToCustomer"));
+    } catch (error) {
+      console.error('Error updating user type:', error);
+      toast.error(t("errorUpdatingProfile"));
+    }
+  };
+
   return (
     <Card className="bg-black/50 backdrop-blur-sm border-neutral-800 p-6">
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-2xl font-bold">{t("profile")}</h2>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setIsEditing(!isEditing)}
-          className="text-white border-[#9b87f5] hover:bg-[#9b87f5]/20 transition-colors bg-black/30"
-        >
-          <Edit className="w-4 h-4 mr-2" />
-          {isEditing ? t("cancel") : t("edit")}
-        </Button>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="user-type"
+              checked={profile?.user_type === 'provider'}
+              onCheckedChange={handleUserTypeChange}
+            />
+            <Label htmlFor="user-type" className="flex items-center gap-2">
+              <UserCog className="h-4 w-4" />
+              {profile?.user_type === 'provider' ? t("provider") : t("customer")}
+            </Label>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsEditing(!isEditing)}
+            className="text-white border-[#9b87f5] hover:bg-[#9b87f5]/20 transition-colors bg-black/30"
+          >
+            <Edit className="w-4 h-4 mr-2" />
+            {isEditing ? t("cancel") : t("edit")}
+          </Button>
+        </div>
       </div>
 
       <div className="flex flex-col md:flex-row gap-6">
