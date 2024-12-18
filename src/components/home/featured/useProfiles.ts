@@ -93,9 +93,18 @@ export const useProfiles = ({
           membership_level: profile.role === 'vip' ? 'vip' : 'bronze',
           likes_count: profile.likes_count || 0
         }));
-      } catch (err) {
+      } catch (err: any) {
         console.error('Error fetching profiles:', err);
-        toast.error('Fehler beim Laden der Profile');
+        
+        // Handle specific error cases
+        if (err.code === '57014') {
+          toast.error('Die Anfrage hat zu lange gedauert. Bitte versuchen Sie es erneut.');
+        } else if (err.message === 'Failed to fetch') {
+          toast.error('Verbindungsfehler. Bitte überprüfen Sie Ihre Internetverbindung.');
+        } else {
+          toast.error('Fehler beim Laden der Profile');
+        }
+        
         throw err;
       }
     },
