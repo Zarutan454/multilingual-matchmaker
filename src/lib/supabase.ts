@@ -15,17 +15,11 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
     autoRefreshToken: true,
     detectSessionInUrl: true,
     storage: window.localStorage,
-    flowType: 'pkce',
-    debug: true
   },
   global: {
     headers: {
       'Content-Type': 'application/json',
-      'x-client-info': 'lovable'
     }
-  },
-  db: {
-    schema: 'public'
   },
   realtime: {
     params: {
@@ -54,56 +48,43 @@ export const handleSupabaseError = (error: any) => {
     return error;
   }
 
-  if (error.code === '23503') {
-    toast.error('Beziehungsfehler in der Datenbank');
-    return error;
-  }
-
-  if (error.code === '42P01') {
-    toast.error('Tabelle nicht gefunden');
-    return error;
-  }
-
   toast.error('Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.');
   return error;
 };
 
-// Verbesserte Verbindungsprüfung mit Timeout und Retry
-export const checkConnection = async (retries = 3) => {
-  for (let i = 0; i < retries; i++) {
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000);
+// Verbesserte Verbindungsprüfung
+export const checkConnection = async () => {
+  try {
+    console.log('Teste Verbindung zu Supabase...');
+    console.log('URL:', supabaseUrl);
+    
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('count')
+      .limit(1);
 
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('count')
-        .limit(1)
-        .abortSignal(controller.signal);
-
-      clearTimeout(timeoutId);
-
-      if (error) throw error;
-      
-      console.log('Datenbankverbindung erfolgreich getestet');
-      return true;
-    } catch (error) {
-      console.error(`Verbindungsversuch ${i + 1} fehlgeschlagen:`, error);
-      if (i === retries - 1) {
-        toast.error('Verbindung zur Datenbank konnte nicht hergestellt werden');
-        return false;
-      }
-      await new Promise(resolve => setTimeout(resolve, 2000));
+    if (error) {
+      console.error('Verbindungsfehler:', error);
+      throw error;
     }
+    
+    console.log('Datenbankverbindung erfolgreich getestet');
+    return true;
+  } catch (error) {
+    console.error('Verbindungstest fehlgeschlagen:', error);
+    toast.error('Verbindung zur Datenbank konnte nicht hergestellt werden');
+    return false;
   }
-  return false;
 };
 
 // Initialisierung mit verbesserter Fehlerbehandlung
 if (typeof window !== 'undefined') {
+  console.log('Initialisiere Supabase-Verbindung...');
   checkConnection().then(isHealthy => {
     if (!isHealthy) {
       console.error('Persistente Verbindungsprobleme mit der Datenbank');
+    } else {
+      console.log('Supabase-Verbindung erfolgreich initialisiert');
     }
   });
 }
