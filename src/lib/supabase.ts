@@ -29,12 +29,6 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
     params: {
       eventsPerSecond: 1
     }
-  },
-  // Add better timeout and retry configuration
-  queries: {
-    retryAttempts: 3,
-    retryInterval: 1000,
-    timeout: 30000
   }
 });
 
