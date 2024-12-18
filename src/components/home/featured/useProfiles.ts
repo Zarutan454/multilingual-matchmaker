@@ -33,6 +33,13 @@ export const useProfiles = ({
           itemsPerPage
         });
 
+        // Erste Abfrage ohne Filter, um zu sehen, ob überhaupt Profile existieren
+        const { data: allProfiles, error: countError } = await supabase
+          .from('profiles')
+          .select('*');
+
+        console.log('Total profiles in database:', allProfiles?.length);
+
         let query = supabase
           .from('profiles')
           .select(`
@@ -48,10 +55,12 @@ export const useProfiles = ({
             price_range,
             last_seen,
             role,
-            likes_count
+            likes_count,
+            user_type,
+            is_active
           `)
           .eq('is_active', true)
-          .eq('user_type', 'provider')  // Hier filtern wir nach Providern
+          .eq('user_type', 'provider')
           .range(page * itemsPerPage, (page + 1) * itemsPerPage - 1)
           .order('created_at', { ascending: false });
 
@@ -76,7 +85,11 @@ export const useProfiles = ({
           throw error;
         }
 
-        console.log('Profiles fetched successfully:', data?.length);
+        console.log('Filtered profiles:', {
+          total: data?.length,
+          profiles: data
+        });
+
         return data.map((profile: any): Profile => ({
           id: profile.id,
           name: profile.full_name || 'Anonymous',
