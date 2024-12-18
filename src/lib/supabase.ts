@@ -5,10 +5,11 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
+  console.error('Supabase Konfigurationsfehler: URL oder Key fehlt');
   throw new Error('Supabase URL und API Key müssen in den Umgebungsvariablen definiert sein.');
 }
 
-// Verbesserte Client-Konfiguration
+// Verbesserte Client-Konfiguration mit Retry-Logic
 export const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: {
     persistSession: true,
@@ -21,6 +22,9 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
       'Content-Type': 'application/json',
     }
   },
+  db: {
+    schema: 'public'
+  },
   realtime: {
     params: {
       eventsPerSecond: 2
@@ -28,31 +32,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
   }
 });
 
-// Verbesserte Fehlerbehandlung für Supabase-Operationen
-export const handleSupabaseError = (error: any) => {
-  console.error('Supabase error:', error);
-  
-  if (error.message?.includes('Failed to fetch') || error.code === 'NETWORK_ERROR') {
-    toast.error('Verbindungsfehler - bitte überprüfen Sie Ihre Internetverbindung');
-    return error;
-  }
-
-  if (error.status === 401 || error.code === 'PGRST301') {
-    toast.error('Authentifizierungsfehler - bitte melden Sie sich erneut an');
-    supabase.auth.signOut();
-    return error;
-  }
-
-  if (error.code === '23505') {
-    toast.error('Dieser Eintrag existiert bereits');
-    return error;
-  }
-
-  toast.error('Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.');
-  return error;
-};
-
-// Verbesserte Verbindungsprüfung
+// Verbesserte Verbindungsprüfung mit detaillierter Fehlerbehandlung
 export const checkConnection = async () => {
   try {
     console.log('Teste Verbindung zu Supabase...');
@@ -65,10 +45,12 @@ export const checkConnection = async () => {
 
     if (error) {
       console.error('Verbindungsfehler:', error);
+      toast.error('Verbindung zu Supabase fehlgeschlagen: ' + error.message);
       throw error;
     }
     
     console.log('Datenbankverbindung erfolgreich getestet');
+    toast.success('Verbindung zu Supabase hergestellt');
     return true;
   } catch (error) {
     console.error('Verbindungstest fehlgeschlagen:', error);
@@ -82,7 +64,8 @@ if (typeof window !== 'undefined') {
   console.log('Initialisiere Supabase-Verbindung...');
   checkConnection().then(isHealthy => {
     if (!isHealthy) {
-      console.error('Persistente Verbindungsprobleme mit der Datenbank');
+      console.error('Persistente Verbindungsprobleme mit Supabase');
+      toast.error('Keine Verbindung zu Supabase möglich. Bitte überprüfen Sie Ihre Internetverbindung und die Supabase-Konfiguration.');
     } else {
       console.log('Supabase-Verbindung erfolgreich initialisiert');
     }
