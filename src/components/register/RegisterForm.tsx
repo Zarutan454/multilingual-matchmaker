@@ -89,6 +89,28 @@ export const RegisterForm = () => {
         return;
       }
 
+      // Erstelle das Profil in der profiles Tabelle
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert([
+          {
+            id: signUpData.user.id,
+            user_type: userType,
+            full_name: formData.nickname,
+            phone: formData.phoneNumber,
+            age: formData.age ? parseInt(formData.age) : null,
+            location: formData.country,
+            is_verified: false,
+            verification_status: 'pending'
+          }
+        ]);
+
+      if (profileError) {
+        console.error("Profile creation error:", profileError);
+        toast.error(t("profileCreationError"));
+        return;
+      }
+
       const { error: metadataError } = await supabase.auth.updateUser({
         data: {
           user_type: userType,
