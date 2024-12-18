@@ -26,7 +26,29 @@ export interface Profile {
   reviews_count?: number;
   age?: number;
   gender?: string;
-  user_type: 'customer' | 'provider'; // Neues Feld für Benutzertyp
+  hair_color?: string;
+  hair_length?: string;
+  hair_type?: string;
+  eye_color?: string;
+  skin_tone?: string;
+  body_type?: string;
+  bust_size?: string;
+  dress_size?: string;
+  grooming?: string;
+  measurements?: {
+    height?: string;
+    weight?: string;
+    size?: string;
+  };
+  contact_info?: {
+    phone?: string;
+    email?: string;
+  };
+  services_offered?: string[];
+  working_hours?: Record<string, string[]>;
+  rates?: Record<string, number>;
+  last_seen?: string | null;
+  user_type: 'customer' | 'provider';
   is_verified?: boolean;
   verification_status?: 'pending' | 'approved' | 'rejected';
 }
@@ -39,27 +61,6 @@ export interface Service {
   price?: number;
   category?: string;
   categories?: string[];
-}
-
-export interface ProfileFormValues {
-  full_name: string;
-  nickname?: string;
-  bio: string;
-  avatar?: File;
-  location: string;
-  interests: string;
-  occupation: string;
-  height: string;
-  weight: string;
-  languages: string[];
-  phone?: string;
-  gallery?: (File | string)[];
-  services: Service[];
-  price_range: {
-    min: number;
-    max: number;
-  };
-  availability_status: 'online' | 'offline' | 'busy';
 }
 
 export const MAX_GALLERY_IMAGES = 10;
