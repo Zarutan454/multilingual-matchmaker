@@ -14,8 +14,6 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
     autoRefreshToken: true,
     detectSessionInUrl: true,
     storage: window.localStorage,
-    flowType: 'pkce',
-    debug: false,
   },
   global: {
     headers: {
@@ -27,8 +25,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
   },
   realtime: {
     params: {
-      eventsPerSecond: 1,
-      heartbeat: 60
+      eventsPerSecond: 2, // Reduziert um Überlastung zu vermeiden
     }
   }
 });
@@ -39,7 +36,7 @@ export const handleSupabaseError = (error: any) => {
   
   if (error.message === 'Failed to fetch') {
     console.error('Netzwerkfehler - bitte überprüfen Sie Ihre Verbindung');
-    toast.error('Netzwerkfehler - bitte überprüfen Sie Ihre Internetverbindung');
+    toast.error('Verbindungsfehler - bitte überprüfen Sie Ihre Internetverbindung');
     return error;
   }
 
@@ -66,10 +63,20 @@ export const handleSupabaseError = (error: any) => {
   return error;
 };
 
-// Verbesserte Verbindungsprüfung
+// Verbesserte Verbindungsprüfung mit Timeout
 export const checkConnection = async () => {
   try {
-    const { data, error } = await supabase.from('profiles').select('count').limit(1);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 Sekunden Timeout
+
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('count')
+      .limit(1)
+      .abortSignal(controller.signal);
+
+    clearTimeout(timeoutId);
+
     if (error) throw error;
     console.log('Datenbankverbindung erfolgreich getestet');
     return true;
@@ -79,7 +86,7 @@ export const checkConnection = async () => {
   }
 };
 
-// Verbindungsprüfung mit Retry-Logik
+// Verbindungsprüfung mit verbesserter Retry-Logik
 const initializeConnection = async (retries = 3, delay = 2000) => {
   for (let i = 0; i < retries; i++) {
     const isHealthy = await checkConnection();
@@ -88,9 +95,13 @@ const initializeConnection = async (retries = 3, delay = 2000) => {
       return true;
     }
     
-    console.log(`Verbindungsversuch ${i + 1} fehlgeschlagen, erneuter Versuch in ${delay}ms...`);
-    await new Promise(resolve => setTimeout(resolve, delay));
+    if (i < retries - 1) {
+      console.log(`Verbindungsversuch ${i + 1} fehlgeschlagen, erneuter Versuch in ${delay}ms...`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
   }
+  
+  toast.error('Verbindung zur Datenbank konnte nicht hergestellt werden. Bitte überprüfen Sie Ihre Internetverbindung und laden Sie die Seite neu.');
   return false;
 };
 
@@ -99,7 +110,6 @@ if (typeof window !== 'undefined') {
   initializeConnection().then(isHealthy => {
     if (!isHealthy) {
       console.error('Persistente Verbindungsprobleme mit der Datenbank');
-      toast.error('Verbindungsprobleme mit der Datenbank. Bitte laden Sie die Seite neu.');
     }
   });
 }
