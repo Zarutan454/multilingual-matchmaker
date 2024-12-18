@@ -26,7 +26,6 @@ export const useOptimizedProfiles = ({
     queryKey: ['optimized-profiles', page, pageSize, filters],
     queryFn: async () => {
       try {
-        // Basis-Query mit optimierter Spaltenauswahl
         let query = supabase
           .from('profiles')
           .select(`
@@ -48,10 +47,9 @@ export const useOptimizedProfiles = ({
           `, { count: 'exact' })
           .eq('user_type', 'provider')
           .eq('is_active', true)
-          .order('membership_level', { ascending: false }) // VIP zuerst
+          .order('membership_level', { ascending: false })
           .order('last_seen', { ascending: false });
 
-        // Optimierte Filteranwendung
         if (filters) {
           if (filters.searchTerm) {
             query = query.ilike('full_name', `%${filters.searchTerm}%`);
@@ -70,7 +68,6 @@ export const useOptimizedProfiles = ({
           }
         }
 
-        // Optimierte Pagination
         query = query.range(page * pageSize, (page + 1) * pageSize - 1);
 
         const { data, error, count } = await query;
@@ -80,21 +77,26 @@ export const useOptimizedProfiles = ({
         return {
           profiles: data.map((profile: any): Profile => ({
             id: profile.id,
-            name: profile.full_name || 'Anonymous',
-            image: profile.avatar_url || '/placeholder.svg',
-            category: profile.category || 'VIP Begleitung',
+            full_name: profile.full_name || 'Anonymous',
+            avatar_url: profile.avatar_url || '/placeholder.svg',
             location: profile.location || 'Unknown',
-            coordinates: { lat: 0, lng: 0 },
-            status: profile.availability_status || 'offline',
-            rating: profile.rating || 4.8,
-            reviews: profile.reviews_count || 0,
-            spokenLanguages: profile.languages || ['Deutsch'],
-            age: profile.age || 25,
-            serviceCategories: profile.service_categories || [],
-            priceRange: profile.price_range || { min: 0, max: 0 },
-            last_seen: profile.last_seen,
-            membership_level: profile.membership_level || 'bronze',
-            likes_count: profile.likes_count || 0
+            bio: null,
+            nickname: null,
+            banner_url: null,
+            interests: null,
+            occupation: null,
+            height: null,
+            weight: null,
+            availability: null,
+            service_categories: profile.service_categories || [],
+            price_range: profile.price_range || { min: 0, max: 0 },
+            availability_status: profile.availability_status || 'offline',
+            gallery: null,
+            languages: profile.languages || ['Deutsch'],
+            user_type: 'provider',
+            is_verified: false,
+            verification_status: 'pending',
+            last_seen: profile.last_seen
           })),
           total: count || 0
         };
@@ -104,8 +106,8 @@ export const useOptimizedProfiles = ({
         throw error;
       }
     },
-    staleTime: 30000, // Cache für 30 Sekunden
-    gcTime: 300000,   // Ungenutzte Daten für 5 Minuten behalten
+    staleTime: 30000,
+    gcTime: 300000,
     enabled,
     meta: {
       errorMessage: 'Fehler beim Laden der Profile'

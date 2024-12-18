@@ -55,19 +55,19 @@ export const useOptimizedPresence = () => {
         channelRef.current.unsubscribe();
       }
       // Setze Status auf offline beim Verlassen
-      supabase
-        .from('profiles')
-        .update({
-          availability_status: 'offline',
-          last_seen: new Date().toISOString()
-        })
-        .eq('id', user.id)
-        .then(() => {
-          console.log('Presence cleanup successful');
-        })
-        .catch((error) => {
-          console.error('Error in presence cleanup:', error);
-        });
+      Promise.resolve(
+        supabase
+          .from('profiles')
+          .update({
+            availability_status: 'offline',
+            last_seen: new Date().toISOString()
+          })
+          .eq('id', user.id)
+      ).then(() => {
+        console.log('Presence cleanup successful');
+      }).catch((error) => {
+        console.error('Error in presence cleanup:', error);
+      });
     };
   }, [user]);
 };
