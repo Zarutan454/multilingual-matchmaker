@@ -10,7 +10,7 @@ interface DashboardLayoutProps {
 
 export const DashboardLayout = ({ children, userId, bannerUrl }: DashboardLayoutProps) => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#1A1F2C] to-black text-white relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-[#1A1F2C] to-black text-white">
       {/* Animated background particles */}
       <div className="absolute inset-0">
         {[...Array(50)].map((_, i) => (
@@ -47,7 +47,9 @@ export const DashboardLayout = ({ children, userId, bannerUrl }: DashboardLayout
 
         <DashboardHeader />
         
-        {children}
+        <div className="relative">
+          {children}
+        </div>
       </div>
     </div>
   );
