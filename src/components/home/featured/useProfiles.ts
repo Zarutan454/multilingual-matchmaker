@@ -35,7 +35,21 @@ export const useProfiles = ({
 
         let query = supabase
           .from('profiles')
-          .select('*')
+          .select(`
+            id,
+            full_name,
+            avatar_url,
+            location,
+            category,
+            availability_status,
+            languages,
+            age,
+            service_categories,
+            price_range,
+            last_seen,
+            role,
+            likes_count
+          `)
           .eq('is_active', true)
           .range(page * itemsPerPage, (page + 1) * itemsPerPage - 1)
           .order('created_at', { ascending: false });
