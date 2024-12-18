@@ -51,6 +51,8 @@ export const useProfiles = ({
             likes_count
           `)
           .eq('is_active', true)
+          // Nur Provider-Profile anzeigen
+          .eq('user_type', 'provider')
           .range(page * itemsPerPage, (page + 1) * itemsPerPage - 1)
           .order('created_at', { ascending: false });
 
@@ -96,7 +98,6 @@ export const useProfiles = ({
       } catch (err: any) {
         console.error('Error fetching profiles:', err);
         
-        // Handle specific error cases
         if (err.code === '57014') {
           toast.error('Die Anfrage hat zu lange gedauert. Bitte versuchen Sie es erneut.');
         } else if (err.message === 'Failed to fetch') {
