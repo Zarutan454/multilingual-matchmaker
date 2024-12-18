@@ -15,7 +15,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
     detectSessionInUrl: true,
     storage: window.localStorage,
     flowType: 'pkce',
-    debug: import.meta.env.DEV,
+    debug: false, // Nur für Entwicklung aktivieren
   },
   global: {
     headers: {
@@ -27,36 +27,22 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
   },
   realtime: {
     params: {
-      eventsPerSecond: 2
+      eventsPerSecond: 1, // Reduziert auf 1 pro Sekunde
+      heartbeat: 60 // Erhöht das Heartbeat-Interval
     }
-  },
-  // Add retry configuration
-  fetch: (url, options = {}) => {
-    return fetch(url, {
-      ...options,
-      headers: {
-        ...options.headers,
-      },
-    }).catch(error => {
-      console.error('Fetch error:', error);
-      toast.error('Verbindungsfehler. Bitte überprüfen Sie Ihre Internetverbindung.');
-      throw error;
-    });
   }
 });
 
-// Enhanced error handling utility
+// Verbesserte Fehlerbehandlung
 export const handleSupabaseError = (error: any) => {
   console.error('Supabase error:', error);
   
-  // Check if it's a network error
   if (error.message === 'Failed to fetch') {
     console.error('Network error - please check your connection');
     toast.error('Netzwerkfehler - bitte überprüfen Sie Ihre Internetverbindung');
     return error;
   }
 
-  // Check if it's an authentication error
   if (error.status === 401) {
     console.error('Authentication error - please log in again');
     toast.error('Authentifizierungsfehler - bitte melden Sie sich erneut an');
@@ -64,17 +50,11 @@ export const handleSupabaseError = (error: any) => {
     return error;
   }
 
-  // Generic error handling
   toast.error('Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.');
   return error;
 };
 
-// Helper function to check if we're running locally
-export const isLocalDevelopment = () => {
-  return import.meta.env.DEV;
-};
-
-// Add connection health check
+// Verbesserte Verbindungsprüfung
 export const checkConnection = async () => {
   try {
     const { data, error } = await supabase.from('profiles').select('count').limit(1);
@@ -86,9 +66,21 @@ export const checkConnection = async () => {
   }
 };
 
-// Initialize connection health check
+// Verbindungsprüfung mit Retry-Logik
+const initializeConnection = async (retries = 3, delay = 2000) => {
+  for (let i = 0; i < retries; i++) {
+    const isHealthy = await checkConnection();
+    if (isHealthy) return true;
+    
+    console.log(`Connection attempt ${i + 1} failed, retrying in ${delay}ms...`);
+    await new Promise(resolve => setTimeout(resolve, delay));
+  }
+  return false;
+};
+
+// Initialisierung mit verbesserter Fehlerbehandlung
 if (typeof window !== 'undefined') {
-  checkConnection().then(isHealthy => {
+  initializeConnection().then(isHealthy => {
     if (!isHealthy) {
       toast.error('Verbindungsprobleme mit der Datenbank. Bitte laden Sie die Seite neu.');
     }
