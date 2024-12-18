@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase, handleSupabaseError } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
 import { Profile } from "@/components/profile/types";
 import { toast } from "sonner";
 
@@ -71,6 +71,8 @@ export const useProfiles = ({
         const { data, error } = await query;
 
         if (error) {
+          console.error('Error fetching profiles:', error);
+          toast.error('Fehler beim Laden der Profile');
           throw error;
         }
 
@@ -94,8 +96,8 @@ export const useProfiles = ({
           likes_count: profile.likes_count || 0
         }));
       } catch (error: any) {
-        console.error('Error fetching profiles:', error);
-        handleSupabaseError(error);
+        console.error('Error in useProfiles:', error);
+        toast.error('Fehler beim Laden der Profile');
         throw error;
       }
     },
