@@ -33,19 +33,18 @@ export const useProfiles = ({
           itemsPerPage
         });
 
-        // Erste Abfrage, um alle Profile zu zählen
-        const { data: totalProfiles, error: countError } = await supabase
+        // Debug query to check active providers
+        const { data: activeProviders, error: debugError } = await supabase
           .from('profiles')
-          .select('*')
+          .select('id, full_name, user_type, is_active')
           .eq('user_type', 'provider')
           .eq('is_active', true);
 
-        if (countError) {
-          console.error('Error counting profiles:', countError);
-          throw countError;
-        }
+        console.log('Active providers found:', activeProviders);
 
-        console.log('Total provider profiles:', totalProfiles?.length);
+        if (debugError) {
+          console.error('Debug query error:', debugError);
+        }
 
         // Hauptabfrage mit Filtern
         let query = supabase
