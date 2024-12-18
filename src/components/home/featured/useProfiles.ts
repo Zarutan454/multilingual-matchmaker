@@ -99,8 +99,12 @@ export const useProfiles = ({
         throw error;
       }
     },
-    retry: 1,
+    retry: 3,
+    retryDelay: 1000,
     staleTime: 30000,
     gcTime: 300000,
+    meta: {
+      errorMessage: 'Fehler beim Laden der Profile'
+    }
   });
 };
