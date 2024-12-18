@@ -27,13 +27,25 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
   },
   realtime: {
     params: {
-      eventsPerSecond: 1
+      eventsPerSecond: 10 // Erhöht für bessere Echtzeit-Updates
     }
+  },
+  // Verbesserte Netzwerkkonfiguration
+  fetch: (url, options = {}) => {
+    return fetch(url, {
+      ...options,
+      headers: {
+        ...options.headers,
+        'Cache-Control': 'no-cache',
+      },
+      // Timeout nach 30 Sekunden
+      signal: AbortSignal.timeout(30000),
+    });
   }
 });
 
 // Verbesserte Verbindungsprüfung mit Wiederholungslogik
-export const checkConnection = async (retries = 3, delay = 1000) => {
+export const checkConnection = async (retries = 5, delay = 2000) => {
   for (let i = 0; i < retries; i++) {
     try {
       const { data, error } = await supabase
@@ -43,9 +55,9 @@ export const checkConnection = async (retries = 3, delay = 1000) => {
         .maybeSingle();
 
       if (error) {
-        console.error('Verbindungsversuch', i + 1, 'fehlgeschlagen:', error);
+        console.error(`Verbindungsversuch ${i + 1} fehlgeschlagen:`, error);
         if (i === retries - 1) {
-          toast.error('Verbindung zur Datenbank fehlgeschlagen: ' + error.message);
+          toast.error(`Verbindung zur Datenbank fehlgeschlagen: ${error.message}`);
           return false;
         }
         await new Promise(resolve => setTimeout(resolve, delay));
@@ -55,7 +67,7 @@ export const checkConnection = async (retries = 3, delay = 1000) => {
       console.log('Datenbankverbindung erfolgreich getestet');
       return true;
     } catch (error) {
-      console.error('Verbindungstest fehlgeschlagen:', error);
+      console.error(`Verbindungstest ${i + 1} fehlgeschlagen:`, error);
       if (i === retries - 1) {
         toast.error('Keine Verbindung zur Datenbank möglich');
         return false;
@@ -67,10 +79,15 @@ export const checkConnection = async (retries = 3, delay = 1000) => {
 };
 
 // Initialisiere Verbindung mit Wiederholungslogik
-if (typeof window !== 'undefined') {
+let connectionInitialized = false;
+
+if (typeof window !== 'undefined' && !connectionInitialized) {
+  connectionInitialized = true;
   checkConnection().then(isConnected => {
     if (isConnected) {
       toast.success('Verbindung zur Datenbank hergestellt');
+    } else {
+      toast.error('Verbindung zur Datenbank konnte nicht hergestellt werden. Bitte laden Sie die Seite neu.');
     }
   });
 }
