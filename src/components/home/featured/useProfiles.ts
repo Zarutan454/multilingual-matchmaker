@@ -51,7 +51,7 @@ export const useProfiles = ({
             likes_count
           `)
           .eq('is_active', true)
-          .eq('user_type', 'provider')
+          .eq('user_type', 'provider')  // Hier filtern wir nach Providern
           .range(page * itemsPerPage, (page + 1) * itemsPerPage - 1)
           .order('created_at', { ascending: false });
 
