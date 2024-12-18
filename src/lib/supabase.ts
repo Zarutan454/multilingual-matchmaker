@@ -1,15 +1,16 @@
 import { createClient } from '@supabase/supabase-js';
 import { toast } from "sonner";
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = 'https://qtogyltwimvdecsomwde.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF0b2d5bHR3aW12ZGVjc29td2RlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQwNzc4MDQsImV4cCI6MjA0OTY1MzgwNH0.hCNdmL4U8wt3xFkeRaS7hjz4VkNrvKtj6SKor8ArZv4';
 
 if (!supabaseUrl || !supabaseKey) {
   console.error('Supabase Konfigurationsfehler: URL oder Key fehlt');
-  throw new Error('Supabase URL und API Key müssen in den Umgebungsvariablen definiert sein.');
+  toast.error('Datenbankverbindung konnte nicht hergestellt werden');
+  throw new Error('Supabase URL und API Key müssen konfiguriert sein');
 }
 
-// Verbesserte Client-Konfiguration mit Retry-Logic
+// Erstelle eine einzige Client-Instanz mit verbesserter Konfiguration
 export const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: {
     persistSession: true,
@@ -32,12 +33,9 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
   }
 });
 
-// Verbesserte Verbindungsprüfung mit detaillierter Fehlerbehandlung
+// Verbesserte Verbindungsprüfung
 export const checkConnection = async () => {
   try {
-    console.log('Teste Verbindung zu Supabase...');
-    console.log('URL:', supabaseUrl);
-    
     const { data, error } = await supabase
       .from('profiles')
       .select('count')
@@ -45,29 +43,24 @@ export const checkConnection = async () => {
 
     if (error) {
       console.error('Verbindungsfehler:', error);
-      toast.error('Verbindung zu Supabase fehlgeschlagen: ' + error.message);
-      throw error;
+      toast.error('Verbindung zur Datenbank fehlgeschlagen: ' + error.message);
+      return false;
     }
-    
+
     console.log('Datenbankverbindung erfolgreich getestet');
-    toast.success('Verbindung zu Supabase hergestellt');
     return true;
   } catch (error) {
     console.error('Verbindungstest fehlgeschlagen:', error);
-    toast.error('Verbindung zur Datenbank konnte nicht hergestellt werden');
+    toast.error('Keine Verbindung zur Datenbank möglich');
     return false;
   }
 };
 
-// Initialisierung mit verbesserter Fehlerbehandlung
+// Initialisiere die Verbindung sofort
 if (typeof window !== 'undefined') {
-  console.log('Initialisiere Supabase-Verbindung...');
-  checkConnection().then(isHealthy => {
-    if (!isHealthy) {
-      console.error('Persistente Verbindungsprobleme mit Supabase');
-      toast.error('Keine Verbindung zu Supabase möglich. Bitte überprüfen Sie Ihre Internetverbindung und die Supabase-Konfiguration.');
-    } else {
-      console.log('Supabase-Verbindung erfolgreich initialisiert');
+  checkConnection().then(isConnected => {
+    if (isConnected) {
+      toast.success('Verbindung zur Datenbank hergestellt');
     }
   });
 }
