@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { toast } from "sonner";
 import { useLanguage } from '../../contexts/LanguageContext';
 import { Loader2 } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 export const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -36,8 +37,23 @@ export const LoginForm = () => {
         return;
       }
 
-      navigate('/dashboard');
-      toast.success(t("loginSuccess"));
+      // Get the user's profile type after successful login
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('user_type')
+          .eq('id', user.id)
+          .single();
+
+        // Redirect based on user type
+        if (profile?.user_type === 'provider') {
+          navigate('/provider-dashboard');
+        } else {
+          navigate('/dashboard');
+        }
+        toast.success(t("loginSuccess"));
+      }
     } catch (error) {
       console.error('Login error:', error);
       toast.error(t("loginError"));
