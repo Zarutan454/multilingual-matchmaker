@@ -25,7 +25,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
   },
   realtime: {
     params: {
-      eventsPerSecond: 2, // Reduziert um Überlastung zu vermeiden
+      eventsPerSecond: 2
     }
   }
 });
@@ -79,9 +79,11 @@ export const checkConnection = async () => {
 
     if (error) throw error;
     console.log('Datenbankverbindung erfolgreich getestet');
+    toast.success('Datenbankverbindung hergestellt');
     return true;
   } catch (error) {
     console.error('Verbindungstest fehlgeschlagen:', error);
+    toast.error('Verbindung zur Datenbank konnte nicht hergestellt werden');
     return false;
   }
 };
