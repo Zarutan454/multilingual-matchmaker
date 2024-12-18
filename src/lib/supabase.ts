@@ -1,8 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
 import { toast } from "sonner";
 
-const supabaseUrl = 'https://qtogyltwimvdecsomwde.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF0b2d5bHR3aW12ZGVjc29td2RlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQwNzc4MDQsImV4cCI6MjA0OTY1MzgwNH0.hCNdmL4U8wt3xFkeRaS7hjz4VkNrvKtj6SKor8ArZv4';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
   console.error('Supabase Konfigurationsfehler: URL oder Key fehlt');
@@ -10,7 +10,6 @@ if (!supabaseUrl || !supabaseKey) {
   throw new Error('Supabase URL und API Key müssen konfiguriert sein');
 }
 
-// Erstelle eine einzige Client-Instanz mit verbesserter Konfiguration
 export const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: {
     persistSession: true,
@@ -28,35 +27,52 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
   },
   realtime: {
     params: {
-      eventsPerSecond: 2
+      eventsPerSecond: 1
     }
+  },
+  // Add better timeout and retry configuration
+  queries: {
+    retryAttempts: 3,
+    retryInterval: 1000,
+    timeout: 30000
   }
 });
 
-// Verbesserte Verbindungsprüfung
-export const checkConnection = async () => {
-  try {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('count')
-      .limit(1);
+// Improved connection check with retry logic
+export const checkConnection = async (retries = 3, delay = 1000) => {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('count')
+        .limit(1)
+        .maybeSingle();
 
-    if (error) {
-      console.error('Verbindungsfehler:', error);
-      toast.error('Verbindung zur Datenbank fehlgeschlagen: ' + error.message);
-      return false;
+      if (error) {
+        console.error('Verbindungsversuch', i + 1, 'fehlgeschlagen:', error);
+        if (i === retries - 1) {
+          toast.error('Verbindung zur Datenbank fehlgeschlagen: ' + error.message);
+          return false;
+        }
+        await new Promise(resolve => setTimeout(resolve, delay));
+        continue;
+      }
+
+      console.log('Datenbankverbindung erfolgreich getestet');
+      return true;
+    } catch (error) {
+      console.error('Verbindungstest fehlgeschlagen:', error);
+      if (i === retries - 1) {
+        toast.error('Keine Verbindung zur Datenbank möglich');
+        return false;
+      }
+      await new Promise(resolve => setTimeout(resolve, delay));
     }
-
-    console.log('Datenbankverbindung erfolgreich getestet');
-    return true;
-  } catch (error) {
-    console.error('Verbindungstest fehlgeschlagen:', error);
-    toast.error('Keine Verbindung zur Datenbank möglich');
-    return false;
   }
+  return false;
 };
 
-// Initialisiere die Verbindung sofort
+// Initialize connection with retry logic
 if (typeof window !== 'undefined') {
   checkConnection().then(isConnected => {
     if (isConnected) {
