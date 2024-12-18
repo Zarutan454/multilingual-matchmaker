@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { Profile } from "@/types/profile";
+import { Profile, PriceRange } from "@/types/profile/types";
 import { toast } from "sonner";
 
-interface UseOptimizedProfilesProps {
+interface UseProfilesProps {
   page: number;
   pageSize: number;
   filters?: {
@@ -16,13 +16,18 @@ interface UseOptimizedProfilesProps {
   enabled?: boolean;
 }
 
+interface ProfileQueryResult {
+  profiles: Profile[];
+  total: number;
+}
+
 export const useOptimizedProfiles = ({
   page,
   pageSize,
   filters,
   enabled = true
-}: UseOptimizedProfilesProps) => {
-  return useQuery({
+}: UseProfilesProps) => {
+  return useQuery<ProfileQueryResult, Error>({
     queryKey: ['optimized-profiles', page, pageSize, filters],
     queryFn: async () => {
       try {
@@ -74,29 +79,33 @@ export const useOptimizedProfiles = ({
 
         if (error) throw error;
 
+        const defaultPriceRange: PriceRange = { min: 0, max: 0 };
+
         return {
           profiles: data.map((profile: any): Profile => ({
             id: profile.id,
             full_name: profile.full_name || 'Anonymous',
             avatar_url: profile.avatar_url || '/placeholder.svg',
+            banner_url: null,
             location: profile.location || 'Unknown',
             bio: null,
             nickname: null,
-            banner_url: null,
             interests: null,
             occupation: null,
             height: null,
             weight: null,
             availability: null,
             service_categories: profile.service_categories || [],
-            price_range: profile.price_range || { min: 0, max: 0 },
+            price_range: profile.price_range || defaultPriceRange,
             availability_status: profile.availability_status || 'offline',
             gallery: null,
             languages: profile.languages || ['Deutsch'],
             user_type: 'provider',
             is_verified: false,
             verification_status: 'pending',
-            last_seen: profile.last_seen
+            last_seen: profile.last_seen,
+            contact_info: {},
+            service_info: {},
           })),
           total: count || 0
         };

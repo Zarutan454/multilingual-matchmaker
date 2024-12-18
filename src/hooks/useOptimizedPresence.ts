@@ -1,73 +1,74 @@
 import { useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
-import { toast } from 'sonner';
+import { RealtimeChannel } from '@supabase/supabase-js';
 
 export const useOptimizedPresence = () => {
   const { user } = useAuth();
-  const presenceRef = useRef<NodeJS.Timeout>();
-  const channelRef = useRef<any>();
+  const channelRef = useRef<RealtimeChannel | null>(null);
 
   useEffect(() => {
     if (!user) return;
 
-    const channel = supabase.channel('optimized_presence');
-    channelRef.current = channel;
-
     const updatePresence = async () => {
       try {
-        const now = new Date().toISOString();
         await supabase
           .from('profiles')
           .update({
-            last_seen: now,
-            availability_status: 'online'
+            availability_status: 'online',
+            last_seen: new Date().toISOString()
           })
           .eq('id', user.id);
+
+        console.log('Presence updated successfully');
       } catch (error) {
         console.error('Error updating presence:', error);
       }
     };
 
-    const setupPresence = async () => {
-      try {
-        await channel.subscribe(async (status) => {
-          if (status === 'SUBSCRIBED') {
-            await updatePresence();
-            // Update presence alle 30 Sekunden
-            presenceRef.current = setInterval(updatePresence, 30000);
-          }
-        });
-      } catch (error) {
-        console.error('Error setting up presence:', error);
-        toast.error('Fehler bei der Verbindung');
-      }
-    };
+    const channel = supabase.channel(`presence_${user.id}`);
+    channelRef.current = channel;
 
-    setupPresence();
+    channel
+      .on('presence', { event: 'sync' }, () => {
+        console.log('Presence synced');
+      })
+      .on('presence', { event: 'join' }, ({ newPresences }) => {
+        console.log('Presence join:', newPresences);
+      })
+      .on('presence', { event: 'leave' }, ({ leftPresences }) => {
+        console.log('Presence leave:', leftPresences);
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          await updatePresence();
+        }
+      });
 
-    // Cleanup-Funktion
+    const interval = setInterval(updatePresence, 30000);
+
     return () => {
-      if (presenceRef.current) {
-        clearInterval(presenceRef.current);
-      }
+      clearInterval(interval);
       if (channelRef.current) {
         channelRef.current.unsubscribe();
       }
-      // Setze Status auf offline beim Verlassen
-      Promise.resolve(
-        supabase
-          .from('profiles')
-          .update({
-            availability_status: 'offline',
-            last_seen: new Date().toISOString()
-          })
-          .eq('id', user.id)
-      ).then(() => {
-        console.log('Presence cleanup successful');
-      }).catch((error) => {
-        console.error('Error in presence cleanup:', error);
-      });
+
+      const cleanup = async () => {
+        try {
+          await supabase
+            .from('profiles')
+            .update({
+              availability_status: 'offline',
+              last_seen: new Date().toISOString()
+            })
+            .eq('id', user.id);
+          console.log('Presence cleanup successful');
+        } catch (error) {
+          console.error('Error in presence cleanup:', error);
+        }
+      };
+
+      cleanup();
     };
   }, [user]);
 };
