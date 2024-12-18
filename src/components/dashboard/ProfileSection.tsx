@@ -6,6 +6,8 @@ import { ProfileHeader } from "./profile/ProfileHeader";
 import { ProfileDisplay } from "./profile/ProfileDisplay";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 
 interface ProfileSectionProps {
   profile: Profile | null;
@@ -16,6 +18,15 @@ interface ProfileSectionProps {
   userId: string;
 }
 
+// Define the form validation schema
+const formSchema = z.object({
+  full_name: z.string().optional(),
+  location: z.string().optional(),
+  age: z.number().optional(),
+  interests: z.string().optional(),
+  gender: z.string().optional(),
+});
+
 export const ProfileSection = ({
   profile,
   isEditing,
@@ -24,10 +35,15 @@ export const ProfileSection = ({
   handleProfileUpdate,
   userId,
 }: ProfileSectionProps) => {
-  const form = useForm({
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
-      ...profile
-    }
+      full_name: profile?.full_name || "",
+      location: profile?.location || "",
+      age: profile?.age || undefined,
+      interests: profile?.interests || "",
+      gender: profile?.gender || "",
+    },
   });
 
   return (
@@ -61,10 +77,12 @@ export const ProfileSection = ({
         <div className="flex-1">
           {isEditing ? (
             <Form {...form}>
-              <ProfileEditForm
-                profile={profile}
-                onProfileUpdate={handleProfileUpdate}
-              />
+              <form onSubmit={form.handleSubmit((data) => handleProfileUpdate(data as Profile))}>
+                <ProfileEditForm
+                  profile={profile}
+                  onProfileUpdate={handleProfileUpdate}
+                />
+              </form>
             </Form>
           ) : (
             <ProfileDisplay profile={profile} />

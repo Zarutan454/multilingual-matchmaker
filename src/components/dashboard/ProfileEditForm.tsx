@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { BasicInfoForm } from "./customer/BasicInfoForm";
 import { InterestsForm } from "./customer/InterestsForm";
+import { useFormContext } from "react-hook-form";
 
 interface ProfileEditFormProps {
   profile: Profile | null;
