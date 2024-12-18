@@ -1,28 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { createClient, User, AuthError } from '@supabase/supabase-js';
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Supabase URL und anonymer Schlüssel müssen in den Umgebungsvariablen definiert sein.');
-}
-
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-type AuthContextType = {
-  user: User | null;
-  signUp: (email: string, password: string) => Promise<{
-    data: { user: User | null } | null;
-    error: AuthError | null;
-  }>;
-  signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
-  signOut: () => Promise<void>;
-  resetPassword: (email: string) => Promise<void>;
-  updatePassword: (newPassword: string) => Promise<void>;
-  updateEmail: (newEmail: string) => Promise<void>;
-  deleteAccount: () => Promise<void>;
-};
+import { User, AuthError } from '@supabase/supabase-js';
+import { supabase } from '@/lib/supabaseClient';
+import { AuthContextType } from '@/types/auth';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -30,16 +9,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
+    // Initial session check
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
     });
 
+    // Setup auth state change listener
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
 
+    // Cleanup subscription on unmount
     return () => subscription.unsubscribe();
   }, []);
 
@@ -92,26 +74,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const deleteAccount = async () => {
-    const { error } = await supabase.auth.admin.deleteUser(
-      user?.id as string
-    );
+    if (!user?.id) throw new Error('No user found');
+    const { error } = await supabase.auth.admin.deleteUser(user.id);
     if (error) throw error;
     await signOut();
   };
 
+  const value = {
+    user,
+    signUp,
+    signIn,
+    signOut,
+    resetPassword,
+    updatePassword,
+    updateEmail,
+    deleteAccount,
+  };
+
   return (
-    <AuthContext.Provider 
-      value={{ 
-        user, 
-        signUp, 
-        signIn, 
-        signOut, 
-        resetPassword,
-        updatePassword,
-        updateEmail,
-        deleteAccount
-      }}
-    >
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
