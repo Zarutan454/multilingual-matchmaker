@@ -12,8 +12,6 @@ export const InterestsForm = ({ form }: InterestsFormProps) => {
 
   return (
     <div className="space-y-6">
-      <h3 className="text-lg font-semibold">{t("interests")}</h3>
-      
       <FormField
         control={form.control}
         name="interests"
@@ -21,11 +19,7 @@ export const InterestsForm = ({ form }: InterestsFormProps) => {
           <FormItem>
             <FormLabel>{t("interests")}</FormLabel>
             <FormControl>
-              <Textarea
-                placeholder={t("enterYourInterests")}
-                className="bg-gray-800 border-gray-700 min-h-[100px]"
-                {...field}
-              />
+              <Textarea {...field} value={field.value || ''} />
             </FormControl>
           </FormItem>
         )}

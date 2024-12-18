@@ -26,22 +26,31 @@ export const ProfileHeader = ({
 
   const handleUserTypeChange = async (checked: boolean) => {
     try {
-      const { error } = await supabase
+      const newUserType = checked ? 'provider' : 'customer';
+      const updates = {
+        user_type: newUserType,
+        category: checked ? 'VIP Begleitung' : null,
+        service_categories: checked ? ['Dinner Dates', 'Events & Partys', 'Reisebegleitung'] : null,
+        // Zusätzliche Felder für Provider
+        availability: checked ? [] : null,
+        price_range: checked ? { min: 0, max: 0 } : null,
+        services_offered: checked ? [] : null,
+        working_hours: checked ? {} : null,
+        rates: checked ? {} : null
+      };
+
+      const { data, error } = await supabase
         .from('profiles')
-        .update({ 
-          user_type: checked ? 'provider' : 'customer',
-          category: checked ? 'VIP Begleitung' : null,
-          service_categories: checked ? ['Dinner Dates', 'Events & Partys', 'Reisebegleitung'] : null
-        })
-        .eq('id', userId);
+        .update(updates)
+        .eq('id', userId)
+        .select()
+        .single();
 
       if (error) throw error;
 
       onProfileUpdate({
         ...profile!,
-        user_type: checked ? 'provider' : 'customer',
-        category: checked ? 'VIP Begleitung' : null,
-        service_categories: checked ? ['Dinner Dates', 'Events & Partys', 'Reisebegleitung'] : null
+        ...updates
       } as Profile);
 
       toast.success(checked ? t("switchedToProvider") : t("switchedToCustomer"));

@@ -39,7 +39,7 @@ export const ProfileEditForm = ({ profile, onProfileUpdate }: ProfileEditFormPro
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       if (!profile?.id) {
-        throw new Error('Profil ID fehlt');
+        throw new Error('Profile ID fehlt');
       }
 
       const { data, error } = await supabase
