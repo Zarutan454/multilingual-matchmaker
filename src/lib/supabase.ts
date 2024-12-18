@@ -5,7 +5,7 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Supabase URL and API Key must be defined in environment variables.');
+  throw new Error('Supabase URL und API Key müssen in den Umgebungsvariablen definiert sein.');
 }
 
 export const supabase = createClient(supabaseUrl, supabaseKey, {
@@ -15,7 +15,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
     detectSessionInUrl: true,
     storage: window.localStorage,
     flowType: 'pkce',
-    debug: false, // Nur für Entwicklung aktivieren
+    debug: false,
   },
   global: {
     headers: {
@@ -27,8 +27,8 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
   },
   realtime: {
     params: {
-      eventsPerSecond: 1, // Reduziert auf 1 pro Sekunde
-      heartbeat: 60 // Erhöht das Heartbeat-Interval
+      eventsPerSecond: 1,
+      heartbeat: 60
     }
   }
 });
@@ -38,15 +38,27 @@ export const handleSupabaseError = (error: any) => {
   console.error('Supabase error:', error);
   
   if (error.message === 'Failed to fetch') {
-    console.error('Network error - please check your connection');
+    console.error('Netzwerkfehler - bitte überprüfen Sie Ihre Verbindung');
     toast.error('Netzwerkfehler - bitte überprüfen Sie Ihre Internetverbindung');
     return error;
   }
 
   if (error.status === 401) {
-    console.error('Authentication error - please log in again');
+    console.error('Authentifizierungsfehler - bitte neu anmelden');
     toast.error('Authentifizierungsfehler - bitte melden Sie sich erneut an');
     supabase.auth.signOut();
+    return error;
+  }
+
+  if (error.code === '23505') {
+    console.error('Datenbank-Konflikt - Eintrag existiert bereits');
+    toast.error('Dieser Eintrag existiert bereits');
+    return error;
+  }
+
+  if (error.code === '23503') {
+    console.error('Datenbank-Beziehungsfehler');
+    toast.error('Beziehungsfehler in der Datenbank');
     return error;
   }
 
@@ -59,9 +71,10 @@ export const checkConnection = async () => {
   try {
     const { data, error } = await supabase.from('profiles').select('count').limit(1);
     if (error) throw error;
+    console.log('Datenbankverbindung erfolgreich getestet');
     return true;
   } catch (error) {
-    console.error('Connection check failed:', error);
+    console.error('Verbindungstest fehlgeschlagen:', error);
     return false;
   }
 };
@@ -70,9 +83,12 @@ export const checkConnection = async () => {
 const initializeConnection = async (retries = 3, delay = 2000) => {
   for (let i = 0; i < retries; i++) {
     const isHealthy = await checkConnection();
-    if (isHealthy) return true;
+    if (isHealthy) {
+      console.log('Datenbankverbindung hergestellt');
+      return true;
+    }
     
-    console.log(`Connection attempt ${i + 1} failed, retrying in ${delay}ms...`);
+    console.log(`Verbindungsversuch ${i + 1} fehlgeschlagen, erneuter Versuch in ${delay}ms...`);
     await new Promise(resolve => setTimeout(resolve, delay));
   }
   return false;
@@ -82,6 +98,7 @@ const initializeConnection = async (retries = 3, delay = 2000) => {
 if (typeof window !== 'undefined') {
   initializeConnection().then(isHealthy => {
     if (!isHealthy) {
+      console.error('Persistente Verbindungsprobleme mit der Datenbank');
       toast.error('Verbindungsprobleme mit der Datenbank. Bitte laden Sie die Seite neu.');
     }
   });

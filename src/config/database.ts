@@ -10,6 +10,8 @@ interface DatabaseConfig {
         autoRefreshToken?: boolean;
         persistSession?: boolean;
         detectSessionInUrl?: boolean;
+        maxRetries?: number;
+        timeoutSeconds?: number;
       };
     };
   };
@@ -20,12 +22,9 @@ interface DatabaseConfig {
 }
 
 export const databaseConfig: DatabaseConfig = {
-  // Standard-Datenbankverbindung
   default: 'supabase',
 
-  // Verfügbare Datenbankverbindungen
   connections: {
-    // Supabase-Verbindung
     supabase: {
       driver: 'supabase',
       url: import.meta.env.VITE_SUPABASE_URL || '',
@@ -35,28 +34,36 @@ export const databaseConfig: DatabaseConfig = {
         autoRefreshToken: true,
         persistSession: true,
         detectSessionInUrl: true,
+        maxRetries: 3,
+        timeoutSeconds: 30,
       },
     },
   },
 
-  // Migrations-Konfiguration
   migrations: {
     table: 'migrations',
     updateDateOnPublish: true,
   },
 };
 
-// Helper-Funktionen für die Datenbankverbindung
 export const getConnection = () => {
   return databaseConfig.connections[databaseConfig.default];
 };
 
 export const getDatabaseUrl = () => {
   const connection = getConnection();
+  if (!connection.url) {
+    console.error('Datenbank-URL nicht konfiguriert');
+    throw new Error('Database URL must be configured');
+  }
   return connection.url;
 };
 
 export const getDatabaseKey = () => {
   const connection = getConnection();
+  if (!connection.key) {
+    console.error('Datenbank-Schlüssel nicht konfiguriert');
+    throw new Error('Database key must be configured');
+  }
   return connection.key;
 };
