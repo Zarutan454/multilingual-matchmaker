@@ -27,20 +27,8 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
   },
   realtime: {
     params: {
-      eventsPerSecond: 10 // Erhöht für bessere Echtzeit-Updates
+      eventsPerSecond: 10
     }
-  },
-  // Verbesserte Netzwerkkonfiguration
-  fetch: (url, options = {}) => {
-    return fetch(url, {
-      ...options,
-      headers: {
-        ...options.headers,
-        'Cache-Control': 'no-cache',
-      },
-      // Timeout nach 30 Sekunden
-      signal: AbortSignal.timeout(30000),
-    });
   }
 });
 
