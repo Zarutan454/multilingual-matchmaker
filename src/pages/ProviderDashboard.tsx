@@ -4,12 +4,22 @@ import { Navbar } from "@/components/Navbar";
 import { ServiceManager } from "@/components/provider/ServiceManager";
 import { PricingManager } from "@/components/provider/PricingManager";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card } from "@/components/ui/card";
 
 export default function ProviderDashboard() {
   const { user } = useAuth();
   const { t } = useLanguage();
   
-  if (!user) return null;
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-black">
+        <Navbar />
+        <main className="container mx-auto px-4 py-8 mt-20">
+          <p className="text-white">{t("pleaseLogin")}</p>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black">
@@ -32,11 +42,15 @@ export default function ProviderDashboard() {
           </TabsList>
           
           <TabsContent value="services" className="space-y-4">
-            <ServiceManager />
+            <Card className="bg-black/50 backdrop-blur-md border-[#9b87f5]/30 shadow-[0_0_15px_rgba(155,135,245,0.3)] p-6">
+              <ServiceManager />
+            </Card>
           </TabsContent>
           
           <TabsContent value="pricing" className="space-y-4">
-            <PricingManager />
+            <Card className="bg-black/50 backdrop-blur-md border-[#9b87f5]/30 shadow-[0_0_15px_rgba(155,135,245,0.3)] p-6">
+              <PricingManager />
+            </Card>
           </TabsContent>
         </Tabs>
       </main>
