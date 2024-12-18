@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Navbar } from "@/components/Navbar";
@@ -5,11 +6,44 @@ import { ServiceManager } from "@/components/provider/ServiceManager";
 import { PricingManager } from "@/components/provider/PricingManager";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
 export default function ProviderDashboard() {
   const { user } = useAuth();
   const { t } = useLanguage();
+  const navigate = useNavigate();
   
+  useEffect(() => {
+    const checkUserType = async () => {
+      if (!user) {
+        navigate('/login');
+        return;
+      }
+
+      try {
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('user_type')
+          .eq('id', user.id)
+          .single();
+
+        if (error) throw error;
+
+        if (profile?.user_type !== 'provider') {
+          toast.error(t("onlyProvidersAllowed"));
+          navigate('/dashboard');
+        }
+      } catch (error) {
+        console.error('Error checking user type:', error);
+        toast.error(t("errorCheckingUserType"));
+      }
+    };
+
+    checkUserType();
+  }, [user, navigate, t]);
+
   if (!user) {
     return (
       <div className="min-h-screen bg-black">

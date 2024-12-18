@@ -135,6 +135,7 @@ export type Database = {
           services_offered: string[] | null
           skin_tone: string | null
           updated_at: string
+          user_type: string | null
           weight: string | null
           working_hours: Json | null
         }
@@ -178,6 +179,7 @@ export type Database = {
           services_offered?: string[] | null
           skin_tone?: string | null
           updated_at?: string
+          user_type?: string | null
           weight?: string | null
           working_hours?: Json | null
         }
@@ -221,6 +223,7 @@ export type Database = {
           services_offered?: string[] | null
           skin_tone?: string | null
           updated_at?: string
+          user_type?: string | null
           weight?: string | null
           working_hours?: Json | null
         }
