@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Send, Smile } from "lucide-react";
-import EmojiPicker from 'emoji-picker-react';
+import EmojiPicker, { Theme } from 'emoji-picker-react';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface ChatInputProps {
@@ -48,7 +48,7 @@ export const ChatInput = ({ onSendMessage, disabled }: ChatInputProps) => {
           >
             <EmojiPicker
               onEmojiClick={onEmojiClick}
-              theme="dark"
+              theme={Theme.DARK}
               width="100%"
               height="350px"
             />
