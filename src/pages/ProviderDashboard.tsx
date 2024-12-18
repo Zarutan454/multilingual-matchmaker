@@ -1,19 +1,24 @@
 import { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Navbar } from "@/components/Navbar";
-import { ServiceManager } from "@/components/provider/ServiceManager";
-import { PricingManager } from "@/components/provider/PricingManager";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card } from "@/components/ui/card";
+import { DashboardLayout } from "@/components/dashboard/sections/DashboardLayout";
+import { ProfileSection } from "@/components/dashboard/ProfileSection";
+import { ServicesSection } from "@/components/dashboard/sections/ServicesSection";
+import { GallerySection } from "@/components/dashboard/sections/GallerySection";
+import { SidebarSection } from "@/components/dashboard/sections/SidebarSection";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
+import { useState } from "react";
+import { Profile } from "@/types/profile";
 
 export default function ProviderDashboard() {
   const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
   
   useEffect(() => {
     const checkUserType = async () => {
@@ -23,71 +28,118 @@ export default function ProviderDashboard() {
       }
 
       try {
-        const { data: profile, error } = await supabase
+        const { data: profileData, error } = await supabase
           .from('profiles')
-          .select('user_type')
+          .select('*')
           .eq('id', user.id)
           .single();
 
         if (error) throw error;
 
-        if (profile?.user_type !== 'provider') {
+        if (profileData?.user_type !== 'provider') {
           toast.error(t("onlyProvidersAllowed"));
           navigate('/dashboard');
+          return;
         }
+
+        setProfile(profileData as Profile);
       } catch (error) {
         console.error('Error checking user type:', error);
         toast.error(t("errorCheckingUserType"));
+      } finally {
+        setLoading(false);
       }
     };
 
     checkUserType();
   }, [user, navigate, t]);
 
-  if (!user) {
+  const handleProfileUpdate = (updatedProfile: Profile) => {
+    setProfile(updatedProfile);
+    setIsEditing(false);
+  };
+
+  const handleAvatarUpdate = async (url: string) => {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ avatar_url: url })
+        .eq('id', user?.id);
+
+      if (error) throw error;
+
+      setProfile(prev => prev ? { ...prev, avatar_url: url } : null);
+      toast.success(t("profileImageUpdated"));
+    } catch (error) {
+      console.error('Error updating avatar:', error);
+      toast.error(t("errorUpdatingProfileImage"));
+    }
+  };
+
+  const handleGalleryUpdate = async (url: string) => {
+    try {
+      const newGallery = [...(profile?.gallery || []), url];
+      
+      const { error } = await supabase
+        .from('profiles')
+        .update({ gallery: newGallery })
+        .eq('id', user?.id);
+
+      if (error) throw error;
+
+      setProfile(prev => prev ? { ...prev, gallery: newGallery } : null);
+      toast.success(t("imageAddedToGallery"));
+    } catch (error) {
+      console.error('Error updating gallery:', error);
+      toast.error(t("errorUpdatingGallery"));
+    }
+  };
+
+  const handleGalleryDelete = async (imageUrl: string) => {
+    try {
+      const newGallery = profile?.gallery?.filter(url => url !== imageUrl) || [];
+      
+      setProfile(prev => prev ? { ...prev, gallery: newGallery } : null);
+      toast.success(t("imageDeletedFromGallery"));
+    } catch (error) {
+      console.error('Error updating gallery:', error);
+      toast.error(t("errorUpdatingGallery"));
+    }
+  };
+
+  if (loading) {
     return (
-      <div className="min-h-screen bg-black">
-        <Navbar />
-        <main className="container mx-auto px-4 py-8 mt-20">
-          <p className="text-white">{t("pleaseLogin")}</p>
-        </main>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-[#1A1F2C] to-black">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[#9b87f5]"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-black">
-      <Navbar />
-      
-      <main className="container mx-auto px-4 py-8 mt-20">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">
-            {t("providerDashboard")}
-          </h1>
-          <p className="text-gray-400">
-            {t("manageYourServices")}
-          </p>
+    <DashboardLayout userId={user?.id || ""} bannerUrl={profile?.banner_url}>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-8">
+          <ProfileSection
+            profile={profile}
+            isEditing={isEditing}
+            setIsEditing={setIsEditing}
+            handleAvatarUpdate={handleAvatarUpdate}
+            handleProfileUpdate={handleProfileUpdate}
+            userId={user?.id || ""}
+          />
+
+          <ServicesSection />
+
+          <GallerySection
+            userId={user?.id || ""}
+            gallery={profile?.gallery}
+            onGalleryUpdate={handleGalleryUpdate}
+            onGalleryDelete={handleGalleryDelete}
+          />
         </div>
 
-        <Tabs defaultValue="services" className="space-y-4">
-          <TabsList className="bg-gray-900">
-            <TabsTrigger value="services">{t("services")}</TabsTrigger>
-            <TabsTrigger value="pricing">{t("pricing")}</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="services" className="space-y-4">
-            <Card className="bg-black/50 backdrop-blur-md border-[#9b87f5]/30 shadow-[0_0_15px_rgba(155,135,245,0.3)] p-6">
-              <ServiceManager />
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="pricing" className="space-y-4">
-            <Card className="bg-black/50 backdrop-blur-md border-[#9b87f5]/30 shadow-[0_0_15px_rgba(155,135,245,0.3)] p-6">
-              <PricingManager />
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </main>
-    </div>
+        <SidebarSection user={user} />
+      </div>
+    </DashboardLayout>
   );
 }

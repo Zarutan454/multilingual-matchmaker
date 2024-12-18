@@ -6,9 +6,9 @@ import { toast } from "sonner";
 import { Profile } from "@/types/profile";
 import { DashboardLayout } from "@/components/dashboard/sections/DashboardLayout";
 import { ProfileSection } from "@/components/dashboard/ProfileSection";
-import { ServicesSection } from "@/components/dashboard/sections/ServicesSection";
 import { GallerySection } from "@/components/dashboard/sections/GallerySection";
 import { SidebarSection } from "@/components/dashboard/sections/SidebarSection";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
   const { t } = useLanguage();
@@ -16,6 +16,7 @@ export default function Dashboard() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -25,14 +26,21 @@ export default function Dashboard() {
           return;
         }
         
-        const { data, error } = await supabase
+        const { data: profileData, error } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', user.id)
           .single();
 
         if (error) throw error;
-        setProfile(data as Profile);
+
+        // Redirect providers to their dashboard
+        if (profileData.user_type === 'provider') {
+          navigate('/provider-dashboard');
+          return;
+        }
+
+        setProfile(profileData as Profile);
       } catch (error) {
         console.error('Error fetching profile:', error);
         toast.error(t("errorLoadingProfile"));
@@ -42,7 +50,7 @@ export default function Dashboard() {
     };
 
     fetchProfile();
-  }, [user]);
+  }, [user, navigate]);
 
   const handleProfileUpdate = (updatedProfile: Profile) => {
     setProfile(updatedProfile);
@@ -117,8 +125,6 @@ export default function Dashboard() {
             handleProfileUpdate={handleProfileUpdate}
             userId={user?.id || ""}
           />
-
-          <ServicesSection />
 
           <GallerySection
             userId={user?.id || ""}
