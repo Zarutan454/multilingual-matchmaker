@@ -38,6 +38,10 @@ export const ProfileEditForm = ({ profile, onProfileUpdate }: ProfileEditFormPro
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      if (!profile?.id) {
+        throw new Error('Profil ID fehlt');
+      }
+
       const { data, error } = await supabase
         .from('profiles')
         .update({
@@ -47,7 +51,7 @@ export const ProfileEditForm = ({ profile, onProfileUpdate }: ProfileEditFormPro
           interests: values.interests,
           gender: values.gender
         })
-        .eq('id', profile?.id)
+        .eq('id', profile.id)
         .select()
         .single();
 
@@ -65,8 +69,8 @@ export const ProfileEditForm = ({ profile, onProfileUpdate }: ProfileEditFormPro
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="space-y-6">
-          <BasicInfoForm />
-          <InterestsForm />
+          <BasicInfoForm form={form} />
+          <InterestsForm form={form} />
         </div>
 
         <Button 

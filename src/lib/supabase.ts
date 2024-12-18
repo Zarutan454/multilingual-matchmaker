@@ -32,7 +32,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
   }
 });
 
-// Improved connection check with retry logic
+// Verbesserte Verbindungsprüfung mit Wiederholungslogik
 export const checkConnection = async (retries = 3, delay = 1000) => {
   for (let i = 0; i < retries; i++) {
     try {
@@ -66,7 +66,7 @@ export const checkConnection = async (retries = 3, delay = 1000) => {
   return false;
 };
 
-// Initialize connection with retry logic
+// Initialisiere Verbindung mit Wiederholungslogik
 if (typeof window !== 'undefined') {
   checkConnection().then(isConnected => {
     if (isConnected) {
