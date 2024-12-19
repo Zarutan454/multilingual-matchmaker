@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Profile } from "@/types/profile";
+import { Profile, Service, castToProfile, castToService } from "@/types/profile";
 import { ServiceList } from "./ServiceList";
 import { Gallery } from "./Gallery";
 import { AvailabilitySchedule } from "../availability/AvailabilitySchedule";

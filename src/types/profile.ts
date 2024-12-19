@@ -1,7 +1,6 @@
 export interface Profile {
   id: string;
   full_name: string | null;
-  nickname?: string;
   bio: string | null;
   avatar_url: string | null;
   banner_url: string | null;
@@ -19,38 +18,11 @@ export interface Profile {
   availability_status: 'online' | 'offline' | 'busy';
   gallery: string[] | null;
   languages?: string[];
-  phone?: string;
-  phone_verified?: boolean;
   services?: Service[];
-  rating?: number;
-  reviews_count?: number;
   age?: number;
   gender?: string;
-  hair_color?: string;
-  hair_length?: string;
-  hair_type?: string;
-  eye_color?: string;
-  skin_tone?: string;
-  body_type?: string;
-  bust_size?: string;
-  dress_size?: string;
-  grooming?: string;
-  measurements?: {
-    height?: string;
-    weight?: string;
-    size?: string;
-  };
-  contact_info?: {
-    phone?: string;
-    email?: string;
-  };
-  services_offered?: string[];
-  working_hours?: Record<string, string[]>;
-  rates?: Record<string, number>;
-  last_seen?: string | null;
   user_type: 'customer' | 'provider';
-  is_verified?: boolean;
-  verification_status?: 'pending' | 'approved' | 'rejected';
+  last_seen: string | null;
 }
 
 export interface Service {

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Profile } from "@/types/profile";
+import { Profile, Service, castToProfile } from "@/types/profile";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { BasicInfoForm } from "./customer/BasicInfoForm";
