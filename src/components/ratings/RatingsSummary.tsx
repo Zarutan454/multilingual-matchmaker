@@ -35,6 +35,7 @@ export const RatingsSummary = ({ providerId }: RatingsSummaryProps) => {
         averageRating: total > 0 ? sum / total : 0,
         totalRatings: total,
         distribution,
+        providerId
       };
     },
   });

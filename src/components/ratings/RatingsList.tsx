@@ -4,6 +4,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Star } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface Rating {
   id: string;
@@ -43,7 +44,7 @@ export const RatingsList = ({ providerId }: RatingsListProps) => {
 
       if (error) throw error;
       
-      return (data || []).map((item: any) => ({
+      return (data || []).map((item) => ({
         id: item.id,
         rating: item.rating,
         comment: item.comment,
@@ -69,27 +70,35 @@ export const RatingsList = ({ providerId }: RatingsListProps) => {
       <div className="space-y-4">
         {ratings.map((rating, index) => (
           <div key={rating.id}>
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="font-medium">{rating.user.full_name}</p>
-                <div className="flex items-center gap-1">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star
-                      key={star}
-                      className={`w-4 h-4 ${
-                        star <= rating.rating
-                          ? "fill-yellow-400 text-yellow-400"
-                          : "text-gray-300"
-                      }`}
-                    />
-                  ))}
+            <div className="flex items-start gap-4">
+              <Avatar>
+                <AvatarImage src={rating.user.avatar_url} />
+                <AvatarFallback>{rating.user.full_name[0]}</AvatarFallback>
+              </Avatar>
+              <div className="flex-1">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="font-medium">{rating.user.full_name}</p>
+                    <div className="flex items-center gap-1">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star
+                          key={star}
+                          className={`w-4 h-4 ${
+                            star <= rating.rating
+                              ? "fill-yellow-400 text-yellow-400"
+                              : "text-gray-300"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <span className="text-sm text-gray-500">
+                    {new Date(rating.created_at).toLocaleDateString()}
+                  </span>
                 </div>
+                <p className="mt-2 text-gray-600">{rating.comment}</p>
               </div>
-              <span className="text-sm text-gray-500">
-                {new Date(rating.created_at).toLocaleDateString()}
-              </span>
             </div>
-            <p className="mt-2 text-gray-600">{rating.comment}</p>
             {index < ratings.length - 1 && (
               <Separator className="my-4" />
             )}
