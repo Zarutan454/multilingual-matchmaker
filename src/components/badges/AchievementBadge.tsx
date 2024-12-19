@@ -41,7 +41,7 @@ const BADGE_CONFIG = {
     label: "VIP",
     color: "bg-gold-500"
   }
-};
+} as const;
 
 export const AchievementBadge = ({ type, level, className }: AchievementBadgeProps) => {
   const config = BADGE_CONFIG[type];
