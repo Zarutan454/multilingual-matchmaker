@@ -48,7 +48,7 @@ export const GalleryGrid = ({
                     isSelected={selectedImages.includes(image.id)}
                     onSelect={() => onImageSelect(image.id)}
                     totalImages={images.length}
-                    onNavigate={onNavigate}
+                    onNavigate={(direction) => onNavigate(index, direction)}
                   />
                 )}
               </Draggable>
