@@ -10,44 +10,55 @@ if (!supabaseUrl || !supabaseKey) {
   throw new Error('Supabase URL und API Key müssen konfiguriert sein');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseKey, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: true,
-    storage: window.localStorage
-  },
-  global: {
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Client-Info': 'supabase-js-web'
-    },
-    // Add fetch options for better timeout handling
-    fetch: (url, options) => {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
-      
-      return fetch(url, {
-        ...options,
-        signal: controller.signal,
-      }).finally(() => clearTimeout(timeoutId));
-    }
-  },
-  db: {
-    schema: 'public'
-  },
-  realtime: {
-    params: {
-      eventsPerSecond: 2
-    }
-  }
-});
+// Singleton-Pattern für den Supabase-Client
+let supabaseInstance: ReturnType<typeof createClient> | null = null;
 
-// Verbesserte Verbindungsprüfung mit Retry-Mechanismus
-export const checkConnection = async (retries = 3) => {
+export const getSupabaseClient = () => {
+  if (supabaseInstance) return supabaseInstance;
+
+  supabaseInstance = createClient(supabaseUrl, supabaseKey, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      storage: typeof window !== 'undefined' ? window.localStorage : undefined
+    },
+    global: {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Client-Info': 'supabase-js-web'
+      },
+      fetch: (url, options = {}) => {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 Sekunden Timeout
+        
+        return fetch(url, {
+          ...options,
+          signal: controller.signal,
+        }).finally(() => clearTimeout(timeoutId));
+      }
+    },
+    db: {
+      schema: 'public'
+    },
+    realtime: {
+      params: {
+        eventsPerSecond: 2
+      }
+    }
+  });
+
+  return supabaseInstance;
+};
+
+export const supabase = getSupabaseClient();
+
+// Verbesserte Verbindungsprüfung mit Retry-Mechanismus und exponentieller Verzögerung
+export const checkConnection = async (retries = 3, baseDelay = 1000) => {
   for (let i = 0; i < retries; i++) {
     try {
-      const { data, error } = await supabase.from('profiles')
+      const client = getSupabaseClient();
+      const { data, error } = await client.from('profiles')
         .select('id')
         .limit(1)
         .maybeSingle();
@@ -59,14 +70,15 @@ export const checkConnection = async (retries = 3) => {
 
       console.warn(`Verbindungsversuch ${i + 1} fehlgeschlagen:`, error);
       
-      // Warte exponentiell länger zwischen den Versuchen
+      // Exponentieller Backoff
       if (i < retries - 1) {
-        await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
+        const delay = baseDelay * Math.pow(2, i);
+        await new Promise(resolve => setTimeout(resolve, delay));
       }
     } catch (error) {
       console.error('Schwerwiegender Verbindungsfehler:', error);
       if (i === retries - 1) {
-        toast.error('Verbindung zur Datenbank konnte nicht hergestellt werden. Bitte überprüfen Sie Ihre Internetverbindung.');
+        toast.error('Verbindung zur Datenbank konnte nicht hergestellt werden');
         return false;
       }
     }
@@ -74,13 +86,12 @@ export const checkConnection = async (retries = 3) => {
   return false;
 };
 
-// Initialisiere Verbindung mit verbessertem Error Handling
+// Verbindungsüberwachung initialisieren
 let connectionInitialized = false;
 
 if (typeof window !== 'undefined' && !connectionInitialized) {
   connectionInitialized = true;
   
-  // Füge Event Listener für Online/Offline Status hinzu
   window.addEventListener('online', () => {
     checkConnection().then(isConnected => {
       if (isConnected) {
@@ -93,13 +104,13 @@ if (typeof window !== 'undefined' && !connectionInitialized) {
     toast.error('Keine Internetverbindung');
   });
 
-  // Initial connection check
+  // Initiale Verbindungsprüfung
   checkConnection().then(isConnected => {
     if (isConnected) {
       console.log('Supabase Verbindung hergestellt');
     } else {
       console.error('Supabase Verbindung fehlgeschlagen');
-      toast.error('Verbindung zur Datenbank konnte nicht hergestellt werden. Bitte versuchen Sie es später erneut.');
+      toast.error('Verbindung zur Datenbank konnte nicht hergestellt werden');
     }
   });
 }
