@@ -2,7 +2,6 @@ import { createClient } from '@supabase/supabase-js';
 import { toast } from "sonner";
 import { Database } from '@/integrations/supabase/types';
 
-// Umgebungsvariablen prüfen
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
@@ -13,26 +12,41 @@ if (!supabaseUrl || !supabaseKey) {
   throw new Error(error);
 }
 
-// Supabase Client mit optimierter Konfiguration
-export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true
-  },
-  global: {
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    }
-  }
-});
+// Singleton-Pattern für den Supabase-Client
+let supabaseInstance: ReturnType<typeof createClient<Database>> | null = null;
 
-// Verbindungstest mit Retry-Logik
-const testConnection = async (retries = 3, delay = 1000): Promise<boolean> => {
+export const getSupabaseClient = () => {
+  if (!supabaseInstance) {
+    supabaseInstance = createClient<Database>(supabaseUrl, supabaseKey, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true
+      },
+      global: {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        }
+      },
+      // Verbindungseinstellungen optimieren
+      realtime: {
+        params: {
+          eventsPerSecond: 2
+        }
+      }
+    });
+  }
+  return supabaseInstance;
+};
+
+export const supabase = getSupabaseClient();
+
+// Optimierte Verbindungsprüfung mit exponential backoff
+const testConnection = async (retries = 3): Promise<boolean> => {
   for (let i = 0; i < retries; i++) {
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('profiles')
         .select('id')
         .limit(1)
@@ -44,7 +58,8 @@ const testConnection = async (retries = 3, delay = 1000): Promise<boolean> => {
           toast.error(`Datenbankverbindung fehlgeschlagen: ${error.message}`);
           return false;
         }
-        await new Promise(resolve => setTimeout(resolve, delay * (i + 1)));
+        // Exponential backoff
+        await new Promise(resolve => setTimeout(resolve, Math.min(1000 * Math.pow(2, i), 10000)));
         continue;
       }
 
@@ -56,14 +71,14 @@ const testConnection = async (retries = 3, delay = 1000): Promise<boolean> => {
         toast.error(`Verbindungsfehler: ${error.message}`);
         return false;
       }
-      await new Promise(resolve => setTimeout(resolve, delay * (i + 1)));
     }
   }
   return false;
 };
 
-// Verbindungsüberwachung
+// Verbindungsüberwachung optimieren
 let isTestingConnection = false;
+let reconnectTimeout: NodeJS.Timeout | null = null;
 
 const handleConnectionChange = async () => {
   if (isTestingConnection) return;
@@ -71,13 +86,20 @@ const handleConnectionChange = async () => {
 
   try {
     if (navigator.onLine) {
-      console.log('Online-Status erkannt, prüfe Verbindung...');
       const isConnected = await testConnection();
       if (isConnected) {
         toast.success('Verbindung wiederhergestellt');
+        if (reconnectTimeout) {
+          clearTimeout(reconnectTimeout);
+          reconnectTimeout = null;
+        }
+      } else {
+        // Verzögerte Wiederverbindung
+        reconnectTimeout = setTimeout(() => {
+          handleConnectionChange();
+        }, 30000); // 30 Sekunden warten vor erneutem Versuch
       }
     } else {
-      console.log('Offline-Status erkannt');
       toast.error('Keine Internetverbindung');
     }
   } finally {
@@ -90,14 +112,10 @@ if (typeof window !== 'undefined') {
   window.addEventListener('online', handleConnectionChange);
   window.addEventListener('offline', handleConnectionChange);
 
-  // Initiale Verbindungsprüfung
+  // Initiale Verbindungsprüfung mit Verzögerung
   setTimeout(() => {
-    testConnection().then(isConnected => {
-      if (!isConnected) {
-        console.error('Initiale Verbindungsprüfung fehlgeschlagen');
-      }
-    });
-  }, 1000);
+    testConnection().catch(console.error);
+  }, 2000);
 }
 
 // Cleanup Funktion
@@ -105,6 +123,9 @@ export const cleanup = () => {
   if (typeof window !== 'undefined') {
     window.removeEventListener('online', handleConnectionChange);
     window.removeEventListener('offline', handleConnectionChange);
+    if (reconnectTimeout) {
+      clearTimeout(reconnectTimeout);
+    }
   }
 };
 
