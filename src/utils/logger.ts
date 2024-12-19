@@ -1,84 +1,69 @@
 import { supabase } from '@/lib/supabase';
-import { LogLevel, LogEntry, LoggingStats } from '@/types/logging';
+import type { LogLevel, LogEntry } from '@/types/logging';
 
-class Logger {
-  private static instance: Logger;
+export const log = async (level: LogLevel, message: string, metadata?: Record<string, any>) => {
+  try {
+    const { error } = await supabase
+      .from('system_logs')
+      .insert([
+        {
+          level,
+          message,
+          metadata,
+          timestamp: new Date().toISOString()
+        }
+      ]);
 
-  private constructor() {}
-
-  public static getInstance(): Logger {
-    if (!Logger.instance) {
-      Logger.instance = new Logger();
-    }
-    return Logger.instance;
+    if (error) throw error;
+  } catch (error) {
+    console.error('Error logging to system:', error);
   }
+};
 
-  async log(level: LogLevel, message: string, metadata?: Record<string, any>) {
-    const { data: session } = await supabase.auth.getSession();
-    const userId = session?.session?.user?.id;
+export const getLogs = async (limit = 100): Promise<LogEntry[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('system_logs')
+      .select('*')
+      .order('timestamp', { ascending: false })
+      .limit(limit);
 
-    const logEntry: Omit<LogEntry, 'id'> = {
-      timestamp: new Date().toISOString(),
-      level,
-      message,
-      userId,
-      metadata
-    };
+    if (error) throw error;
 
-    try {
-      const { error } = await supabase
-        .from('system_logs')
-        .insert([logEntry]);
-
-      if (error) throw error;
-
-      // Zusätzlich in die Console loggen für Entwicklungszwecke
-      console.log(`[${level.toUpperCase()}] ${message}`, metadata);
-    } catch (error) {
-      console.error('Logging failed:', error);
-    }
+    return data.map(log => ({
+      id: log.id,
+      timestamp: log.timestamp,
+      level: log.level as LogLevel,
+      message: log.message,
+      userId: log.userid,
+      metadata: log.metadata
+    }));
+  } catch (error) {
+    console.error('Error fetching logs:', error);
+    return [];
   }
+};
 
-  info(message: string, metadata?: Record<string, any>) {
-    return this.log('info', message, metadata);
+export const getLogsByLevel = async (level: LogLevel): Promise<LogEntry[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('system_logs')
+      .select('*')
+      .eq('level', level)
+      .order('timestamp', { ascending: false });
+
+    if (error) throw error;
+
+    return data.map(log => ({
+      id: log.id,
+      timestamp: log.timestamp,
+      level: log.level as LogLevel,
+      message: log.message,
+      userId: log.userid,
+      metadata: log.metadata
+    }));
+  } catch (error) {
+    console.error('Error fetching logs by level:', error);
+    return [];
   }
-
-  warning(message: string, metadata?: Record<string, any>) {
-    return this.log('warning', message, metadata);
-  }
-
-  error(message: string, metadata?: Record<string, any>) {
-    return this.log('error', message, metadata);
-  }
-
-  async getStats(): Promise<LoggingStats> {
-    try {
-      const { data: logs, error } = await supabase
-        .from('system_logs')
-        .select('*')
-        .order('timestamp', { ascending: false });
-
-      if (error) throw error;
-
-      const errorLogs = logs.filter(log => log.level === 'error');
-      const warningLogs = logs.filter(log => log.level === 'warning');
-
-      return {
-        totalLogs: logs.length,
-        errorCount: errorLogs.length,
-        warningCount: warningLogs.length,
-        recentErrors: errorLogs.slice(0, 5)
-      };
-    } catch (error) {
-      console.error('Error fetching logging stats:', error);
-      return {
-        totalLogs: 0,
-        errorCount: 0,
-        warningCount: 0,
-        recentErrors: []
-      };
-    }
-  }
-}
-
-export const logger = Logger.getInstance();
+};

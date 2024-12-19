@@ -1,58 +1,51 @@
 import { useEffect } from 'react';
-import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/lib/supabase';
+import { toast } from 'sonner';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { log } from '@/utils/logger';
 
 export const SecurityMonitor = () => {
-  const { toast } = useToast();
   const { user } = useAuth();
+  const { t } = useLanguage();
 
   useEffect(() => {
-    if (!user) return;
+    const channel = supabase.channel('security_monitor');
 
-    const checkLoginActivity = async () => {
-      try {
-        const { data: sessions, error } = await supabase.auth.getSession();
-        
-        if (error) throw error;
-
-        // Prüfe auf mehrere aktive Sitzungen
-        if (sessions && sessions.session) {
-          const { data: allSessions, error: sessionsError } = await supabase
-            .from('auth_sessions')
-            .select('*')
-            .eq('user_id', user.id);
-
-          if (sessionsError) throw sessionsError;
-
-          if (allSessions && allSessions.length > 1) {
-            toast({
-              title: "Sicherheitswarnung",
-              description: "Mehrere aktive Sitzungen erkannt. Bitte überprüfen Sie Ihre Kontoaktivitäten.",
-              variant: "destructive",
-              duration: 10000,
-            });
-          }
+    channel
+      .on('presence', { event: 'sync' }, () => {
+        // Handle presence sync
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          await log('info', 'Security monitor initialized');
         }
-      } catch (error) {
-        console.error('Sicherheitsüberwachungsfehler:', error);
-      }
-    };
-
-    // Initialer Check
-    checkLoginActivity();
-
-    // Überwache Authentifizierungsänderungen
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN') {
-        checkLoginActivity();
-      }
-    });
+      });
 
     return () => {
-      authListener?.subscription.unsubscribe();
+      channel.unsubscribe();
     };
-  }, [user, toast]);
+  }, []);
 
-  return null; // Keine UI-Komponente notwendig, da nur Überwachung
+  useEffect(() => {
+    if (user) {
+      const updateLastSeen = async () => {
+        try {
+          const { error } = await supabase
+            .from('profiles')
+            .update({ last_seen: new Date().toISOString() })
+            .eq('id', user.id);
+
+          if (error) throw error;
+        } catch (error) {
+          console.error('Error updating last seen:', error);
+          toast.error(t('errorUpdatingLastSeen'));
+        }
+      };
+
+      updateLastSeen();
+    }
+  }, [user, t]);
+
+  return null;
 };
