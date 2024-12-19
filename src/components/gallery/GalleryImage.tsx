@@ -5,6 +5,7 @@ import { Trash2, MoveVertical } from "lucide-react";
 import { ImageEditor } from "./ImageEditor";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { GalleryImage as GalleryImageType } from "@/types/gallery";
+import { OptimizedImage } from "@/components/OptimizedImage";
 
 interface GalleryImageProps {
   image: GalleryImageType;
@@ -41,10 +42,10 @@ export const GalleryImage = ({
               className="aspect-square cursor-pointer rounded-lg overflow-hidden"
               onClick={() => setSelectedImage(image.url)}
             >
-              <img
+              <OptimizedImage
                 src={image.url}
                 alt={`Gallery ${index + 1}`}
-                className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+                className="w-full h-full hover:scale-110 transition-transform duration-300"
               />
             </div>
           </DialogTrigger>
@@ -94,7 +95,7 @@ export const GalleryImage = ({
           </div>
         </div>
         <DialogContent className="max-w-4xl">
-          <img
+          <OptimizedImage
             src={selectedImage || ""}
             alt="Gallery preview"
             className="w-full h-auto"

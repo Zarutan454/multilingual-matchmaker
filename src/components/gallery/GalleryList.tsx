@@ -26,7 +26,7 @@ export const GalleryList = ({
           <div
             {...provided.droppableProps}
             ref={provided.innerRef}
-            className="grid grid-cols-3 gap-2"
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
           >
             {images
               .sort((a, b) => a.order - b.order)
