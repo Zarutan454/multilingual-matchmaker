@@ -20,8 +20,8 @@ export const getSupabaseClient = () => {
   if (supabaseInstance) return supabaseInstance;
   
   if (isInitializing) {
-    // Warte, bis die Initialisierung abgeschlossen ist
-    return new Promise(resolve => setTimeout(() => resolve(getSupabaseClient()), 100));
+    console.warn('Supabase client is already initializing');
+    return supabaseInstance as ReturnType<typeof createClient<Database>>;
   }
 
   isInitializing = true;
@@ -47,7 +47,6 @@ export const getSupabaseClient = () => {
     });
 
     startConnectionCheck();
-
     return supabaseInstance;
   } catch (error) {
     console.error('Fehler bei der Supabase-Initialisierung:', error);
@@ -106,7 +105,7 @@ const reinitializeConnection = async () => {
   try {
     supabaseInstance = null;
     isInitializing = false;
-    await getSupabaseClient();
+    getSupabaseClient();
   } catch (error) {
     console.error('Fehler bei der Neuinitialisierung:', error);
   }
