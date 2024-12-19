@@ -8,3 +8,10 @@ export interface LogEntry {
   userId?: string;
   metadata?: Record<string, any>;
 }
+
+export interface LoggingStats {
+  totalLogs: number;
+  errorCount: number;
+  warningCount: number;
+  infoCount: number;
+}
