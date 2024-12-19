@@ -1,27 +1,45 @@
-import { supabase } from '@/lib/supabase';
-import type { LogLevel, LogEntry, LoggingStats } from '@/types/logging';
+export interface LogEntry {
+  level: 'info' | 'warning' | 'error';
+  message: string;
+  timestamp: string;
+  metadata?: Record<string, any>;
+}
 
-class Logger {
-  async log(level: LogLevel, message: string, metadata?: Record<string, any>) {
+export class Logger {
+  private static instance: Logger;
+  private logs: LogEntry[] = [];
+  
+  private constructor() {}
+  
+  static getInstance(): Logger {
+    if (!Logger.instance) {
+      Logger.instance = new Logger();
+    }
+    return Logger.instance;
+  }
+
+  async log(level: LogEntry['level'], message: string, metadata?: Record<string, any>) {
+    const timestamp = new Date().toISOString();
+    const logEntry: LogEntry = {
+      level,
+      message,
+      timestamp,
+      metadata,
+    };
+
     try {
-      const { error } = await supabase
-        .from('system_logs')
-        .insert([
-          {
-            level,
-            message,
-            metadata,
-            timestamp: new Date().toISOString()
-          }
-        ]);
-
-      if (error) throw error;
+      console.log(`[${level.toUpperCase()}] ${message}`, metadata || '');
+      this.logs.push(logEntry);
+      
+      // Trim logs if they exceed 1000 entries
+      if (this.logs.length > 1000) {
+        this.logs = this.logs.slice(-1000);
+      }
     } catch (error) {
       console.error('Error logging to system:', error);
     }
   }
 
-  // Add the missing methods that map to the log method
   async info(message: string, metadata?: Record<string, any>) {
     return this.log('info', message, metadata);
   }
@@ -35,58 +53,8 @@ class Logger {
   }
 
   async getLogs(limit = 100): Promise<LogEntry[]> {
-    try {
-      const { data, error } = await supabase
-        .from('system_logs')
-        .select('*')
-        .order('timestamp', { ascending: false })
-        .limit(limit);
-
-      if (error) throw error;
-
-      return data.map(log => ({
-        id: log.id,
-        timestamp: log.timestamp,
-        level: log.level as LogLevel,
-        message: log.message,
-        userId: log.userid,
-        metadata: log.metadata as Record<string, any>
-      }));
-    } catch (error) {
-      console.error('Error fetching logs:', error);
-      return [];
-    }
-  }
-
-  async getStats(): Promise<LoggingStats> {
-    try {
-      const { data, error } = await supabase
-        .from('system_logs')
-        .select('level');
-
-      if (error) throw error;
-
-      const stats = {
-        totalLogs: data.length,
-        errorCount: data.filter(log => log.level === 'error').length,
-        warningCount: data.filter(log => log.level === 'warning').length,
-        infoCount: data.filter(log => log.level === 'info').length
-      };
-
-      return stats;
-    } catch (error) {
-      console.error('Error fetching log stats:', error);
-      return {
-        totalLogs: 0,
-        errorCount: 0,
-        warningCount: 0,
-        infoCount: 0
-      };
-    }
+    return this.logs.slice(-limit);
   }
 }
 
-export const logger = new Logger();
-export const log = (level: LogLevel, message: string, metadata?: Record<string, any>) => {
-  return logger.log(level, message, metadata);
-};
+export const logger = Logger.getInstance();
