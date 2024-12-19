@@ -9,9 +9,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { toast } from 'sonner';
 import { Loader2, Plus } from 'lucide-react';
 import type { BlogPost, NewsItem } from '@/types/cms';
+import { LoggingDashboard } from './LoggingDashboard';
 
 export const ContentManager = () => {
-  const [activeTab, setActiveTab] = useState<'blog' | 'news'>('blog');
+  const [activeTab, setActiveTab] = useState<'blog' | 'news' | 'logs'>('blog');
   
   const { data: blogPosts, isLoading: loadingBlog } = useQuery({
     queryKey: ['blog-posts'],
@@ -66,10 +67,11 @@ export const ContentManager = () => {
 
   return (
     <div className="container mx-auto p-6">
-      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'blog' | 'news')}>
-        <TabsList className="grid w-full grid-cols-2">
+      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'blog' | 'news' | 'logs')}>
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="blog">Blog Posts</TabsTrigger>
           <TabsTrigger value="news">News</TabsTrigger>
+          <TabsTrigger value="logs">System Logs</TabsTrigger>
         </TabsList>
 
         <TabsContent value="blog">
@@ -144,6 +146,10 @@ export const ContentManager = () => {
               </Button>
             </CardFooter>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="logs">
+          <LoggingDashboard />
         </TabsContent>
       </Tabs>
     </div>
