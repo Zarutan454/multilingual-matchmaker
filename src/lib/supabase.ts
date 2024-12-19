@@ -16,6 +16,8 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
     autoRefreshToken: true,
     detectSessionInUrl: true,
     storage: window.localStorage,
+    flowType: 'pkce',
+    debug: true
   },
   global: {
     headers: {
@@ -32,15 +34,20 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
   }
 });
 
-// Verbesserte Verbindungsprüfung mit Wiederholungslogik
-export const checkConnection = async (retries = 5, delay = 2000) => {
+// Verbesserte Verbindungsprüfung mit Wiederholungslogik und Timeout
+export const checkConnection = async (retries = 3, delay = 2000) => {
   for (let i = 0; i < retries; i++) {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 Sekunden Timeout
+
       const { data, error } = await supabase
         .from('profiles')
         .select('count')
         .limit(1)
         .maybeSingle();
+
+      clearTimeout(timeoutId);
 
       if (error) {
         console.error(`Verbindungsversuch ${i + 1} fehlgeschlagen:`, error);
@@ -73,8 +80,10 @@ if (typeof window !== 'undefined' && !connectionInitialized) {
   connectionInitialized = true;
   checkConnection().then(isConnected => {
     if (isConnected) {
+      console.log('Supabase Verbindung hergestellt');
       toast.success('Verbindung zur Datenbank hergestellt');
     } else {
+      console.error('Supabase Verbindung fehlgeschlagen');
       toast.error('Verbindung zur Datenbank konnte nicht hergestellt werden. Bitte laden Sie die Seite neu.');
     }
   });
