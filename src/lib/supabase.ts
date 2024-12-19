@@ -17,11 +17,14 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
     detectSessionInUrl: true,
     storage: window.localStorage,
     flowType: 'pkce',
-    debug: true
+    debug: import.meta.env.DEV,
+    retryAttempts: 3,
+    timeout: 10000 // 10 seconds timeout
   },
   global: {
     headers: {
       'Content-Type': 'application/json',
+      'X-Client-Info': 'supabase-js-web'
     }
   },
   db: {
@@ -39,7 +42,7 @@ export const checkConnection = async (retries = 3, delay = 2000) => {
   for (let i = 0; i < retries; i++) {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 Sekunden Timeout
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
 
       const { data, error } = await supabase
         .from('profiles')
@@ -51,22 +54,28 @@ export const checkConnection = async (retries = 3, delay = 2000) => {
 
       if (error) {
         console.error(`Verbindungsversuch ${i + 1} fehlgeschlagen:`, error);
+        toast.error(`Verbindungsfehler: ${error.message}`);
+        
         if (i === retries - 1) {
-          toast.error(`Verbindung zur Datenbank fehlgeschlagen: ${error.message}`);
+          toast.error('Verbindung zur Datenbank fehlgeschlagen');
           return false;
         }
+        
         await new Promise(resolve => setTimeout(resolve, delay));
         continue;
       }
 
       console.log('Datenbankverbindung erfolgreich getestet');
+      toast.success('Verbindung zur Datenbank hergestellt');
       return true;
     } catch (error) {
       console.error(`Verbindungstest ${i + 1} fehlgeschlagen:`, error);
+      
       if (i === retries - 1) {
         toast.error('Keine Verbindung zur Datenbank möglich');
         return false;
       }
+      
       await new Promise(resolve => setTimeout(resolve, delay));
     }
   }
@@ -81,7 +90,6 @@ if (typeof window !== 'undefined' && !connectionInitialized) {
   checkConnection().then(isConnected => {
     if (isConnected) {
       console.log('Supabase Verbindung hergestellt');
-      toast.success('Verbindung zur Datenbank hergestellt');
     } else {
       console.error('Supabase Verbindung fehlgeschlagen');
       toast.error('Verbindung zur Datenbank konnte nicht hergestellt werden. Bitte laden Sie die Seite neu.');

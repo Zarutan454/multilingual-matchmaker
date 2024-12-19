@@ -24,7 +24,8 @@ export interface Profile extends BaseProfile {
   appearance?: Appearance;
   measurements?: Measurements;
   likes_count?: number;
-  height?: string | null; // Added this line to fix the type error
+  height?: string | null;
+  weight?: string | null;
 }
 
 export type AvailabilityStatus = 'online' | 'offline' | 'busy';
