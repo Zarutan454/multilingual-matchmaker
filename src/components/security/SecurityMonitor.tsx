@@ -3,7 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { log } from '@/utils/logger';
+import { logger } from '@/utils/logger';
 
 export const SecurityMonitor = () => {
   const { user } = useAuth();
@@ -18,7 +18,7 @@ export const SecurityMonitor = () => {
       })
       .subscribe(async (status) => {
         if (status === 'SUBSCRIBED') {
-          await log('info', 'Security monitor initialized');
+          await logger.log('info', 'Security monitor initialized');
         }
       });
 

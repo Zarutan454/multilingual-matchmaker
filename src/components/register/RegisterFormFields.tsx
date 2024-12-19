@@ -19,6 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { Dispatch, SetStateAction } from "react";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -29,10 +30,29 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 interface RegisterFormFieldsProps {
-  onSubmit: (data: FormData) => void;
+  userType: "customer" | "provider";
+  setUserType: Dispatch<SetStateAction<"customer" | "provider">>;
+  formData: {
+    email: string;
+    password: string;
+    confirmPassword: string;
+    phoneNumber: string;
+    age: string;
+    country: string;
+    nickname: string;
+  };
+  setFormData: Dispatch<SetStateAction<{
+    email: string;
+    password: string;
+    confirmPassword: string;
+    phoneNumber: string;
+    age: string;
+    country: string;
+    nickname: string;
+  }>>;
 }
 
-export const RegisterFormFields = ({ onSubmit }: RegisterFormFieldsProps) => {
+export const RegisterFormFields = ({ userType, setUserType, formData, setFormData }: RegisterFormFieldsProps) => {
   const { t } = useLanguage();
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -45,7 +65,7 @@ export const RegisterFormFields = ({ onSubmit }: RegisterFormFieldsProps) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit((data) => console.log(data))} className="space-y-6">
         <FormField
           control={form.control}
           name="email"
@@ -53,7 +73,8 @@ export const RegisterFormFields = ({ onSubmit }: RegisterFormFieldsProps) => {
             <FormItem>
               <FormLabel>{t("email")}</FormLabel>
               <FormControl>
-                <Input {...field} type="email" />
+                <Input {...field} type="email" value={formData.email} 
+                  onChange={(e) => setFormData({...formData, email: e.target.value})} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -67,7 +88,8 @@ export const RegisterFormFields = ({ onSubmit }: RegisterFormFieldsProps) => {
             <FormItem>
               <FormLabel>{t("password")}</FormLabel>
               <FormControl>
-                <Input {...field} type="password" />
+                <Input {...field} type="password" value={formData.password}
+                  onChange={(e) => setFormData({...formData, password: e.target.value})} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -80,7 +102,7 @@ export const RegisterFormFields = ({ onSubmit }: RegisterFormFieldsProps) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>{t("userType")}</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select value={userType} onValueChange={(value: "customer" | "provider") => setUserType(value)}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder={t("selectUserType")} />

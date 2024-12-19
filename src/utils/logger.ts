@@ -74,3 +74,6 @@ class Logger {
 }
 
 export const logger = new Logger();
+export const log = (level: LogLevel, message: string, metadata?: Record<string, any>) => {
+  return logger.log(level, message, metadata);
+};
