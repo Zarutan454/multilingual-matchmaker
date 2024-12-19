@@ -7,6 +7,8 @@ import { AuthProvider } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { TooltipProvider } from './components/ui/tooltip';
 import { Suspense, lazy } from 'react';
+import { CookieBanner } from './components/CookieBanner';
+import { SecurityMonitor } from './components/security/SecurityMonitor';
 
 // Pages
 import Index from './pages/Index';
@@ -34,6 +36,7 @@ const App = () => {
         <LanguageProvider>
           <AuthProvider>
             <TooltipProvider>
+              <SecurityMonitor />
               <Toaster position="top-center" expand={true} richColors />
               <Routes>
                 <Route path="/" element={<Index />} />
@@ -59,6 +62,7 @@ const App = () => {
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/imprint" element={<Imprint />} />
               </Routes>
+              <CookieBanner />
             </TooltipProvider>
           </AuthProvider>
         </LanguageProvider>
