@@ -71,6 +71,70 @@ export default function Dashboard() {
     fetchProfile();
   }, [user, navigate, t]);
 
+  const handleProfileUpdate = async (updatedProfile: Profile) => {
+    console.log("Updating profile:", updatedProfile);
+    setProfile(updatedProfile);
+    setIsEditing(false);
+  };
+
+  const handleAvatarUpdate = async (url: string) => {
+    try {
+      console.log("Updating avatar URL:", url);
+      const { error } = await supabase
+        .from('profiles')
+        .update({ avatar_url: url })
+        .eq('id', user?.id);
+
+      if (error) throw error;
+
+      setProfile(prev => prev ? { ...prev, avatar_url: url } : null);
+      toast.success(t("profileImageUpdated"));
+    } catch (error) {
+      console.error('Error updating avatar:', error);
+      toast.error(t("errorUpdatingProfileImage"));
+    }
+  };
+
+  const handleGalleryUpdate = async (url: string) => {
+    try {
+      console.log("Adding image to gallery:", url);
+      const newGallery = [...(profile?.gallery || []), url];
+      
+      const { error } = await supabase
+        .from('profiles')
+        .update({ gallery: newGallery })
+        .eq('id', user?.id);
+
+      if (error) throw error;
+
+      setProfile(prev => prev ? { ...prev, gallery: newGallery } : null);
+      toast.success(t("imageAddedToGallery"));
+    } catch (error) {
+      console.error('Error updating gallery:', error);
+      toast.error(t("errorUpdatingGallery"));
+    }
+  };
+
+  const handleGalleryDelete = async (imageUrl: string) => {
+    try {
+      console.log("Deleting image from gallery:", imageUrl);
+      const newGallery = profile?.gallery?.filter(url => url !== imageUrl) || [];
+      
+      const { error } = await supabase
+        .from('profiles')
+        .update({ gallery: newGallery })
+        .eq('id', user?.id);
+
+      if (error) throw error;
+
+      setProfile(prev => prev ? { ...prev, gallery: newGallery } : null);
+      toast.success(t("imageDeletedFromGallery"));
+    } catch (error) {
+      console.error('Error deleting from gallery:', error);
+      toast.error(t("errorUpdatingGallery"));
+    }
+  };
+
   console.log("Current state - loading:", loading, "error:", error, "profile:", profile);
 
   if (loading) {
