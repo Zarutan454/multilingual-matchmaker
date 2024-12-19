@@ -6,6 +6,7 @@ import { Toaster } from 'sonner';
 import { AuthProvider } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { TooltipProvider } from './components/ui/tooltip';
+import { Suspense, lazy } from 'react';
 
 // Pages
 import Index from './pages/Index';
@@ -17,7 +18,9 @@ import ProviderProfile from './pages/ProviderProfile';
 import Listings from './pages/Listings';
 import Vips from './pages/Vips';
 import News from './pages/News';
-import Membership from './pages/Membership';
+
+// Lazy loaded pages
+const Membership = lazy(() => import('./pages/Membership'));
 
 // Legal Pages
 import Terms from './pages/legal/Terms';
@@ -42,7 +45,16 @@ const App = () => {
                 <Route path="/listings" element={<Listings />} />
                 <Route path="/vips" element={<Vips />} />
                 <Route path="/news" element={<News />} />
-                <Route path="/membership" element={<Membership />} />
+                <Route 
+                  path="/membership" 
+                  element={
+                    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                    </div>}>
+                      <Membership />
+                    </Suspense>
+                  } 
+                />
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/imprint" element={<Imprint />} />
