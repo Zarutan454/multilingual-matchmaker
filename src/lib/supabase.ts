@@ -20,7 +20,7 @@ export const getSupabaseClient = () => {
   if (supabaseInstance) return supabaseInstance;
   
   if (isInitializing) {
-    console.warn('Supabase client is already initializing');
+    console.warn('Supabase client wird bereits initialisiert');
     return supabaseInstance as ReturnType<typeof createClient<Database>>;
   }
 
@@ -47,6 +47,7 @@ export const getSupabaseClient = () => {
     });
 
     startConnectionCheck();
+    isInitializing = false;
     return supabaseInstance;
   } catch (error) {
     console.error('Fehler bei der Supabase-Initialisierung:', error);
@@ -66,21 +67,22 @@ const testConnection = async (retries = 3): Promise<boolean> => {
         .single();
 
       if (error) {
-        if (i === retries - 1) {
-          console.error('Verbindungstest fehlgeschlagen:', error);
-          return false;
-        }
-        await new Promise(resolve => setTimeout(resolve, Math.min(1000 * Math.pow(2, i), 10000)));
+        console.warn(`Verbindungstest fehlgeschlagen (${i + 1}/${retries}):`, error);
+        if (i === retries - 1) return false;
+        
+        // Exponentielles Backoff: 1s, 2s, 4s, ...
+        const delay = Math.min(1000 * Math.pow(2, i), 10000);
+        await new Promise(resolve => setTimeout(resolve, delay));
         continue;
       }
 
       return true;
     } catch (error) {
-      if (i === retries - 1) {
-        console.error('Unerwarteter Fehler beim Verbindungstest:', error);
-        return false;
-      }
-      await new Promise(resolve => setTimeout(resolve, Math.min(1000 * Math.pow(2, i), 10000)));
+      console.error('Unerwarteter Fehler beim Verbindungstest:', error);
+      if (i === retries - 1) return false;
+      
+      const delay = Math.min(1000 * Math.pow(2, i), 10000);
+      await new Promise(resolve => setTimeout(resolve, delay));
     }
   }
   return false;
@@ -91,7 +93,6 @@ const startConnectionCheck = () => {
     clearInterval(connectionCheckInterval);
   }
 
-  // Prüfe die Verbindung alle 30 Sekunden
   connectionCheckInterval = setInterval(async () => {
     const isConnected = await testConnection(1);
     if (!isConnected) {
@@ -103,15 +104,13 @@ const startConnectionCheck = () => {
 
 const reinitializeConnection = async () => {
   try {
-    supabaseInstance = null;
-    isInitializing = false;
+    cleanup();
     getSupabaseClient();
   } catch (error) {
     console.error('Fehler bei der Neuinitialisierung:', error);
   }
 };
 
-// Cleanup-Funktion
 export const cleanup = () => {
   if (connectionCheckInterval) {
     clearInterval(connectionCheckInterval);
@@ -121,7 +120,6 @@ export const cleanup = () => {
   isInitializing = false;
 };
 
-// Exportiere eine vorinitialisierte Instanz
 export const supabase = getSupabaseClient();
 
 export default supabase;
