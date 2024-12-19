@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { toast } from "sonner";
+import { Database } from '@/integrations/supabase/types';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -18,7 +19,7 @@ const INITIAL_RETRY_DELAY = 1000;
 export const getSupabaseClient = () => {
   if (supabaseInstance) return supabaseInstance;
 
-  supabaseInstance = createClient(supabaseUrl, supabaseKey, {
+  supabaseInstance = createClient<Database>(supabaseUrl, supabaseKey, {
     auth: {
       persistSession: true,
       autoRefreshToken: true,
@@ -56,14 +57,14 @@ export const checkConnection = async (retries = MAX_RETRIES): Promise<boolean> =
       try {
         console.log(`Verbindungsversuch ${i + 1} von ${retries}...`);
         
-        const { data, error } = await Promise.race([
+        const response = await Promise.race([
           supabase.from('profiles').select('id').limit(1).single(),
           new Promise((_, reject) => 
             setTimeout(() => reject(new Error('Timeout')), 10000)
           )
-        ]);
-        
-        if (!error) {
+        ]) as { data: any; error: any } | Error;
+
+        if (!(response instanceof Error) && !response.error) {
           console.log('Supabase Verbindung erfolgreich');
           isReconnecting = false;
           return true;
@@ -93,7 +94,7 @@ if (typeof window !== 'undefined') {
 
   const handleConnectionChange = async () => {
     const now = Date.now();
-    if (now - lastOnlineCheck < 5000) return; // Verhindere zu häufige Checks
+    if (now - lastOnlineCheck < 5000) return;
     lastOnlineCheck = now;
 
     if (navigator.onLine) {
@@ -113,7 +114,6 @@ if (typeof window !== 'undefined') {
   window.addEventListener('online', handleConnectionChange);
   window.addEventListener('offline', handleConnectionChange);
 
-  // Initiale Verbindungsprüfung mit Verzögerung
   setTimeout(() => {
     checkConnection(3).then(isConnected => {
       if (!isConnected) {
