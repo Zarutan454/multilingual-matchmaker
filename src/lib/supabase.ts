@@ -5,9 +5,9 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
-  console.error('Supabase configuration error: Missing URL or Key');
-  toast.error('Database connection could not be established');
-  throw new Error('Supabase URL and API Key must be configured');
+  console.error('Supabase Konfigurationsfehler: URL oder Key fehlt');
+  toast.error('Datenbankverbindung konnte nicht hergestellt werden');
+  throw new Error('Supabase URL und API Key müssen konfiguriert sein');
 }
 
 let supabaseInstance: ReturnType<typeof createClient> | null = null;
@@ -46,6 +46,8 @@ export const supabase = getSupabaseClient();
 export const checkConnection = async (retries = 3, baseDelay = 2000) => {
   for (let i = 0; i < retries; i++) {
     try {
+      console.log(`Verbindungsversuch ${i + 1} von ${retries}...`);
+      
       const { data, error } = await supabase
         .from('profiles')
         .select('id')
@@ -53,18 +55,19 @@ export const checkConnection = async (retries = 3, baseDelay = 2000) => {
         .single();
       
       if (!error) {
-        console.log('Supabase connection successful');
+        console.log('Supabase Verbindung erfolgreich');
         return true;
       }
 
-      console.warn(`Connection attempt ${i + 1} failed:`, error);
+      console.warn(`Verbindungsversuch ${i + 1} fehlgeschlagen:`, error);
       
       if (i < retries - 1) {
         const delay = baseDelay * Math.pow(2, i); // Exponentielles Backoff
+        console.log(`Warte ${delay}ms vor dem nächsten Versuch...`);
         await new Promise(resolve => setTimeout(resolve, delay));
       }
     } catch (error) {
-      console.error('Connection error:', error);
+      console.error('Verbindungsfehler:', error);
       if (i === retries - 1) {
         toast.error('Datenbankverbindung konnte nicht hergestellt werden');
         return false;
@@ -76,22 +79,31 @@ export const checkConnection = async (retries = 3, baseDelay = 2000) => {
 
 // Verbindungsüberwachung initialisieren
 if (typeof window !== 'undefined') {
+  let reconnectTimeout: NodeJS.Timeout;
+
   window.addEventListener('online', () => {
-    checkConnection().then(isConnected => {
-      if (isConnected) {
-        toast.success('Verbindung wiederhergestellt');
-      }
-    });
+    // Verzögerung vor dem Wiederverbindungsversuch
+    clearTimeout(reconnectTimeout);
+    reconnectTimeout = setTimeout(() => {
+      checkConnection().then(isConnected => {
+        if (isConnected) {
+          toast.success('Verbindung wiederhergestellt');
+        }
+      });
+    }, 1000); // 1 Sekunde Verzögerung
   });
 
   window.addEventListener('offline', () => {
+    clearTimeout(reconnectTimeout);
     toast.error('Keine Internetverbindung');
   });
 
-  // Initiale Verbindungsprüfung
-  checkConnection().then(isConnected => {
-    if (!isConnected) {
-      console.error('Initial Supabase connection failed');
-    }
-  });
+  // Initiale Verbindungsprüfung mit Verzögerung
+  setTimeout(() => {
+    checkConnection().then(isConnected => {
+      if (!isConnected) {
+        console.error('Initiale Supabase Verbindung fehlgeschlagen');
+      }
+    });
+  }, 1000);
 }
