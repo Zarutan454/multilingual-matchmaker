@@ -3,6 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { User, Mail, Lock, Phone, MapPin, Calendar } from "lucide-react";
+import { useEffect } from "react";
 
 interface RegisterFormFieldsProps {
   userType: "customer" | "provider";
@@ -27,10 +28,29 @@ export const RegisterFormFields = ({
 }: RegisterFormFieldsProps) => {
   const { t } = useLanguage();
 
+  // Validiere das Alter wenn der Benutzertyp sich ändert
+  useEffect(() => {
+    if (userType === "provider" && formData.age) {
+      const age = parseInt(formData.age);
+      if (age < 18) {
+        setFormData({ ...formData, age: "" });
+      }
+    }
+  }, [userType]);
+
+  const handleAgeChange = (value: string) => {
+    const age = parseInt(value);
+    if (userType === "provider" && age < 18) {
+      return; // Verhindere Eingabe von Alter unter 18 für Dienstleister
+    }
+    setFormData({ ...formData, age: value });
+  };
+
   return (
     <div className="space-y-6">
       <RadioGroup
-        defaultValue="customer"
+        defaultValue={userType}
+        value={userType}
         onValueChange={(value) => setUserType(value as "customer" | "provider")}
         className="flex flex-col space-y-2"
       >
@@ -55,7 +75,7 @@ export const RegisterFormFields = ({
               value={formData.nickname}
               onChange={(e) => setFormData({ ...formData, nickname: e.target.value })}
               required
-              className="pl-10 bg-black/50 border-[#9b87f5]/30 text-white placeholder-white/50 focus:border-[#9b87f5] focus:ring-[#9b87f5]/20"
+              className="pl-10 bg-black/50 border-[#9b87f5]/30 text-white placeholder:text-white/50 focus:border-[#9b87f5] focus:ring-[#9b87f5]/20"
             />
           </div>
         </div>
@@ -70,7 +90,7 @@ export const RegisterFormFields = ({
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               required
-              className="pl-10 bg-black/50 border-[#9b87f5]/30 text-white placeholder-white/50 focus:border-[#9b87f5] focus:ring-[#9b87f5]/20"
+              className="pl-10 bg-black/50 border-[#9b87f5]/30 text-white placeholder:text-white/50 focus:border-[#9b87f5] focus:ring-[#9b87f5]/20"
             />
           </div>
         </div>
@@ -85,7 +105,7 @@ export const RegisterFormFields = ({
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               required
-              className="pl-10 bg-black/50 border-[#9b87f5]/30 text-white placeholder-white/50 focus:border-[#9b87f5] focus:ring-[#9b87f5]/20"
+              className="pl-10 bg-black/50 border-[#9b87f5]/30 text-white placeholder:text-white/50 focus:border-[#9b87f5] focus:ring-[#9b87f5]/20"
             />
           </div>
         </div>
@@ -100,7 +120,7 @@ export const RegisterFormFields = ({
               value={formData.confirmPassword}
               onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
               required
-              className="pl-10 bg-black/50 border-[#9b87f5]/30 text-white placeholder-white/50 focus:border-[#9b87f5] focus:ring-[#9b87f5]/20"
+              className="pl-10 bg-black/50 border-[#9b87f5]/30 text-white placeholder:text-white/50 focus:border-[#9b87f5] focus:ring-[#9b87f5]/20"
             />
           </div>
         </div>
@@ -117,7 +137,8 @@ export const RegisterFormFields = ({
                   value={formData.phoneNumber}
                   onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
                   placeholder="+1234567890"
-                  className="pl-10 bg-black/50 border-[#9b87f5]/30 text-white placeholder-white/50 focus:border-[#9b87f5] focus:ring-[#9b87f5]/20"
+                  required
+                  className="pl-10 bg-black/50 border-[#9b87f5]/30 text-white placeholder:text-white/50 focus:border-[#9b87f5] focus:ring-[#9b87f5]/20"
                 />
               </div>
             </div>
@@ -131,9 +152,9 @@ export const RegisterFormFields = ({
                   type="number"
                   min="18"
                   value={formData.age}
-                  onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+                  onChange={(e) => handleAgeChange(e.target.value)}
                   required
-                  className="pl-10 bg-black/50 border-[#9b87f5]/30 text-white placeholder-white/50 focus:border-[#9b87f5] focus:ring-[#9b87f5]/20"
+                  className="pl-10 bg-black/50 border-[#9b87f5]/30 text-white placeholder:text-white/50 focus:border-[#9b87f5] focus:ring-[#9b87f5]/20"
                 />
               </div>
             </div>
@@ -148,7 +169,7 @@ export const RegisterFormFields = ({
                   value={formData.country}
                   onChange={(e) => setFormData({ ...formData, country: e.target.value })}
                   required
-                  className="pl-10 bg-black/50 border-[#9b87f5]/30 text-white placeholder-white/50 focus:border-[#9b87f5] focus:ring-[#9b87f5]/20"
+                  className="pl-10 bg-black/50 border-[#9b87f5]/30 text-white placeholder:text-white/50 focus:border-[#9b87f5] focus:ring-[#9b87f5]/20"
                 />
               </div>
             </div>

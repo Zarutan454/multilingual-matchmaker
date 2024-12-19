@@ -25,6 +25,24 @@ export const RegisterForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [retryTimeout, setRetryTimeout] = useState(0);
 
+  const validateProviderData = () => {
+    if (userType === "provider") {
+      if (!formData.phoneNumber) {
+        toast.error(t("phoneRequired"));
+        return false;
+      }
+      if (!formData.age || parseInt(formData.age) < 18) {
+        toast.error(t("mustBe18"));
+        return false;
+      }
+      if (!formData.country) {
+        toast.error(t("countryRequired"));
+        return false;
+      }
+    }
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -45,6 +63,10 @@ export const RegisterForm = () => {
 
     if (formData.password.length < 6) {
       toast.error(t("passwordTooShort"));
+      return;
+    }
+
+    if (!validateProviderData()) {
       return;
     }
 
@@ -89,7 +111,6 @@ export const RegisterForm = () => {
         return;
       }
 
-      // Erstelle das Profil in der profiles Tabelle
       const { error: profileError } = await supabase
         .from('profiles')
         .insert([
@@ -129,7 +150,10 @@ export const RegisterForm = () => {
       console.log("Registration successful!");
       toast.success(t("registrationSuccess"));
       toast.info(t("pleaseCheckEmail"));
-      navigate("/login");
+      
+      // Redirect to the appropriate dashboard based on user type
+      navigate(userType === "provider" ? "/provider-dashboard" : "/dashboard");
+      
     } catch (error) {
       console.error("Registration error:", error);
       toast.error(t("registrationError"));
