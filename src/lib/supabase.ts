@@ -6,10 +6,11 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
+  console.error('Supabase credentials missing');
   throw new Error('Supabase Anmeldedaten fehlen in der Umgebungskonfiguration');
 }
 
-// Singleton-Instanz des Supabase-Clients
+// Singleton instance of Supabase client with improved error handling
 export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
   auth: {
     persistSession: true,
@@ -25,17 +26,29 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
     headers: {
       'Content-Type': 'application/json'
     },
-    fetch: (url: RequestInfo | URL, options?: RequestInit) => {
-      return fetch(url, options).catch(err => {
-        console.error('Fetch error:', err);
+    fetch: async (url, options = {}) => {
+      try {
+        const response = await fetch(url, {
+          ...options,
+          credentials: 'include',
+          mode: 'cors'
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        return response;
+      } catch (error) {
+        console.error('Fetch error:', error);
         toast.error('Verbindungsfehler: Bitte überprüfen Sie Ihre Internetverbindung');
-        throw err;
-      });
+        throw error;
+      }
     }
   }
 });
 
-// Verbindungsprüfung mit Retry-Mechanismus
+// Connection check with retry mechanism and improved error handling
 export const checkConnection = async (retries = 3): Promise<boolean> => {
   for (let i = 0; i < retries; i++) {
     try {
@@ -53,7 +66,6 @@ export const checkConnection = async (retries = 3): Promise<boolean> => {
           toast.error('Verbindung zur Datenbank konnte nicht hergestellt werden');
           return false;
         }
-        // Exponentielles Backoff für Wiederholungsversuche
         await new Promise(resolve => setTimeout(resolve, Math.min(1000 * Math.pow(2, i), 10000)));
         continue;
       }
@@ -71,7 +83,7 @@ export const checkConnection = async (retries = 3): Promise<boolean> => {
   return false;
 };
 
-// Verbindungsüberwachung
+// Connection monitoring with improved error handling
 let connectionCheckTimeout: NodeJS.Timeout | null = null;
 let isCheckingConnection = false;
 
@@ -99,7 +111,6 @@ if (typeof window !== 'undefined') {
   window.addEventListener('online', handleConnectionChange);
   window.addEventListener('offline', handleConnectionChange);
 
-  // Initiale Verbindungsprüfung mit Verzögerung
   connectionCheckTimeout = setTimeout(() => {
     checkConnection(3).then(isConnected => {
       if (!isConnected) {
@@ -109,7 +120,6 @@ if (typeof window !== 'undefined') {
   }, 1000);
 }
 
-// Cleanup-Funktion für Event-Listener
 export const cleanup = () => {
   if (typeof window !== 'undefined') {
     window.removeEventListener('online', handleConnectionChange);
