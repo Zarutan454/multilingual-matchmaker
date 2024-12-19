@@ -4,11 +4,11 @@ import { toast } from "sonner";
 export const cleanDatabase = async () => {
   try {
     // Profile-Tabelle bereinigen mit SQL
-    const { error: profileError } = await supabase.rpc('clean_profiles', {});
+    const { data: profileData, error: profileError } = await supabase.rpc('clean_profiles');
     if (profileError) throw profileError;
 
     // Nachrichten-Tabelle bereinigen mit SQL
-    const { error: messagesError } = await supabase.rpc('clean_messages', {});
+    const { data: messagesData, error: messagesError } = await supabase.rpc('clean_messages');
     if (messagesError) throw messagesError;
 
     // Storage-Bucket leeren

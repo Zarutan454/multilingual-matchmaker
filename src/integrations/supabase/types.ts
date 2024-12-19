@@ -6,7 +6,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export type Database = {
+export interface Database {
   public: {
     Tables: {
       favorites: {
@@ -267,7 +267,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      clean_messages: {
+        Args: Record<string, never>
+        Returns: boolean
+      }
+      clean_profiles: {
+        Args: Record<string, never>
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
