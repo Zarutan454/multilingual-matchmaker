@@ -37,7 +37,7 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
         throw error;
       }
 
-      return data || [];
+      return (data || []).map(p => ({ id: String(p.id) }));
     }
   });
 
@@ -55,7 +55,7 @@ export const ExtendedProfileView = ({ profile, isEditable = false }: ExtendedPro
         throw error;
       }
 
-      return data || [];
+      return (data || []).map(castToService);
     }
   });
 

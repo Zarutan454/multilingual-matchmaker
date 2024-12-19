@@ -15,14 +15,12 @@ export const Gallery = ({ images, onDeleteImage }: GalleryProps) => {
 
   const handleDeleteImage = async (imageUrl: string) => {
     try {
-      // Extract the file path from the URL
       const filePath = imageUrl.split('/uploads/').pop();
       if (!filePath) {
         toast.error("Ungültiger Dateipfad");
         return;
       }
 
-      // Delete from storage
       const { error: storageError } = await supabase.storage
         .from('uploads')
         .remove([filePath]);
@@ -31,7 +29,6 @@ export const Gallery = ({ images, onDeleteImage }: GalleryProps) => {
         throw storageError;
       }
 
-      // Update profile's gallery in the database
       const { data: profile } = await supabase.auth.getUser();
       if (profile?.user?.id) {
         const { data: currentProfile } = await supabase
@@ -40,7 +37,7 @@ export const Gallery = ({ images, onDeleteImage }: GalleryProps) => {
           .eq('id', profile.user.id)
           .single();
 
-        if (currentProfile?.gallery) {
+        if (currentProfile?.gallery && Array.isArray(currentProfile.gallery)) {
           const updatedGallery = currentProfile.gallery.filter((img: string) => img !== imageUrl);
           
           const { error: updateError } = await supabase
@@ -52,7 +49,6 @@ export const Gallery = ({ images, onDeleteImage }: GalleryProps) => {
         }
       }
 
-      // Notify parent component
       if (onDeleteImage) {
         onDeleteImage(imageUrl);
       }

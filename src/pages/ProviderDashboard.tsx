@@ -1,33 +1,31 @@
-import { useEffect } from "react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useState, useEffect } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
+import { Profile, castToProfile } from "@/types/profile";
 import { DashboardLayout } from "@/components/dashboard/sections/DashboardLayout";
 import { ProfileSection } from "@/components/dashboard/ProfileSection";
-import { ServicesSection } from "@/components/dashboard/sections/ServicesSection";
 import { GallerySection } from "@/components/dashboard/sections/GallerySection";
 import { SidebarSection } from "@/components/dashboard/sections/SidebarSection";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/lib/supabase";
-import { toast } from "sonner";
-import { useState } from "react";
-import { Profile } from "@/types/profile";
 
 export default function ProviderDashboard() {
-  const { user } = useAuth();
   const { t } = useLanguage();
-  const navigate = useNavigate();
+  const { user } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  
-  useEffect(() => {
-    const checkUserType = async () => {
-      if (!user) {
-        navigate('/login');
-        return;
-      }
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    const fetchProfile = async () => {
       try {
+        if (!user) {
+          setLoading(false);
+          return;
+        }
+        
         const { data: profileData, error } = await supabase
           .from('profiles')
           .select('*')
@@ -36,23 +34,19 @@ export default function ProviderDashboard() {
 
         if (error) throw error;
 
-        if (profileData?.user_type !== 'provider') {
-          toast.error(t("onlyProvidersAllowed"));
-          navigate('/dashboard');
-          return;
-        }
-
-        setProfile(profileData as Profile);
+        // Use the casting function here
+        const typedProfile = castToProfile(profileData);
+        setProfile(typedProfile);
       } catch (error) {
-        console.error('Error checking user type:', error);
-        toast.error(t("errorCheckingUserType"));
+        console.error('Error fetching profile:', error);
+        toast.error(t("errorLoadingProfile"));
       } finally {
         setLoading(false);
       }
     };
 
-    checkUserType();
-  }, [user, navigate, t]);
+    fetchProfile();
+  }, [user, navigate]);
 
   const handleProfileUpdate = (updatedProfile: Profile) => {
     setProfile(updatedProfile);
@@ -127,8 +121,6 @@ export default function ProviderDashboard() {
             handleProfileUpdate={handleProfileUpdate}
             userId={user?.id || ""}
           />
-
-          <ServicesSection />
 
           <GallerySection
             userId={user?.id || ""}

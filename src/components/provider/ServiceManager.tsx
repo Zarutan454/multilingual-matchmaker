@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ServiceForm } from "./ServiceForm";
 import { ServiceList } from "./ServiceList";
+import { castToService } from "@/types/profile";
 
 export const ServiceManager = () => {
   const { t } = useLanguage();
@@ -13,7 +14,6 @@ export const ServiceManager = () => {
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Fetch existing services
   const { data: services = [], isLoading } = useQuery({
     queryKey: ['services', user?.id],
     queryFn: async () => {
@@ -28,7 +28,8 @@ export const ServiceManager = () => {
         toast.error(t("errorLoadingServices"));
         return [];
       }
-      return data || [];
+      
+      return (data || []).map(castToService);
     },
     enabled: !!user
   });

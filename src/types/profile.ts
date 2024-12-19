@@ -78,18 +78,18 @@ export function castToProfile(data: Record<string, unknown>): Profile {
     occupation: data.occupation as string | null,
     height: data.height as string | null,
     weight: data.weight as string | null,
-    availability: (data.availability as string[]) || null,
-    service_categories: (data.service_categories as string[]) || null,
+    availability: Array.isArray(data.availability) ? data.availability : null,
+    service_categories: Array.isArray(data.service_categories) ? data.service_categories : null,
     price_range: data.price_range as Profile['price_range'],
     availability_status: (data.availability_status as Profile['availability_status']) || 'offline',
-    gallery: (data.gallery as string[]) || null,
-    languages: (data.languages as string[]) || undefined,
-    services: (data.services as Service[]) || undefined,
-    age: data.age as number | undefined,
+    gallery: Array.isArray(data.gallery) ? data.gallery : null,
+    languages: Array.isArray(data.languages) ? data.languages : [],
+    services: Array.isArray(data.services) ? data.services.map(castToService) : [],
+    age: typeof data.age === 'number' ? data.age : undefined,
     gender: data.gender as string | undefined,
     user_type: (data.user_type as 'customer' | 'provider') || 'customer',
     last_seen: data.last_seen as string | null,
-  } as Profile;
+  };
 }
 
 // Helper function to safely cast Supabase response to Service
@@ -99,8 +99,8 @@ export function castToService(data: Record<string, unknown>): Service {
     name: String(data.name || ''),
     description: data.description as string | null,
     duration: Number(data.duration || 0),
-    price: data.price as number | undefined,
+    price: typeof data.price === 'number' ? data.price : undefined,
     category: data.category as string | undefined,
-    categories: (data.categories as string[]) || undefined,
+    categories: Array.isArray(data.categories) ? data.categories : undefined,
   };
 }
