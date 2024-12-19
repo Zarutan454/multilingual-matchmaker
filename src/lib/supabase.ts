@@ -1,4 +1,4 @@
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
 import { toast } from "sonner";
 import { Database } from '@/integrations/supabase/types';
 
@@ -9,79 +9,58 @@ if (!supabaseUrl || !supabaseKey) {
   throw new Error('Supabase Anmeldedaten fehlen in der Umgebungskonfiguration');
 }
 
-let supabaseInstance: SupabaseClient<Database> | null = null;
-let isReconnecting = false;
-let lastOnlineCheck = 0;
+// Singleton-Instanz des Supabase-Clients
+export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true
+  },
+  realtime: {
+    params: {
+      eventsPerSecond: 10
+    }
+  }
+});
 
-export const getSupabaseClient = () => {
-  if (supabaseInstance) return supabaseInstance;
+// Verbindungsprüfung
+export const checkConnection = async (retries = 3): Promise<boolean> => {
+  try {
+    console.log('Überprüfe Supabase Verbindung...');
+    
+    for (let i = 0; i < retries; i++) {
+      try {
+        const result = await Promise.race([
+          supabase.from('profiles').select('id').limit(1).single(),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 10000))
+        ]);
 
-  supabaseInstance = createClient<Database>(supabaseUrl, supabaseKey, {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-      detectSessionInUrl: true
-    },
-    realtime: {
-      params: {
-        eventsPerSecond: 10
+        if (result && !result.error) {
+          console.log('Supabase Verbindung erfolgreich');
+          return true;
+        }
+
+        if (i < retries - 1) {
+          console.log('Verbindungsversuch fehlgeschlagen, versuche es erneut...');
+          await new Promise(resolve => setTimeout(resolve, Math.min(1000 * Math.pow(2, i), 10000)));
+        }
+      } catch (error) {
+        if (i === retries - 1) {
+          console.error('Maximale Anzahl an Verbindungsversuchen erreicht');
+          toast.error('Verbindung zum Server konnte nicht hergestellt werden');
+          return false;
+        }
       }
     }
-  });
-
-  return supabaseInstance;
-};
-
-export const supabase = getSupabaseClient();
-
-interface ConnectionCheckResult {
-  data: unknown;
-  error: Error | null;
-}
-
-export const checkConnection = async (retries = 3): Promise<boolean> => {
-  if (isReconnecting) {
-    console.log('Bereits dabei, die Verbindung wiederherzustellen...');
+  } catch (error) {
+    console.error('Fehler bei der Verbindungsprüfung:', error);
     return false;
   }
-
-  isReconnecting = true;
-  console.log('Überprüfe Supabase Verbindung...');
-
-  for (let i = 0; i < retries; i++) {
-    try {
-      console.log(`Verbindungsversuch ${i + 1} von ${retries}...`);
-      
-      const result = await Promise.race([
-        supabase.from('profiles').select('id').limit(1).single(),
-        new Promise<ConnectionCheckResult>((_, reject) => 
-          setTimeout(() => reject(new Error('Timeout')), 10000)
-        )
-      ]);
-
-      if (result && !result.error) {
-        console.log('Supabase Verbindung erfolgreich');
-        isReconnecting = false;
-        return true;
-      }
-
-      console.log('Verbindungsversuch fehlgeschlagen, versuche es erneut...');
-      await new Promise(resolve => setTimeout(resolve, Math.min(1000 * Math.pow(2, i), 10000)));
-    } catch (error) {
-      console.error('Fehler beim Verbindungsversuch:', error);
-      
-      if (i === retries - 1) {
-        console.error('Maximale Anzahl an Verbindungsversuchen erreicht');
-        toast.error('Verbindung zum Server konnte nicht hergestellt werden');
-        isReconnecting = false;
-        return false;
-      }
-    }
-  }
-
-  isReconnecting = false;
   return false;
 };
+
+// Verbindungsüberwachung
+let lastOnlineCheck = 0;
 
 const handleConnectionChange = async () => {
   const now = Date.now();
@@ -104,6 +83,7 @@ if (typeof window !== 'undefined') {
   window.addEventListener('online', handleConnectionChange);
   window.addEventListener('offline', handleConnectionChange);
 
+  // Initiale Verbindungsprüfung
   setTimeout(() => {
     checkConnection(3).then(isConnected => {
       if (!isConnected) {
