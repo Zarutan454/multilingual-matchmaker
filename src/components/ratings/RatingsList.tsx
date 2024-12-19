@@ -55,7 +55,7 @@ export const RatingsList = ({ providerId }: RatingsListProps) => {
 
       if (error) throw error;
       
-      return (data as SupabaseRating[]).map((item) => ({
+      return (data as unknown as SupabaseRating[]).map((item) => ({
         id: item.id,
         rating: item.rating,
         comment: item.comment,
