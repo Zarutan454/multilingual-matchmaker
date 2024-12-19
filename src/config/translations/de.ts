@@ -54,5 +54,14 @@ export const deTranslations: Translations = {
   price: "Preis",
   categories: "Kategorien",
   applyFilters: "Filter anwenden",
-  resetFilters: "Filter zurücksetzen"
+  resetFilters: "Filter zurücksetzen",
+
+  // Rating criteria translations
+  communicationRating: "Kommunikation",
+  professionalismRating: "Professionalität",
+  cleanlinessRating: "Sauberkeit",
+  locationRating: "Standort",
+  valueRating: "Preis-Leistung",
+  pleaseRateAllCriteria: "Bitte bewerten Sie alle Kriterien",
+  overallRating: "Gesamtbewertung",
 };

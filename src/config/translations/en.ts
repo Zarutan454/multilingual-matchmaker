@@ -89,6 +89,13 @@ export const enTranslations: Translations = {
   errorSubmittingRating: "Error submitting rating",
   pleaseSelectRating: "Please select a rating",
   ratingComment: "Rating comment",
-  pricing: "Pricing",
-  hour: "Hour"
+
+  // Rating criteria translations
+  communicationRating: "Communication",
+  professionalismRating: "Professionalism",
+  cleanlinessRating: "Cleanliness",
+  locationRating: "Location",
+  valueRating: "Value for Money",
+  pleaseRateAllCriteria: "Please rate all criteria",
+  overallRating: "Overall Rating",
 };
