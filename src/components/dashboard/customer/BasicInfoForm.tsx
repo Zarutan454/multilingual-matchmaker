@@ -57,7 +57,7 @@ export const BasicInfoForm = ({ form }: BasicInfoFormProps) => {
               <Input 
                 type="number" 
                 {...field} 
-                onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : '')}
+                onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
                 value={field.value || ''}
                 className="bg-black/30 border-[#9b87f5]/30 text-white placeholder:text-gray-400"
               />
@@ -78,7 +78,7 @@ export const BasicInfoForm = ({ form }: BasicInfoFormProps) => {
                   <SelectValue placeholder={t("selectGender")} />
                 </SelectTrigger>
               </FormControl>
-              <SelectContent>
+              <SelectContent className="bg-black/90 border-[#9b87f5]/30">
                 <SelectItem value="not_specified">{t("preferNotToSay")}</SelectItem>
                 <SelectItem value="male">{t("male")}</SelectItem>
                 <SelectItem value="female">{t("female")}</SelectItem>
