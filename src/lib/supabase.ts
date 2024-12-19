@@ -22,18 +22,20 @@ export const getSupabaseClient = () => {
       detectSessionInUrl: true,
       storage: typeof window !== 'undefined' ? window.localStorage : undefined
     },
+    db: {
+      schema: 'public'
+    },
     global: {
       headers: {
         'Content-Type': 'application/json',
       },
+      // Erhöhen des Timeouts auf 30 Sekunden
       fetch: (url, options = {}) => {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000);
-        
         return fetch(url, {
           ...options,
-          signal: controller.signal,
-        }).finally(() => clearTimeout(timeoutId));
+          // Kein AbortController mehr, stattdessen längerer Timeout
+          signal: AbortSignal.timeout(30000) // 30 Sekunden Timeout
+        });
       }
     }
   });
@@ -43,8 +45,8 @@ export const getSupabaseClient = () => {
 
 export const supabase = getSupabaseClient();
 
-// Improved connection check with retry mechanism
-export const checkConnection = async (retries = 3, baseDelay = 1000) => {
+// Verbesserte Verbindungsprüfung mit Wiederholungsversuch
+export const checkConnection = async (retries = 3, baseDelay = 2000) => {
   for (let i = 0; i < retries; i++) {
     try {
       const { data, error } = await supabase
@@ -61,13 +63,13 @@ export const checkConnection = async (retries = 3, baseDelay = 1000) => {
       console.warn(`Connection attempt ${i + 1} failed:`, error);
       
       if (i < retries - 1) {
-        const delay = baseDelay * Math.pow(2, i);
+        const delay = baseDelay * Math.pow(2, i); // Exponentielles Backoff
         await new Promise(resolve => setTimeout(resolve, delay));
       }
     } catch (error) {
       console.error('Connection error:', error);
       if (i === retries - 1) {
-        toast.error('Database connection could not be established');
+        toast.error('Datenbankverbindung konnte nicht hergestellt werden');
         return false;
       }
     }
@@ -75,21 +77,21 @@ export const checkConnection = async (retries = 3, baseDelay = 1000) => {
   return false;
 };
 
-// Initialize connection monitoring
+// Verbindungsüberwachung initialisieren
 if (typeof window !== 'undefined') {
   window.addEventListener('online', () => {
     checkConnection().then(isConnected => {
       if (isConnected) {
-        toast.success('Connection restored');
+        toast.success('Verbindung wiederhergestellt');
       }
     });
   });
 
   window.addEventListener('offline', () => {
-    toast.error('No internet connection');
+    toast.error('Keine Internetverbindung');
   });
 
-  // Initial connection check
+  // Initiale Verbindungsprüfung
   checkConnection().then(isConnected => {
     if (!isConnected) {
       console.error('Initial Supabase connection failed');
