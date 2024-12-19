@@ -20,7 +20,11 @@ export interface Profile extends BasicInfo, Appearance, Measurements {
   phone_verified?: boolean;
   services?: Service[];
   rating?: number;
+  average_rating?: number;
   reviews_count?: number;
+  messages_count?: number;
+  is_verified?: boolean;
+  membership_level?: 'basic' | 'premium' | 'vip';
   contact_info?: {
     phone?: string;
     email?: string;
@@ -28,7 +32,6 @@ export interface Profile extends BasicInfo, Appearance, Measurements {
   services_offered?: string[];
   working_hours?: Record<string, string[]>;
   rates?: Record<string, number>;
-  membership_level?: 'bronze' | 'silver' | 'gold' | 'vip';
   likes_count?: number;
 }
 
