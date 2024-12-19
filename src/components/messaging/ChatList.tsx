@@ -2,6 +2,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChatMessage } from "./ChatMessage";
 import { Loader2 } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 interface Message {
   id: string;
@@ -19,6 +20,11 @@ interface ChatListProps {
 
 export const ChatList = ({ messages, currentUserId, isLoading }: ChatListProps) => {
   const { t } = useLanguage();
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   if (isLoading) {
     return (
@@ -48,6 +54,7 @@ export const ChatList = ({ messages, currentUserId, isLoading }: ChatListProps) 
           avatarUrl={message.avatarUrl}
         />
       ))}
+      <div ref={bottomRef} />
     </ScrollArea>
   );
 };

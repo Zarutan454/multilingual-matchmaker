@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, Loader2 } from "lucide-react";
 
 interface Message {
   id: string;
@@ -27,11 +27,11 @@ export const ChatWindow = ({ recipientId, recipientName }: ChatWindowProps) => {
   const { toast } = useToast();
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
     if (!user) return;
 
-    // Nachrichten laden
     const loadMessages = async () => {
       try {
         const { data, error } = await supabase
@@ -43,7 +43,6 @@ export const ChatWindow = ({ recipientId, recipientName }: ChatWindowProps) => {
 
         if (error) throw error;
 
-        // Properly type the messages
         const typedMessages: Message[] = data.map(msg => ({
           id: String(msg.id),
           content: String(msg.content),
@@ -53,6 +52,15 @@ export const ChatWindow = ({ recipientId, recipientName }: ChatWindowProps) => {
         }));
 
         setMessages(typedMessages);
+
+        // Nachrichten als gelesen markieren
+        if (user) {
+          await supabase
+            .from('messages')
+            .update({ read: true })
+            .eq('recipient', user.id)
+            .eq('sender', recipientId);
+        }
       } catch (error) {
         console.error('Error loading messages:', error);
         toast({
@@ -87,6 +95,12 @@ export const ChatWindow = ({ recipientId, recipientName }: ChatWindowProps) => {
             timestamp: new Date(newMessage.created_at),
             avatarUrl: newMessage.sender === user.id ? user.user_metadata?.avatar_url : undefined
           }]);
+
+          // Neue Nachricht als gelesen markieren
+          supabase
+            .from('messages')
+            .update({ read: true })
+            .eq('id', newMessage.id);
         }
       )
       .subscribe();
@@ -98,6 +112,7 @@ export const ChatWindow = ({ recipientId, recipientName }: ChatWindowProps) => {
 
   const handleSendMessage = async (content: string) => {
     if (!user) return;
+    setIsSending(true);
 
     try {
       const { error } = await supabase
@@ -107,7 +122,8 @@ export const ChatWindow = ({ recipientId, recipientName }: ChatWindowProps) => {
             content,
             sender: user.id,
             recipient: recipientId,
-            created_at: new Date().toISOString()
+            created_at: new Date().toISOString(),
+            read: false
           }
         ]);
 
@@ -115,7 +131,7 @@ export const ChatWindow = ({ recipientId, recipientName }: ChatWindowProps) => {
 
       // Optimistische UI-Aktualisierung
       setMessages(prev => [...prev, {
-        id: Date.now().toString(), // temporäre ID
+        id: Date.now().toString(),
         content,
         sender: user.id,
         timestamp: new Date(),
@@ -128,8 +144,20 @@ export const ChatWindow = ({ recipientId, recipientName }: ChatWindowProps) => {
         description: t("errorSendingMessage"),
         variant: "destructive"
       });
+    } finally {
+      setIsSending(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <Card className="w-full max-w-2xl mx-auto bg-[#1a1a1a] border-neutral-800">
+        <div className="flex items-center justify-center h-[500px]">
+          <Loader2 className="h-8 w-8 animate-spin text-[#9b87f5]" />
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card className="w-full max-w-2xl mx-auto bg-[#1a1a1a] border-neutral-800">
@@ -147,7 +175,7 @@ export const ChatWindow = ({ recipientId, recipientName }: ChatWindowProps) => {
         />
         <ChatInput 
           onSendMessage={handleSendMessage} 
-          disabled={!user || isLoading}
+          disabled={!user || isLoading || isSending}
         />
       </CardContent>
     </Card>
