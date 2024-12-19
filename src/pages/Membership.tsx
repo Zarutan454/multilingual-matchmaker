@@ -4,9 +4,11 @@ import { SubscriptionPlans } from "../components/subscription/SubscriptionPlans"
 import { Helmet } from "react-helmet";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ThemeProvider } from "next-themes";
+import { useTheme } from "next-themes";
 
 export default function Membership() {
   const { t } = useLanguage();
+  const { theme } = useTheme();
 
   useEffect(() => {
     console.log("Membership page viewed");
@@ -25,7 +27,11 @@ export default function Membership() {
         <meta name="twitter:description" content={t("choosePlan")} />
       </Helmet>
 
-      <div className="min-h-screen bg-background text-foreground transition-colors">
+      <div className={`min-h-screen transition-colors ${
+        theme === 'dark' 
+          ? 'bg-black text-white' 
+          : 'bg-white text-black'
+      }`}>
         <Navbar />
         <div className="container mx-auto px-4 py-20">
           <div className="text-center space-y-4 mb-12">
@@ -34,7 +40,11 @@ export default function Membership() {
                 {t("premiumMembership").toUpperCase()}
               </span>
             </h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <p className={`max-w-2xl mx-auto ${
+              theme === 'dark' 
+                ? 'text-gray-300' 
+                : 'text-gray-600'
+            }`}>
               {t("choosePlan")}
             </p>
           </div>
