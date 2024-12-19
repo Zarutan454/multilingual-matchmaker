@@ -21,13 +21,15 @@ interface ProfileSectionProps {
   userId: string;
 }
 
-// Define the form validation schema
+// Verbesserte Formularvalidierung mit Zod
 const formSchema = z.object({
-  full_name: z.string().optional(),
-  location: z.string().optional(),
-  age: z.number().optional(),
+  full_name: z.string().min(1, 'Name ist erforderlich'),
+  location: z.string().min(1, 'Standort ist erforderlich'),
+  age: z.number().min(18, 'Alter muss mindestens 18 sein').max(100, 'Ungültiges Alter').optional(),
   interests: z.string().optional(),
-  gender: z.string().optional(),
+  gender: z.enum(['male', 'female', 'other'], {
+    required_error: 'Bitte wählen Sie ein Geschlecht',
+  }),
 });
 
 export const ProfileSection = ({
@@ -45,22 +47,73 @@ export const ProfileSection = ({
       location: profile?.location || "",
       age: profile?.age || undefined,
       interests: profile?.interests || "",
-      gender: profile?.gender || "",
+      gender: profile?.gender || undefined,
     },
   });
 
-  // Überprüfe die Session beim Laden und vor dem Speichern
-  useEffect(() => {
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast.error("Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.");
-        // Hier NICHT automatisch ausloggen oder weiterleiten
+  // Verbesserte Session-Überprüfung
+  const checkSession = async () => {
+    try {
+      const { data, error: sessionError } = await supabase.auth.getSession();
+      const session = data?.session;
+
+      if (sessionError) {
+        console.error('Session error:', sessionError);
+        toast.error("Es gab ein Problem mit Ihrer Sitzung. Bitte laden Sie die Seite neu.");
+        return false;
       }
-    };
-    
+
+      if (!session) {
+        console.warn('No active session found');
+        toast.error("Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.");
+        return false;
+      }
+
+      // Überprüfe Profilzugriff
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', userId)
+        .maybeSingle();
+
+      if (profileError) {
+        console.error('Profile fetch error:', profileError);
+        if (profileError.message.includes('timeout')) {
+          toast.error("Zeitüberschreitung beim Laden des Profils. Bitte versuchen Sie es erneut.");
+        } else {
+          toast.error("Fehler beim Laden des Profils. Bitte versuchen Sie es später erneut.");
+        }
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Session check error:', error);
+      toast.error("Ein unerwarteter Fehler ist aufgetreten. Bitte laden Sie die Seite neu.");
+      return false;
+    }
+  };
+
+  useEffect(() => {
     checkSession();
   }, []);
+
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    const isSessionValid = await checkSession();
+    if (!isSessionValid) return;
+
+    // Konvertiere die validierten Formulardaten in ein Profile-Objekt
+    const updatedProfile: Profile = {
+      ...profile!,
+      full_name: data.full_name,
+      location: data.location,
+      age: data.age,
+      interests: data.interests,
+      gender: data.gender,
+    };
+
+    handleProfileUpdate(updatedProfile);
+  };
 
   return (
     <Card className="bg-black/50 backdrop-blur-sm border-neutral-800 p-6">
@@ -93,7 +146,7 @@ export const ProfileSection = ({
         <div className="flex-1">
           {isEditing ? (
             <Form {...form}>
-              <form onSubmit={form.handleSubmit((data) => handleProfileUpdate(data as Profile))}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <ProfileEditForm
                   profile={profile}
                   onProfileUpdate={handleProfileUpdate}
