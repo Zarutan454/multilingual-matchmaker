@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase';
-import { LogLevel, LogEntry } from '@/types/logging';
+import { LogLevel, LogEntry, LoggingStats } from '@/types/logging';
 
 class Logger {
   private static instance: Logger;
