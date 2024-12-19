@@ -9,6 +9,11 @@ interface UseProfilesProps {
   location: string;
   category: string;
   orientation: string;
+  priceRange: {
+    min: number;
+    max: number;
+  };
+  availability?: Date;
   itemsPerPage: number;
 }
 
@@ -18,10 +23,12 @@ export const useProfiles = ({
   location,
   category,
   orientation,
+  priceRange,
+  availability,
   itemsPerPage
 }: UseProfilesProps) => {
   return useQuery({
-    queryKey: ['profiles', page, searchTerm, location, category, orientation],
+    queryKey: ['profiles', page, searchTerm, location, category, orientation, priceRange, availability],
     queryFn: async () => {
       try {
         console.log('Fetching profiles with params:', {
@@ -30,23 +37,11 @@ export const useProfiles = ({
           location,
           category,
           orientation,
+          priceRange,
+          availability,
           itemsPerPage
         });
 
-        // Debug query to check active providers
-        const { data: activeProviders, error: debugError } = await supabase
-          .from('profiles')
-          .select('id, full_name, user_type, is_active')
-          .eq('user_type', 'provider')
-          .eq('is_active', true);
-
-        console.log('Active providers found:', activeProviders);
-
-        if (debugError) {
-          console.error('Debug query error:', debugError);
-        }
-
-        // Hauptabfrage mit Filtern
         let query = supabase
           .from('profiles')
           .select(`
@@ -63,7 +58,8 @@ export const useProfiles = ({
             last_seen,
             role,
             likes_count,
-            user_type
+            user_type,
+            availability
           `)
           .eq('user_type', 'provider')
           .eq('is_active', true)
@@ -82,6 +78,13 @@ export const useProfiles = ({
         if (orientation) {
           query = query.contains('service_categories', [orientation]);
         }
+        if (priceRange) {
+          query = query.or(`and(price_range->min.gte.${priceRange.min},price_range->max.lte.${priceRange.max})`);
+        }
+        if (availability) {
+          const dateStr = availability.toISOString().split('T')[0];
+          query = query.contains('availability', [dateStr]);
+        }
 
         const { data, error } = await query;
 
@@ -90,11 +93,6 @@ export const useProfiles = ({
           toast.error('Fehler beim Laden der Profile');
           throw error;
         }
-
-        console.log('Filtered provider profiles:', {
-          total: data?.length,
-          profiles: data
-        });
 
         return data.map((profile: any): Profile => ({
           id: profile.id,

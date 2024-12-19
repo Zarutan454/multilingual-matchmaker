@@ -1,11 +1,25 @@
 import { useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { Search, MapPin, Grid, Globe, Heart } from "lucide-react";
+import { Search, MapPin, Grid, Globe, Heart, Clock, DollarSign } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { de } from "date-fns/locale";
 
 interface SearchBarProps {
-  onSearch: (searchTerm: string, location: string, category: string, country: string, state: string, orientation: string) => void;
+  onSearch: (
+    searchTerm: string,
+    location: string,
+    category: string,
+    country: string,
+    state: string,
+    orientation: string,
+    priceRange: { min: number; max: number },
+    availability: Date | undefined
+  ) => void;
 }
 
 export const SearchBar = ({ onSearch }: SearchBarProps) => {
@@ -15,6 +29,8 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedState, setSelectedState] = useState("");
   const [selectedOrientation, setSelectedOrientation] = useState("");
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 });
+  const [selectedDate, setSelectedDate] = useState<Date>();
 
   const countries = [
     { id: "de", name: "Deutschland" },
@@ -52,6 +68,14 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
     { id: "lgbtq+", name: "LGBTQ+" }
   ];
 
+  const categories = [
+    { id: "dinner", name: "Dinner Date" },
+    { id: "event", name: "Event Begleitung" },
+    { id: "travel", name: "Reisebegleitung" },
+    { id: "wellness", name: "Wellness" },
+    { id: "culture", name: "Kultur" }
+  ];
+
   const getStatesForCountry = (countryId: string) => {
     switch (countryId) {
       case "de":
@@ -66,7 +90,16 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
   };
 
   const handleSearch = () => {
-    onSearch(searchTerm, location, category, selectedCountry, selectedState, selectedOrientation);
+    onSearch(
+      searchTerm,
+      location,
+      category,
+      selectedCountry,
+      selectedState,
+      selectedOrientation,
+      priceRange,
+      selectedDate
+    );
   };
 
   return (
@@ -116,6 +149,22 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
         </div>
 
         <div className="relative">
+          <Grid className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 z-10" />
+          <Select value={category} onValueChange={setCategory}>
+            <SelectTrigger className="pl-10 bg-black/50 border-[#9b87f5]/30 text-white">
+              <SelectValue placeholder="Kategorie auswählen" />
+            </SelectTrigger>
+            <SelectContent className="bg-[#1A1F2C] border-[#9b87f5]/30">
+              {categories.map((cat) => (
+                <SelectItem key={cat.id} value={cat.id} className="text-white hover:bg-[#9b87f5]/20">
+                  {cat.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="relative">
           <Heart className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 z-10" />
           <Select value={selectedOrientation} onValueChange={setSelectedOrientation}>
             <SelectTrigger className="pl-10 bg-black/50 border-[#9b87f5]/30 text-white">
@@ -132,14 +181,46 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
         </div>
 
         <div className="relative">
-          <Grid className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          <Input
-            type="text"
-            placeholder="Kategorie"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="pl-10 bg-black/50 border-[#9b87f5]/30 text-white placeholder-white/50 focus:border-[#9b87f5] focus:ring-[#9b87f5]/20"
-          />
+          <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="w-full pl-10 bg-black/50 border-[#9b87f5]/30 text-white justify-start">
+                {priceRange.min}€ - {priceRange.max}€
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 bg-[#1A1F2C] border-[#9b87f5]/30">
+              <div className="p-4">
+                <h4 className="font-medium text-white mb-4">Preisbereich</h4>
+                <Slider
+                  defaultValue={[priceRange.min, priceRange.max]}
+                  max={1000}
+                  step={50}
+                  onValueChange={(value) => setPriceRange({ min: value[0], max: value[1] })}
+                  className="mt-2"
+                />
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
+
+        <div className="relative">
+          <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="w-full pl-10 bg-black/50 border-[#9b87f5]/30 text-white justify-start">
+                {selectedDate ? format(selectedDate, 'PP', { locale: de }) : 'Verfügbarkeit wählen'}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0 bg-[#1A1F2C] border-[#9b87f5]/30">
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={setSelectedDate}
+                initialFocus
+                className="rounded-md border-0"
+              />
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
       

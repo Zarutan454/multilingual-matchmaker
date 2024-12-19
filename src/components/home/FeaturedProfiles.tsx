@@ -17,6 +17,8 @@ export const FeaturedProfiles = () => {
   const [location, setLocation] = useState("");
   const [category, setCategory] = useState("");
   const [orientation, setOrientation] = useState("");
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 });
+  const [availability, setAvailability] = useState<Date>();
   const [page, setPage] = useState(0);
 
   usePresence();
@@ -27,6 +29,8 @@ export const FeaturedProfiles = () => {
     location,
     category,
     orientation,
+    priceRange,
+    availability,
     itemsPerPage: ITEMS_PER_PAGE
   });
 
@@ -42,12 +46,16 @@ export const FeaturedProfiles = () => {
     category: string,
     country: string,
     state: string,
-    orientation: string
+    orientation: string,
+    priceRange: { min: number; max: number },
+    availability: Date | undefined
   ) => {
     setSearchTerm(searchTerm);
     setLocation(location);
     setCategory(category);
     setOrientation(orientation);
+    setPriceRange(priceRange);
+    setAvailability(availability);
     setPage(0);
   };
 
