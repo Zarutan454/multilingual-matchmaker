@@ -2,7 +2,7 @@ import { Profile } from "@/types/profile";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Edit2, Check } from "lucide-react";
-import { AchievementBadge } from "@/components/badges/AchievementBadge";
+import { AchievementBadge, AchievementType } from "@/components/badges/AchievementBadge";
 
 interface ProfileHeaderProps {
   profile: Profile | null;
@@ -21,13 +21,13 @@ export const ProfileHeader = ({
 }: ProfileHeaderProps) => {
   const { t } = useLanguage();
 
-  const achievements = [
-    ...(profile?.is_verified ? ["verified"] : []),
-    ...(profile?.messages_count >= 100 ? ["messages"] : []),
-    ...(profile?.average_rating >= 4.5 ? ["ratings"] : []),
-    ...(profile?.membership_level === "premium" ? ["premium"] : []),
-    ...(profile?.membership_level === "vip" ? ["vip"] : []),
-  ] as const;
+  const achievements: AchievementType[] = [
+    ...(profile?.is_verified ? ["verified" as const] : []),
+    ...(profile?.messages_count >= 100 ? ["messages" as const] : []),
+    ...(profile?.average_rating >= 4.5 ? ["ratings" as const] : []),
+    ...(profile?.membership_level === "premium" ? ["premium" as const] : []),
+    ...(profile?.membership_level === "vip" ? ["vip" as const] : []),
+  ];
 
   return (
     <div className="flex justify-between items-start mb-6">
