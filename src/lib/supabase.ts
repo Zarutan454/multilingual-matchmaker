@@ -16,13 +16,12 @@ let supabaseInstance: ReturnType<typeof createClient<Database>> | null = null;
 let isInitializing = false;
 let connectionCheckInterval: NodeJS.Timeout | null = null;
 
-export const getSupabaseClient = async () => {
+export const getSupabaseClient = () => {
   if (supabaseInstance) return supabaseInstance;
   
   if (isInitializing) {
     // Warte, bis die Initialisierung abgeschlossen ist
-    await new Promise(resolve => setTimeout(resolve, 100));
-    return getSupabaseClient();
+    return new Promise(resolve => setTimeout(() => resolve(getSupabaseClient()), 100));
   }
 
   isInitializing = true;
@@ -47,8 +46,6 @@ export const getSupabaseClient = async () => {
       }
     });
 
-    // Initialer Verbindungstest
-    await testConnection();
     startConnectionCheck();
 
     return supabaseInstance;
@@ -60,13 +57,10 @@ export const getSupabaseClient = async () => {
 };
 
 const testConnection = async (retries = 3): Promise<boolean> => {
+  const client = getSupabaseClient();
   for (let i = 0; i < retries; i++) {
     try {
-      if (!supabaseInstance) {
-        throw new Error('Supabase-Client nicht initialisiert');
-      }
-
-      const { error } = await supabaseInstance
+      const { error } = await client
         .from('profiles')
         .select('id')
         .limit(1)
@@ -118,9 +112,6 @@ const reinitializeConnection = async () => {
   }
 };
 
-// Exportiere eine vorinitialisierte Instanz
-export const supabase = await getSupabaseClient();
-
 // Cleanup-Funktion
 export const cleanup = () => {
   if (connectionCheckInterval) {
@@ -130,5 +121,8 @@ export const cleanup = () => {
   supabaseInstance = null;
   isInitializing = false;
 };
+
+// Exportiere eine vorinitialisierte Instanz
+export const supabase = getSupabaseClient();
 
 export default supabase;
