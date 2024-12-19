@@ -21,6 +21,19 @@ class Logger {
     }
   }
 
+  // Add the missing methods that map to the log method
+  async info(message: string, metadata?: Record<string, any>) {
+    return this.log('info', message, metadata);
+  }
+
+  async warn(message: string, metadata?: Record<string, any>) {
+    return this.log('warning', message, metadata);
+  }
+
+  async error(message: string, metadata?: Record<string, any>) {
+    return this.log('error', message, metadata);
+  }
+
   async getLogs(limit = 100): Promise<LogEntry[]> {
     try {
       const { data, error } = await supabase
