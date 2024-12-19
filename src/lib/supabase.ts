@@ -16,8 +16,8 @@ let supabaseInstance: ReturnType<typeof createClient<Database>> | null = null;
 let isInitializing = false;
 let reconnectAttempts = 0;
 const MAX_RECONNECT_ATTEMPTS = 5;
-const INITIAL_RETRY_DELAY = 1000; // 1 second
 const MAX_RETRY_DELAY = 32000; // 32 seconds
+const INITIAL_RETRY_DELAY = 1000; // 1 second
 
 const createSupabaseClient = () => {
   try {
@@ -134,7 +134,10 @@ export const cleanup = () => {
     clearInterval(healthCheckInterval);
   }
   if (supabaseInstance) {
-    supabaseInstance.removeAllSubscriptions();
+    // Remove all realtime subscriptions
+    supabaseInstance.getSubscriptions().forEach(subscription => {
+      supabaseInstance?.removeSubscription(subscription);
+    });
   }
   supabaseInstance = null;
   isInitializing = false;
