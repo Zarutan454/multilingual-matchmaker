@@ -1,11 +1,10 @@
-import { Profile as BaseProfile } from './baseProfile';
+import { BaseProfile } from './baseProfile';
 import { Appearance } from './appearance';
 import { Measurements } from './measurements';
 import { ContactInfo } from './contactInfo';
 import { ServiceInfo } from './serviceInfo';
 
-export interface Profile extends BaseProfile, Appearance, Measurements {
-  id: string;
+export interface Profile extends BaseProfile {
   avatar_url: string | null;
   banner_url: string | null;
   interests: string | null;
@@ -22,6 +21,8 @@ export interface Profile extends BaseProfile, Appearance, Measurements {
   user_type: UserType;
   is_verified: boolean;
   verification_status: VerificationStatus;
+  appearance?: Appearance;
+  measurements?: Measurements;
 }
 
 export type AvailabilityStatus = 'online' | 'offline' | 'busy';

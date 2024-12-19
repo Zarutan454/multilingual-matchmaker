@@ -23,18 +23,20 @@ export const translateText = async (
     );
 
     if (!response.ok) {
-      throw new Error(`Translation failed: ${response.statusText}`);
+      console.error('Translation failed:', response.statusText);
+      return text; // Return original text if translation fails
     }
 
     const data = await response.json();
     if (!data || !data[0] || !data[0][0]) {
-      throw new Error("Invalid translation response");
+      console.error('Invalid translation response');
+      return text;
     }
 
     return data[0][0][0] || text;
   } catch (error) {
     console.error("Translation error:", error);
-    throw error;
+    return text; // Return original text on error
   }
 };
 
@@ -42,11 +44,16 @@ export const translateObject = async <T extends Record<string, string>>(
   obj: T,
   targetLang: Language
 ): Promise<T> => {
-  const entries = await Promise.all(
-    Object.entries(obj).map(async ([key, value]) => [
-      key,
-      await translateText(value, targetLang)
-    ])
-  );
-  return Object.fromEntries(entries) as T;
+  try {
+    const entries = await Promise.all(
+      Object.entries(obj).map(async ([key, value]) => [
+        key,
+        await translateText(value, targetLang)
+      ])
+    );
+    return Object.fromEntries(entries) as T;
+  } catch (error) {
+    console.error('Translation object error:', error);
+    return obj; // Return original object on error
+  }
 };

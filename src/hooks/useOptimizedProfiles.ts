@@ -48,7 +48,17 @@ export const useOptimizedProfiles = ({
             role,
             likes_count,
             user_type,
-            membership_level
+            membership_level,
+            bio,
+            banner_url,
+            interests,
+            occupation,
+            availability,
+            gallery,
+            contact_info,
+            service_info,
+            is_verified,
+            verification_status
           `, { count: 'exact' })
           .eq('user_type', 'provider')
           .eq('is_active', true)
@@ -84,28 +94,28 @@ export const useOptimizedProfiles = ({
         return {
           profiles: data.map((profile: any): Profile => ({
             id: profile.id,
-            full_name: profile.full_name || 'Anonymous',
+            full_name: profile.full_name || null,
             avatar_url: profile.avatar_url || '/placeholder.svg',
-            banner_url: null,
-            location: profile.location || 'Unknown',
-            bio: null,
+            banner_url: profile.banner_url || null,
+            location: profile.location || null,
+            bio: profile.bio || null,
             nickname: null,
-            interests: null,
-            occupation: null,
-            height: null,
-            weight: null,
-            availability: null,
+            interests: profile.interests || null,
+            occupation: profile.occupation || null,
+            availability: profile.availability || null,
             service_categories: profile.service_categories || [],
             price_range: profile.price_range || defaultPriceRange,
             availability_status: profile.availability_status || 'offline',
-            gallery: null,
+            gallery: profile.gallery || null,
             languages: profile.languages || ['Deutsch'],
+            contact_info: profile.contact_info || {},
+            service_info: profile.service_info || {},
             user_type: 'provider',
             is_verified: false,
             verification_status: 'pending',
             last_seen: profile.last_seen,
-            contact_info: {},
-            service_info: {},
+            age: profile.age || null,
+            gender: profile.gender || null
           })),
           total: count || 0
         };
