@@ -33,7 +33,7 @@ export const RatingsList = ({ providerId }: RatingsListProps) => {
           rating,
           comment,
           created_at,
-          user:user_id (
+          user:profiles!ratings_user_id_fkey (
             full_name,
             avatar_url
           )
@@ -42,7 +42,17 @@ export const RatingsList = ({ providerId }: RatingsListProps) => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data as Rating[];
+      
+      return (data || []).map((item: any) => ({
+        id: item.id,
+        rating: item.rating,
+        comment: item.comment,
+        created_at: item.created_at,
+        user: {
+          full_name: item.user.full_name,
+          avatar_url: item.user.avatar_url
+        }
+      })) as Rating[];
     },
   });
 

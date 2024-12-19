@@ -17,38 +17,7 @@ export const ProviderRatings = ({ providerId }: ProviderRatingsProps) => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("summary");
 
-  // Beispieldaten - später durch echte Daten ersetzen
-  const mockRatings = [
-    {
-      id: "1",
-      rating: 5,
-      comment: "Excellent service!",
-      createdAt: new Date().toISOString(),
-      userName: "John Doe",
-    },
-    {
-      id: "2",
-      rating: 4,
-      comment: "Very good experience",
-      createdAt: new Date().toISOString(),
-      userName: "Jane Smith",
-    },
-  ];
-
-  const mockSummary = {
-    averageRating: 4.5,
-    totalRatings: 2,
-    ratingDistribution: {
-      1: 0,
-      2: 0,
-      3: 0,
-      4: 1,
-      5: 1,
-    },
-  };
-
   const handleRatingSubmit = (rating: number, comment: string) => {
-    // Hier später die API-Integration implementieren
     console.log("Rating submitted:", { rating, comment, providerId });
     toast.success(t("ratingSubmitted"));
     setActiveTab("list");
@@ -69,10 +38,10 @@ export const ProviderRatings = ({ providerId }: ProviderRatingsProps) => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="summary">
-            <RatingsSummary {...mockSummary} />
+            <RatingsSummary providerId={providerId} />
           </TabsContent>
           <TabsContent value="list">
-            <RatingsList ratings={mockRatings} />
+            <RatingsList providerId={providerId} />
           </TabsContent>
           <TabsContent value="rate">
             <RatingInput providerId={providerId} onRatingSubmit={handleRatingSubmit} />
