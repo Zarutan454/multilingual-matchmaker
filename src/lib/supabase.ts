@@ -12,11 +12,22 @@ if (!supabaseUrl || !supabaseKey) {
   throw new Error(error);
 }
 
-// Singleton-Pattern für den Supabase-Client
 let supabaseInstance: ReturnType<typeof createClient<Database>> | null = null;
+let isInitializing = false;
+let connectionCheckInterval: NodeJS.Timeout | null = null;
 
-export const getSupabaseClient = () => {
-  if (!supabaseInstance) {
+export const getSupabaseClient = async () => {
+  if (supabaseInstance) return supabaseInstance;
+  
+  if (isInitializing) {
+    // Warte, bis die Initialisierung abgeschlossen ist
+    await new Promise(resolve => setTimeout(resolve, 100));
+    return getSupabaseClient();
+  }
+
+  isInitializing = true;
+
+  try {
     supabaseInstance = createClient<Database>(supabaseUrl, supabaseKey, {
       auth: {
         autoRefreshToken: true,
@@ -29,104 +40,95 @@ export const getSupabaseClient = () => {
           'Accept': 'application/json',
         }
       },
-      // Verbindungseinstellungen optimieren
       realtime: {
         params: {
-          eventsPerSecond: 2
+          eventsPerSecond: 1
         }
       }
     });
+
+    // Initialer Verbindungstest
+    await testConnection();
+    startConnectionCheck();
+
+    return supabaseInstance;
+  } catch (error) {
+    console.error('Fehler bei der Supabase-Initialisierung:', error);
+    isInitializing = false;
+    throw error;
   }
-  return supabaseInstance;
 };
 
-export const supabase = getSupabaseClient();
-
-// Optimierte Verbindungsprüfung mit exponential backoff
 const testConnection = async (retries = 3): Promise<boolean> => {
   for (let i = 0; i < retries; i++) {
     try {
-      const { error } = await supabase
+      if (!supabaseInstance) {
+        throw new Error('Supabase-Client nicht initialisiert');
+      }
+
+      const { error } = await supabaseInstance
         .from('profiles')
         .select('id')
         .limit(1)
         .single();
 
       if (error) {
-        console.warn(`Verbindungsversuch ${i + 1}/${retries} fehlgeschlagen:`, error.message);
         if (i === retries - 1) {
-          toast.error(`Datenbankverbindung fehlgeschlagen: ${error.message}`);
+          console.error('Verbindungstest fehlgeschlagen:', error);
           return false;
         }
-        // Exponential backoff
         await new Promise(resolve => setTimeout(resolve, Math.min(1000 * Math.pow(2, i), 10000)));
         continue;
       }
 
-      console.log('Supabase Verbindung erfolgreich hergestellt');
       return true;
-    } catch (error: any) {
-      console.error('Unerwarteter Fehler:', error);
+    } catch (error) {
       if (i === retries - 1) {
-        toast.error(`Verbindungsfehler: ${error.message}`);
+        console.error('Unerwarteter Fehler beim Verbindungstest:', error);
         return false;
       }
+      await new Promise(resolve => setTimeout(resolve, Math.min(1000 * Math.pow(2, i), 10000)));
     }
   }
   return false;
 };
 
-// Verbindungsüberwachung optimieren
-let isTestingConnection = false;
-let reconnectTimeout: NodeJS.Timeout | null = null;
+const startConnectionCheck = () => {
+  if (connectionCheckInterval) {
+    clearInterval(connectionCheckInterval);
+  }
 
-const handleConnectionChange = async () => {
-  if (isTestingConnection) return;
-  isTestingConnection = true;
-
-  try {
-    if (navigator.onLine) {
-      const isConnected = await testConnection();
-      if (isConnected) {
-        toast.success('Verbindung wiederhergestellt');
-        if (reconnectTimeout) {
-          clearTimeout(reconnectTimeout);
-          reconnectTimeout = null;
-        }
-      } else {
-        // Verzögerte Wiederverbindung
-        reconnectTimeout = setTimeout(() => {
-          handleConnectionChange();
-        }, 30000); // 30 Sekunden warten vor erneutem Versuch
-      }
-    } else {
-      toast.error('Keine Internetverbindung');
+  // Prüfe die Verbindung alle 30 Sekunden
+  connectionCheckInterval = setInterval(async () => {
+    const isConnected = await testConnection(1);
+    if (!isConnected) {
+      console.warn('Verbindung unterbrochen, versuche neu zu verbinden...');
+      await reinitializeConnection();
     }
-  } finally {
-    isTestingConnection = false;
+  }, 30000);
+};
+
+const reinitializeConnection = async () => {
+  try {
+    supabaseInstance = null;
+    isInitializing = false;
+    await getSupabaseClient();
+  } catch (error) {
+    console.error('Fehler bei der Neuinitialisierung:', error);
   }
 };
 
-// Event Listener für Online/Offline Status
-if (typeof window !== 'undefined') {
-  window.addEventListener('online', handleConnectionChange);
-  window.addEventListener('offline', handleConnectionChange);
+// Exportiere eine vorinitialisierte Instanz
+export const supabase = await getSupabaseClient();
 
-  // Initiale Verbindungsprüfung mit Verzögerung
-  setTimeout(() => {
-    testConnection().catch(console.error);
-  }, 2000);
-}
-
-// Cleanup Funktion
+// Cleanup-Funktion
 export const cleanup = () => {
-  if (typeof window !== 'undefined') {
-    window.removeEventListener('online', handleConnectionChange);
-    window.removeEventListener('offline', handleConnectionChange);
-    if (reconnectTimeout) {
-      clearTimeout(reconnectTimeout);
-    }
+  if (connectionCheckInterval) {
+    clearInterval(connectionCheckInterval);
+    connectionCheckInterval = null;
   }
+  supabaseInstance = null;
+  isInitializing = false;
 };
 
 export default supabase;
