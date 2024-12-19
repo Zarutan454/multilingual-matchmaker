@@ -17,26 +17,37 @@ let isInitializing = false;
 let reconnectAttempts = 0;
 const MAX_RECONNECT_ATTEMPTS = 5;
 const INITIAL_RETRY_DELAY = 1000; // 1 second
+const MAX_RETRY_DELAY = 32000; // 32 seconds
 
 const createSupabaseClient = () => {
-  return createClient<Database>(supabaseUrl, supabaseKey, {
-    auth: {
-      autoRefreshToken: true,
-      persistSession: true,
-      detectSessionInUrl: true
-    },
-    global: {
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
+  try {
+    return createClient<Database>(supabaseUrl, supabaseKey, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true,
+        storage: window.localStorage,
+        storageKey: 'supabase.auth.token',
+      },
+      global: {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        }
+      },
+      realtime: {
+        params: {
+          eventsPerSecond: 1
+        }
+      },
+      db: {
+        schema: 'public'
       }
-    },
-    realtime: {
-      params: {
-        eventsPerSecond: 1
-      }
-    }
-  });
+    });
+  } catch (error) {
+    console.error('Fehler beim Erstellen des Supabase-Clients:', error);
+    throw error;
+  }
 };
 
 export const getSupabaseClient = () => {
@@ -51,8 +62,10 @@ export const getSupabaseClient = () => {
 
   try {
     supabaseInstance = createSupabaseClient();
+    console.log('Supabase Client erfolgreich initialisiert');
     isInitializing = false;
-    reconnectAttempts = 0; // Reset reconnect attempts on successful connection
+    reconnectAttempts = 0;
+    startHealthCheck();
     return supabaseInstance;
   } catch (error) {
     console.error('Fehler bei der Supabase-Initialisierung:', error);
@@ -69,7 +82,7 @@ const handleConnectionError = async () => {
     return;
   }
 
-  const delay = INITIAL_RETRY_DELAY * Math.pow(2, reconnectAttempts);
+  const delay = Math.min(INITIAL_RETRY_DELAY * Math.pow(2, reconnectAttempts), MAX_RETRY_DELAY);
   reconnectAttempts++;
 
   console.log(`Versuche Wiederverbindung in ${delay/1000} Sekunden... (Versuch ${reconnectAttempts})`);
@@ -77,16 +90,17 @@ const handleConnectionError = async () => {
   await new Promise(resolve => setTimeout(resolve, delay));
   
   try {
+    cleanup();
     supabaseInstance = createSupabaseClient();
     console.log('Wiederverbindung erfolgreich');
     toast.success('Verbindung wiederhergestellt');
+    startHealthCheck();
   } catch (error) {
     console.error('Wiederverbindung fehlgeschlagen:', error);
-    handleConnectionError(); // Retry with exponential backoff
+    handleConnectionError();
   }
 };
 
-// Verbindungsüberwachung
 let healthCheckInterval: NodeJS.Timeout | null = null;
 
 const startHealthCheck = () => {
@@ -95,8 +109,15 @@ const startHealthCheck = () => {
   }
 
   healthCheckInterval = setInterval(async () => {
+    if (!supabaseInstance) return;
+
     try {
-      const { error } = await supabaseInstance?.from('profiles').select('id').limit(1).single() || {};
+      const { error } = await supabaseInstance
+        .from('profiles')
+        .select('id')
+        .limit(1)
+        .single();
+
       if (error) {
         console.warn('Verbindungsprüfung fehlgeschlagen:', error);
         handleConnectionError();
@@ -105,20 +126,36 @@ const startHealthCheck = () => {
       console.error('Fehler bei der Verbindungsprüfung:', error);
       handleConnectionError();
     }
-  }, 30000); // Prüfe alle 30 Sekunden
+  }, 30000);
 };
 
-// Cleanup-Funktion
 export const cleanup = () => {
   if (healthCheckInterval) {
     clearInterval(healthCheckInterval);
+  }
+  if (supabaseInstance) {
+    supabaseInstance.removeAllSubscriptions();
   }
   supabaseInstance = null;
   isInitializing = false;
   reconnectAttempts = 0;
 };
 
-// Initialisiere den Client und starte die Überwachung
+// Event Listener für Online/Offline Status
+if (typeof window !== 'undefined') {
+  window.addEventListener('online', () => {
+    console.log('Online status detected');
+    if (!supabaseInstance) {
+      handleConnectionError();
+    }
+  });
+
+  window.addEventListener('offline', () => {
+    console.log('Offline status detected');
+    cleanup();
+  });
+}
+
 export const supabase = getSupabaseClient();
 if (supabase) {
   startHealthCheck();
