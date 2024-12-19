@@ -26,6 +26,11 @@ export const NotificationsCard = ({ user }: NotificationsCardProps) => {
           .limit(5);
 
         if (error) {
+          // If the table doesn't exist, return empty array instead of throwing
+          if (error.code === '42P01') {
+            console.log('Notifications table does not exist yet');
+            return [];
+          }
           console.error('Error fetching notifications:', error);
           return [];
         }
@@ -36,9 +41,11 @@ export const NotificationsCard = ({ user }: NotificationsCardProps) => {
         return [];
       }
     },
-    enabled: !!user
+    enabled: !!user,
+    retry: false // Don't retry if table doesn't exist
   });
 
+  // Don't render anything if there's an error
   if (isError) {
     return null;
   }
