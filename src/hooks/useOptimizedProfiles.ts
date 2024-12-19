@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { Profile } from "@/types/profile";
+import { Profile } from "@/types/profile/types";
 import { toast } from "sonner";
 
 interface UseProfilesProps {
@@ -97,6 +97,12 @@ export const useOptimizedProfiles = ({
             availability_status: profile.availability_status || 'offline',
             gallery: null,
             languages: profile.languages || ['Deutsch'],
+            contact_info: {},
+            service_info: {
+              services: [],
+              working_hours: {},
+              rates: {}
+            },
             age: profile.age || null,
             gender: null,
             last_seen: profile.last_seen,

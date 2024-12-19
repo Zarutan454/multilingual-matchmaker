@@ -23,6 +23,7 @@ export interface Profile extends BaseProfile {
   verification_status: VerificationStatus;
   appearance?: Appearance;
   measurements?: Measurements;
+  likes_count?: number;
 }
 
 export type AvailabilityStatus = 'online' | 'offline' | 'busy';
