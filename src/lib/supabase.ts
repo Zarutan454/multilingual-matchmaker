@@ -2,15 +2,18 @@ import { createClient } from '@supabase/supabase-js';
 import { toast } from "sonner";
 import { Database } from '@/integrations/supabase/types';
 
+// Umgebungsvariablen prüfen
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
-  console.error('Supabase credentials missing');
-  throw new Error('Supabase Anmeldedaten fehlen in der Umgebungskonfiguration');
+  const error = 'Supabase Anmeldedaten fehlen in der Umgebungskonfiguration';
+  console.error(error);
+  toast.error(error);
+  throw new Error(error);
 }
 
-// Singleton instance of Supabase client with improved error handling
+// Supabase Client mit optimierter Konfiguration
 export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
   auth: {
     autoRefreshToken: true,
@@ -20,17 +23,15 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
   global: {
     headers: {
       'Content-Type': 'application/json',
-      'Accept': 'application/json'
+      'Accept': 'application/json',
     }
   }
 });
 
-// Connection check with retry mechanism and improved error handling
-export const checkConnection = async (retries = 3): Promise<boolean> => {
+// Verbindungstest mit Retry-Logik
+const testConnection = async (retries = 3, delay = 1000): Promise<boolean> => {
   for (let i = 0; i < retries; i++) {
     try {
-      console.log(`Überprüfe Supabase Verbindung... Versuch ${i + 1}/${retries}`);
-      
       const { data, error } = await supabase
         .from('profiles')
         .select('id')
@@ -38,73 +39,68 @@ export const checkConnection = async (retries = 3): Promise<boolean> => {
         .single();
 
       if (error) {
-        console.error('Verbindungsfehler:', error);
+        console.warn(`Verbindungsversuch ${i + 1}/${retries} fehlgeschlagen:`, error.message);
         if (i === retries - 1) {
           toast.error(`Datenbankverbindung fehlgeschlagen: ${error.message}`);
           return false;
         }
-        
-        // Exponential backoff with jitter
-        const delay = Math.min(1000 * Math.pow(2, i) + Math.random() * 1000, 10000);
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise(resolve => setTimeout(resolve, delay * (i + 1)));
         continue;
       }
 
-      console.log('Supabase Verbindung erfolgreich');
+      console.log('Supabase Verbindung erfolgreich hergestellt');
       return true;
     } catch (error: any) {
-      console.error('Fehler bei der Verbindungsprüfung:', error);
-      
+      console.error('Unerwarteter Fehler:', error);
       if (i === retries - 1) {
         toast.error(`Verbindungsfehler: ${error.message}`);
         return false;
       }
-
-      // Exponential backoff with jitter for caught errors
-      const delay = Math.min(1000 * Math.pow(2, i) + Math.random() * 1000, 10000);
-      await new Promise(resolve => setTimeout(resolve, delay));
+      await new Promise(resolve => setTimeout(resolve, delay * (i + 1)));
     }
   }
   return false;
 };
 
-// Connection monitoring
-let isCheckingConnection = false;
+// Verbindungsüberwachung
+let isTestingConnection = false;
 
 const handleConnectionChange = async () => {
-  if (isCheckingConnection) return;
-  isCheckingConnection = true;
+  if (isTestingConnection) return;
+  isTestingConnection = true;
 
   try {
     if (navigator.onLine) {
-      console.log('Online status detected, checking connection...');
-      const isConnected = await checkConnection(3);
+      console.log('Online-Status erkannt, prüfe Verbindung...');
+      const isConnected = await testConnection();
       if (isConnected) {
         toast.success('Verbindung wiederhergestellt');
       }
     } else {
-      console.log('Offline status detected');
+      console.log('Offline-Status erkannt');
       toast.error('Keine Internetverbindung');
     }
   } finally {
-    isCheckingConnection = false;
+    isTestingConnection = false;
   }
 };
 
+// Event Listener für Online/Offline Status
 if (typeof window !== 'undefined') {
   window.addEventListener('online', handleConnectionChange);
   window.addEventListener('offline', handleConnectionChange);
-  
-  // Initial connection check with increased delay
+
+  // Initiale Verbindungsprüfung
   setTimeout(() => {
-    checkConnection(3).then(isConnected => {
+    testConnection().then(isConnected => {
       if (!isConnected) {
-        console.error('Initial connection check failed');
+        console.error('Initiale Verbindungsprüfung fehlgeschlagen');
       }
     });
-  }, 3000); // Increased delay to 3 seconds for initial connection
+  }, 1000);
 }
 
+// Cleanup Funktion
 export const cleanup = () => {
   if (typeof window !== 'undefined') {
     window.removeEventListener('online', handleConnectionChange);
