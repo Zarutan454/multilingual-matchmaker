@@ -48,7 +48,6 @@ export const useOptimizedProfiles = ({
           .eq('is_active', true)
           .order('last_seen', { ascending: false });
 
-        // Optimierte Filterlogik
         if (filters?.searchTerm) {
           query = query.textSearch('full_name', filters.searchTerm, {
             type: 'websearch',
@@ -72,7 +71,6 @@ export const useOptimizedProfiles = ({
           query = query.eq('role', filters.membershipLevel);
         }
 
-        // Pagination mit Limit und Offset
         const from = page * pageSize;
         const to = from + pageSize - 1;
         query = query.range(from, to);
@@ -84,21 +82,19 @@ export const useOptimizedProfiles = ({
         return {
           profiles: data.map((profile: any): Profile => ({
             id: profile.id,
-            name: profile.full_name || 'Anonymous',
-            image: profile.avatar_url || '/placeholder.svg',
-            category: profile.category || 'VIP Begleitung',
+            full_name: profile.full_name || 'Anonymous',
+            avatar_url: profile.avatar_url || '/placeholder.svg',
             location: profile.location || 'Unknown',
-            coordinates: { lat: 0, lng: 0 },
-            status: profile.availability_status || 'offline',
-            rating: 4.8,
-            reviews: 0,
-            spokenLanguages: profile.languages || ['Deutsch'],
+            category: profile.category || 'VIP Begleitung',
+            availability_status: profile.availability_status || 'offline',
+            languages: profile.languages || ['Deutsch'],
             age: profile.age || null,
-            serviceCategories: profile.service_categories || [],
-            priceRange: profile.price_range || { min: 0, max: 0 },
+            service_categories: profile.service_categories || [],
+            price_range: profile.price_range || { min: 0, max: 0 },
             last_seen: profile.last_seen,
-            membership_level: profile.role === 'vip' ? 'vip' : 'bronze',
-            likes_count: profile.likes_count || 0
+            role: profile.role === 'vip' ? 'vip' : 'bronze',
+            likes_count: profile.likes_count || 0,
+            user_type: profile.user_type || 'customer'
           })),
           total: count || 0
         };
@@ -108,8 +104,8 @@ export const useOptimizedProfiles = ({
         throw error;
       }
     },
-    staleTime: 1000 * 60 * 5, // 5 Minuten Cache
-    gcTime: 1000 * 60 * 30, // 30 Minuten Garbage Collection
+    staleTime: 1000 * 60 * 5, // 5 minutes cache
+    gcTime: 1000 * 60 * 30, // 30 minutes garbage collection
     enabled,
     meta: {
       errorMessage: 'Fehler beim Laden der Profile'
