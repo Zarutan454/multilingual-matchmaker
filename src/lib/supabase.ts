@@ -13,38 +13,20 @@ if (!supabaseUrl || !supabaseKey) {
 // Singleton instance of Supabase client with improved error handling
 export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
   auth: {
-    persistSession: true,
     autoRefreshToken: true,
+    persistSession: true,
     detectSessionInUrl: true
-  },
-  realtime: {
-    params: {
-      eventsPerSecond: 10
-    }
   },
   global: {
     headers: {
-      'Content-Type': 'application/json'
-    },
-    fetch: async (url, options = {}) => {
-      try {
-        const response = await fetch(url, {
-          ...options,
-          credentials: 'include',
-          mode: 'cors'
-        });
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        return response;
-      } catch (error) {
-        console.error('Fetch error:', error);
-        toast.error('Verbindungsfehler: Bitte überprüfen Sie Ihre Internetverbindung');
-        throw error;
-      }
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
     }
+  },
+  db: {
+    schema: 'public'
   }
 });
 
@@ -54,28 +36,28 @@ export const checkConnection = async (retries = 3): Promise<boolean> => {
     try {
       console.log(`Überprüfe Supabase Verbindung... Versuch ${i + 1}/${retries}`);
       
-      const { data, error: queryError } = await supabase
-        .from('profiles')
-        .select('id')
-        .limit(1)
-        .maybeSingle();
+      const { data, error } = await supabase.from('profiles').select('id').limit(1);
 
-      if (queryError) {
-        console.error('Verbindungsfehler:', queryError);
+      if (error) {
+        console.error('Verbindungsfehler:', error);
+        toast.error(`Verbindungsfehler: ${error.message}`);
+        
         if (i === retries - 1) {
-          toast.error('Verbindung zur Datenbank konnte nicht hergestellt werden');
           return false;
         }
+        
+        // Exponential backoff
         await new Promise(resolve => setTimeout(resolve, Math.min(1000 * Math.pow(2, i), 10000)));
         continue;
       }
 
       console.log('Supabase Verbindung erfolgreich');
       return true;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Fehler bei der Verbindungsprüfung:', error);
+      toast.error(`Verbindungsfehler: ${error.message}`);
+      
       if (i === retries - 1) {
-        toast.error('Verbindung zur Datenbank konnte nicht hergestellt werden');
         return false;
       }
     }
@@ -83,8 +65,7 @@ export const checkConnection = async (retries = 3): Promise<boolean> => {
   return false;
 };
 
-// Connection monitoring with improved error handling
-let connectionCheckTimeout: NodeJS.Timeout | null = null;
+// Connection monitoring
 let isCheckingConnection = false;
 
 const handleConnectionChange = async () => {
@@ -110,23 +91,19 @@ const handleConnectionChange = async () => {
 if (typeof window !== 'undefined') {
   window.addEventListener('online', handleConnectionChange);
   window.addEventListener('offline', handleConnectionChange);
-
-  connectionCheckTimeout = setTimeout(() => {
-    checkConnection(3).then(isConnected => {
-      if (!isConnected) {
-        toast.error('Verbindung zum Server konnte nicht hergestellt werden');
-      }
-    });
-  }, 1000);
+  
+  // Initial connection check
+  checkConnection(3).then(isConnected => {
+    if (!isConnected) {
+      toast.error('Verbindung zum Server konnte nicht hergestellt werden');
+    }
+  });
 }
 
 export const cleanup = () => {
   if (typeof window !== 'undefined') {
     window.removeEventListener('online', handleConnectionChange);
     window.removeEventListener('offline', handleConnectionChange);
-    if (connectionCheckTimeout) {
-      clearTimeout(connectionCheckTimeout);
-    }
   }
 };
 
