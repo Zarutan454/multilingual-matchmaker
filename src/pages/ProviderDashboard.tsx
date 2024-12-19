@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { Calendar, Image, MessageSquare, Settings, Users } from "lucide-react";
+import { AvailabilitySchedule } from "@/components/availability/AvailabilitySchedule";
 
 export default function ProviderDashboard() {
   const { t } = useLanguage();
@@ -51,7 +52,7 @@ export default function ProviderDashboard() {
     fetchProfile();
   }, [user, navigate]);
 
-  const handleProfileUpdate = (updatedProfile: Profile) => {
+  const handleProfileUpdate = async (updatedProfile: Profile) => {
     setProfile(updatedProfile);
     setIsEditing(false);
   };
@@ -70,6 +71,46 @@ export default function ProviderDashboard() {
     } catch (error) {
       console.error('Error updating avatar:', error);
       toast.error(t("errorUpdatingProfileImage"));
+    }
+  };
+
+  const handleGalleryUpdate = async (url: string) => {
+    if (!profile) return;
+    
+    try {
+      const newGallery = [...(profile.gallery || []), url];
+      const { error } = await supabase
+        .from('profiles')
+        .update({ gallery: newGallery })
+        .eq('id', user?.id);
+
+      if (error) throw error;
+
+      setProfile(prev => prev ? { ...prev, gallery: newGallery } : null);
+      toast.success(t("galleryUpdated"));
+    } catch (error) {
+      console.error('Error updating gallery:', error);
+      toast.error(t("errorUpdatingGallery"));
+    }
+  };
+
+  const handleGalleryDelete = async (imageUrl: string) => {
+    if (!profile) return;
+    
+    try {
+      const newGallery = profile.gallery?.filter(url => url !== imageUrl) || [];
+      const { error } = await supabase
+        .from('profiles')
+        .update({ gallery: newGallery })
+        .eq('id', user?.id);
+
+      if (error) throw error;
+
+      setProfile(prev => prev ? { ...prev, gallery: newGallery } : null);
+      toast.success(t("imageDeleted"));
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      toast.error(t("errorDeletingImage"));
     }
   };
 
@@ -130,8 +171,8 @@ export default function ProviderDashboard() {
               <GallerySection
                 userId={user?.id || ""}
                 gallery={profile?.gallery}
-                onGalleryUpdate={() => {}}
-                onGalleryDelete={() => {}}
+                onGalleryUpdate={handleGalleryUpdate}
+                onGalleryDelete={handleGalleryDelete}
               />
             </Card>
           </TabsContent>

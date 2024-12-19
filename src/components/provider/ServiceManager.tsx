@@ -7,12 +7,17 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ServiceForm } from "./ServiceForm";
 import { ServiceList } from "./ServiceList";
 import { castToService } from "@/types/profile";
+import { Card } from "../ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { PricingManager } from "./PricingManager";
+import { ServiceCategorySelector } from "./ServiceCategorySelector";
 
 export const ServiceManager = () => {
   const { t } = useLanguage();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   const { data: services = [], isLoading } = useQuery({
     queryKey: ['services', user?.id],
@@ -139,9 +144,40 @@ export const ServiceManager = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <ServiceForm onSubmit={handleAddService} isSubmitting={isSubmitting} />
-      <ServiceList services={services} onDelete={handleDeleteService} isEditable={true} />
-    </div>
+    <Tabs defaultValue="services" className="space-y-6">
+      <TabsList className="grid grid-cols-3 gap-4">
+        <TabsTrigger value="services">
+          {t("services")}
+        </TabsTrigger>
+        <TabsTrigger value="categories">
+          {t("categories")}
+        </TabsTrigger>
+        <TabsTrigger value="pricing">
+          {t("pricing")}
+        </TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="services">
+        <div className="space-y-6">
+          <ServiceForm onSubmit={handleAddService} isSubmitting={isSubmitting} />
+          <ServiceList services={services} onDelete={handleDeleteService} isEditable={true} />
+        </div>
+      </TabsContent>
+
+      <TabsContent value="categories">
+        <Card className="p-6">
+          <ServiceCategorySelector
+            selectedCategories={selectedCategories}
+            onCategoryChange={setSelectedCategories}
+          />
+        </Card>
+      </TabsContent>
+
+      <TabsContent value="pricing">
+        <Card className="p-6">
+          <PricingManager />
+        </Card>
+      </TabsContent>
+    </Tabs>
   );
 };
