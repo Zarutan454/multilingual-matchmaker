@@ -34,6 +34,11 @@ export const getSupabaseClient = () => {
 
 export const supabase = getSupabaseClient();
 
+interface ConnectionCheckResult {
+  data: unknown;
+  error: Error | null;
+}
+
 export const checkConnection = async (retries = 3): Promise<boolean> => {
   if (isReconnecting) {
     console.log('Bereits dabei, die Verbindung wiederherzustellen...');
@@ -49,12 +54,12 @@ export const checkConnection = async (retries = 3): Promise<boolean> => {
       
       const result = await Promise.race([
         supabase.from('profiles').select('id').limit(1).single(),
-        new Promise((_, reject) => 
+        new Promise<ConnectionCheckResult>((_, reject) => 
           setTimeout(() => reject(new Error('Timeout')), 10000)
         )
       ]);
 
-      if ('data' in result && !result.error) {
+      if (result && !result.error) {
         console.log('Supabase Verbindung erfolgreich');
         isReconnecting = false;
         return true;
