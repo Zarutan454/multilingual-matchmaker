@@ -22,9 +22,6 @@ export const getSupabaseClient = () => {
       detectSessionInUrl: true,
       storage: typeof window !== 'undefined' ? window.localStorage : undefined
     },
-    db: {
-      schema: 'public'
-    },
     global: {
       headers: {
         'Content-Type': 'application/json',
