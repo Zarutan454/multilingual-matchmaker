@@ -1,24 +1,56 @@
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Star } from "lucide-react";
-import { useLanguage } from "../../contexts/LanguageContext";
-import { ScrollArea } from "../ui/scroll-area";
-import { Separator } from "../ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 
 interface Rating {
   id: string;
   rating: number;
   comment: string;
-  createdAt: string;
-  userName: string;
+  created_at: string;
+  user: {
+    full_name: string;
+    avatar_url: string;
+  };
 }
 
 interface RatingsListProps {
-  ratings: Rating[];
+  providerId: string;
 }
 
-export const RatingsList = ({ ratings }: RatingsListProps) => {
+export const RatingsList = ({ providerId }: RatingsListProps) => {
   const { t } = useLanguage();
 
-  if (ratings.length === 0) {
+  const { data: ratings, isLoading } = useQuery({
+    queryKey: ["ratings", providerId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("ratings")
+        .select(`
+          id,
+          rating,
+          comment,
+          created_at,
+          user:user_id (
+            full_name,
+            avatar_url
+          )
+        `)
+        .eq("provider_id", providerId)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      return data as Rating[];
+    },
+  });
+
+  if (isLoading) {
+    return <div className="animate-pulse">{t("loadingRatings")}</div>;
+  }
+
+  if (!ratings?.length) {
     return <p className="text-center text-gray-500">{t("noRatingsYet")}</p>;
   }
 
@@ -29,7 +61,7 @@ export const RatingsList = ({ ratings }: RatingsListProps) => {
           <div key={rating.id}>
             <div className="flex justify-between items-start">
               <div>
-                <p className="font-medium">{rating.userName}</p>
+                <p className="font-medium">{rating.user.full_name}</p>
                 <div className="flex items-center gap-1">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <Star
@@ -44,7 +76,7 @@ export const RatingsList = ({ ratings }: RatingsListProps) => {
                 </div>
               </div>
               <span className="text-sm text-gray-500">
-                {new Date(rating.createdAt).toLocaleDateString()}
+                {new Date(rating.created_at).toLocaleDateString()}
               </span>
             </div>
             <p className="mt-2 text-gray-600">{rating.comment}</p>
