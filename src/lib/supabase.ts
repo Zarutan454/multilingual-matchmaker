@@ -29,33 +29,6 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
   db: {
     schema: 'public'
   },
-  // Add retry configuration
-  realtime: {
-    params: {
-      eventsPerSecond: 10,
-    },
-  },
-  // Add better error handling
-  fetch: (url, options = {}) => {
-    return fetch(url, {
-      ...options,
-      headers: {
-        ...options.headers,
-        'Cache-Control': 'no-cache',
-      },
-    }).then(async (response) => {
-      if (!response.ok) {
-        const error = await response.json();
-        console.error('Supabase request failed:', error);
-        throw new Error(error.message || 'An error occurred while fetching data');
-      }
-      return response;
-    }).catch((error) => {
-      console.error('Supabase request error:', error);
-      toast.error('Verbindungsfehler: Bitte überprüfen Sie Ihre Internetverbindung');
-      throw error;
-    });
-  }
 });
 
 // Add connection health check
@@ -93,5 +66,3 @@ export const retryOperation = async (
     }
   }
 };
-
-export default supabase;
