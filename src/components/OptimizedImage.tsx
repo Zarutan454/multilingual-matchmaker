@@ -8,6 +8,7 @@ interface OptimizedImageProps {
   width?: number;
   height?: number;
   style?: React.CSSProperties;
+  priority?: boolean;
 }
 
 export const OptimizedImage = ({
@@ -16,7 +17,8 @@ export const OptimizedImage = ({
   className,
   width,
   height,
-  style
+  style,
+  priority = false
 }: OptimizedImageProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -32,7 +34,8 @@ export const OptimizedImage = ({
         alt={alt}
         width={width}
         height={height}
-        loading="lazy"
+        loading={priority ? "eager" : "lazy"}
+        decoding={priority ? "sync" : "async"}
         style={style}
         onLoad={() => setIsLoading(false)}
         onError={() => {
