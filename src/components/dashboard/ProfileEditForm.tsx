@@ -38,6 +38,13 @@ export const ProfileEditForm = ({ profile, onProfileUpdate }: ProfileEditFormPro
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      // Überprüfe die Session vor dem Speichern
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error(t("sessionExpired"));
+        return;
+      }
+
       if (!profile?.id) {
         throw new Error('Profile ID fehlt');
       }

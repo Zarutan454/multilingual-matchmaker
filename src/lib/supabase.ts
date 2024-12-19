@@ -52,7 +52,6 @@ export const checkConnection = async (retries = 3, delay = 2000) => {
 
       if (error) {
         console.error(`Verbindungsversuch ${i + 1} fehlgeschlagen:`, error);
-        toast.error(`Verbindungsfehler: ${error.message}`);
         
         if (i === retries - 1) {
           toast.error('Verbindung zur Datenbank fehlgeschlagen');
@@ -64,7 +63,6 @@ export const checkConnection = async (retries = 3, delay = 2000) => {
       }
 
       console.log('Datenbankverbindung erfolgreich getestet');
-      toast.success('Verbindung zur Datenbank hergestellt');
       return true;
     } catch (error) {
       console.error(`Verbindungstest ${i + 1} fehlgeschlagen:`, error);

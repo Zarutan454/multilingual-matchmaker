@@ -8,6 +8,9 @@ import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useEffect } from "react";
+import { toast } from "sonner";
+import { supabase } from "@/lib/supabase";
 
 interface ProfileSectionProps {
   profile: Profile | null;
@@ -45,6 +48,19 @@ export const ProfileSection = ({
       gender: profile?.gender || "",
     },
   });
+
+  // Überprüfe die Session beim Laden und vor dem Speichern
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.");
+        // Hier NICHT automatisch ausloggen oder weiterleiten
+      }
+    };
+    
+    checkSession();
+  }, []);
 
   return (
     <Card className="bg-black/50 backdrop-blur-sm border-neutral-800 p-6">
