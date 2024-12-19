@@ -1,3 +1,14 @@
+export interface Rating {
+  id: string;
+  provider_id?: string;
+  user_id?: string;
+  service_id?: string;
+  rating: number;
+  criteria?: Record<string, any>;
+  comment?: string;
+  created_at?: string;
+}
+
 export interface RatingCriteria {
   communication: number;
   professionalism: number;
@@ -6,12 +17,8 @@ export interface RatingCriteria {
   value: number;
 }
 
-export interface DetailedRating {
-  id: string;
-  overall_rating: number;
-  criteria: RatingCriteria;
-  comment: string;
-  created_at: string;
-  user_id: string;
-  provider_id: string;
+export interface RatingSummary {
+  averageRating: number;
+  totalRatings: number;
+  distribution: Record<number, number>;
 }

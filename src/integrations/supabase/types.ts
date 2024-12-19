@@ -9,6 +9,42 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      blog_posts: {
+        Row: {
+          author: string | null
+          content: string | null
+          id: string
+          published: boolean | null
+          publishedat: string | null
+          slug: string | null
+          tags: string[] | null
+          title: string
+          updatedat: string | null
+        }
+        Insert: {
+          author?: string | null
+          content?: string | null
+          id?: string
+          published?: boolean | null
+          publishedat?: string | null
+          slug?: string | null
+          tags?: string[] | null
+          title: string
+          updatedat?: string | null
+        }
+        Update: {
+          author?: string | null
+          content?: string | null
+          id?: string
+          published?: boolean | null
+          publishedat?: string | null
+          slug?: string | null
+          tags?: string[] | null
+          title?: string
+          updatedat?: string | null
+        }
+        Relationships: []
+      }
       favorites: {
         Row: {
           created_at: string
@@ -62,6 +98,63 @@ export type Database = {
           read?: boolean | null
           recipient?: string | null
           sender?: string | null
+        }
+        Relationships: []
+      }
+      news_items: {
+        Row: {
+          content: string | null
+          expiresat: string | null
+          id: string
+          priority: string | null
+          published: boolean | null
+          publishedat: string | null
+          title: string
+        }
+        Insert: {
+          content?: string | null
+          expiresat?: string | null
+          id?: string
+          priority?: string | null
+          published?: boolean | null
+          publishedat?: string | null
+          title: string
+        }
+        Update: {
+          content?: string | null
+          expiresat?: string | null
+          id?: string
+          priority?: string | null
+          published?: boolean | null
+          publishedat?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          created_at: string | null
+          id: string
+          message: string
+          read: boolean | null
+          recipient_id: string | null
+          title: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          message: string
+          read?: boolean | null
+          recipient_id?: string | null
+          title: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          message?: string
+          read?: boolean | null
+          recipient_id?: string | null
+          title?: string
         }
         Relationships: []
       }
@@ -229,6 +322,47 @@ export type Database = {
         }
         Relationships: []
       }
+      ratings: {
+        Row: {
+          comment: string | null
+          created_at: string | null
+          criteria: Json | null
+          id: string
+          provider_id: string | null
+          rating: number | null
+          service_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string | null
+          criteria?: Json | null
+          id?: string
+          provider_id?: string | null
+          rating?: number | null
+          service_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string | null
+          criteria?: Json | null
+          id?: string
+          provider_id?: string | null
+          rating?: number | null
+          service_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ratings_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       services: {
         Row: {
           categories: string[] | null
@@ -259,6 +393,33 @@ export type Database = {
           name?: string
           price?: number | null
           provider_id?: string | null
+        }
+        Relationships: []
+      }
+      system_logs: {
+        Row: {
+          id: string
+          level: string | null
+          message: string
+          metadata: Json | null
+          timestamp: string | null
+          userid: string | null
+        }
+        Insert: {
+          id?: string
+          level?: string | null
+          message: string
+          metadata?: Json | null
+          timestamp?: string | null
+          userid?: string | null
+        }
+        Update: {
+          id?: string
+          level?: string | null
+          message?: string
+          metadata?: Json | null
+          timestamp?: string | null
+          userid?: string | null
         }
         Relationships: []
       }

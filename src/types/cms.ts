@@ -1,21 +1,21 @@
 export interface BlogPost {
   id: string;
   title: string;
-  content: string;
-  author: string;
+  content?: string;
+  author?: string;
   published: boolean;
-  publishedAt: string;
-  updatedAt: string;
-  slug: string;
-  tags: string[];
+  publishedAt?: string;
+  updatedAt?: string;
+  slug?: string;
+  tags?: string[];
 }
 
 export interface NewsItem {
   id: string;
   title: string;
-  content: string;
+  content?: string;
   published: boolean;
-  publishedAt: string;
-  priority: 'low' | 'medium' | 'high';
+  publishedAt?: string;
+  priority?: 'low' | 'medium' | 'high';
   expiresAt?: string;
 }

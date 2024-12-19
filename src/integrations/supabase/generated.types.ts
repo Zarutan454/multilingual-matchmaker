@@ -9,6 +9,41 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      blog_posts: {
+        Row: {
+          id: string
+          title: string
+          content: string | null
+          author: string | null
+          published: boolean | null
+          publishedAt: string | null
+          updatedAt: string | null
+          slug: string | null
+          tags: string[] | null
+        }
+        Insert: {
+          id?: string
+          title: string
+          content?: string | null
+          author?: string | null
+          published?: boolean | null
+          publishedAt?: string | null
+          updatedAt?: string | null
+          slug?: string | null
+          tags?: string[] | null
+        }
+        Update: {
+          id?: string
+          title?: string
+          content?: string | null
+          author?: string | null
+          published?: boolean | null
+          publishedAt?: string | null
+          updatedAt?: string | null
+          slug?: string | null
+          tags?: string[] | null
+        }
+      }
       favorites: {
         Row: {
           created_at: string
@@ -53,6 +88,61 @@ export interface Database {
           read?: boolean | null
           recipient?: string | null
           sender?: string | null
+        }
+      }
+      news_items: {
+        Row: {
+          id: string
+          title: string
+          content: string | null
+          published: boolean | null
+          publishedAt: string | null
+          priority: string | null
+          expiresAt: string | null
+        }
+        Insert: {
+          id?: string
+          title: string
+          content?: string | null
+          published?: boolean | null
+          publishedAt?: string | null
+          priority?: string | null
+          expiresAt?: string | null
+        }
+        Update: {
+          id?: string
+          title?: string
+          content?: string | null
+          published?: boolean | null
+          publishedAt?: string | null
+          priority?: string | null
+          expiresAt?: string | null
+        }
+      }
+      notifications: {
+        Row: {
+          id: string
+          recipient_id: string | null
+          title: string
+          message: string
+          read: boolean | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          recipient_id?: string | null
+          title: string
+          message: string
+          read?: boolean | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          recipient_id?: string | null
+          title?: string
+          message?: string
+          read?: boolean | null
+          created_at?: string | null
         }
       }
       profile_likes: {
@@ -209,6 +299,38 @@ export interface Database {
           user_type?: string | null
         }
       }
+      ratings: {
+        Row: {
+          id: string
+          provider_id: string | null
+          user_id: string | null
+          service_id: string | null
+          rating: number | null
+          criteria: Json | null
+          comment: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          provider_id?: string | null
+          user_id?: string | null
+          service_id?: string | null
+          rating?: number | null
+          criteria?: Json | null
+          comment?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          provider_id?: string | null
+          user_id?: string | null
+          service_id?: string | null
+          rating?: number | null
+          criteria?: Json | null
+          comment?: string | null
+          created_at?: string | null
+        }
+      }
       services: {
         Row: {
           id: string
@@ -239,6 +361,32 @@ export interface Database {
           created_at?: string
           categories?: string[] | null
           price?: number | null
+        }
+      }
+      system_logs: {
+        Row: {
+          id: string
+          timestamp: string | null
+          level: string | null
+          message: string
+          userId: string | null
+          metadata: Json | null
+        }
+        Insert: {
+          id?: string
+          timestamp?: string | null
+          level?: string | null
+          message: string
+          userId?: string | null
+          metadata?: Json | null
+        }
+        Update: {
+          id?: string
+          timestamp?: string | null
+          level?: string | null
+          message?: string
+          userId?: string | null
+          metadata?: Json | null
         }
       }
     }
