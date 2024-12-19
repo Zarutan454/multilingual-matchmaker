@@ -17,9 +17,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
     detectSessionInUrl: true,
     storage: window.localStorage,
     flowType: 'pkce',
-    debug: import.meta.env.DEV,
-    retryAttempts: 3,
-    timeout: 10000 // 10 seconds timeout
+    debug: import.meta.env.DEV
   },
   global: {
     headers: {
