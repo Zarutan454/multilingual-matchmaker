@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { ProfileBanner } from "@/components/profile/sections/ProfileBanner";
 import { DashboardHeader } from "../DashboardHeader";
+import { Navbar } from "@/components/Navbar";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -9,8 +10,12 @@ interface DashboardLayoutProps {
 }
 
 export const DashboardLayout = ({ children, userId, bannerUrl }: DashboardLayoutProps) => {
+  console.log("DashboardLayout rendering with userId:", userId);
+  
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#1A1F2C] to-black text-white">
+      <Navbar />
+      
       {/* Animated background particles */}
       <div className="absolute inset-0">
         {[...Array(50)].map((_, i) => (

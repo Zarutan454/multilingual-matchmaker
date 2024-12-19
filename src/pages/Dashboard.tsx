@@ -15,6 +15,7 @@ export default function Dashboard() {
   const { user } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
 
@@ -22,30 +23,42 @@ export default function Dashboard() {
     const fetchProfile = async () => {
       try {
         if (!user) {
-          setLoading(false);
+          console.log("No user found, redirecting to login");
+          navigate('/login');
           return;
         }
         
-        const { data: profileData, error } = await supabase
+        console.log("Fetching profile for user:", user.id);
+        const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', user.id)
           .single();
 
-        if (error) throw error;
+        if (profileError) {
+          console.error("Error fetching profile:", profileError);
+          throw profileError;
+        }
 
-        // Use the casting function here
+        if (!profileData) {
+          console.log("No profile data found");
+          setError("Profile not found");
+          return;
+        }
+
+        console.log("Profile data received:", profileData);
         const typedProfile = castToProfile(profileData);
 
-        // Redirect providers to their dashboard
         if (typedProfile.user_type === 'provider') {
+          console.log("User is a provider, redirecting to provider dashboard");
           navigate('/provider-dashboard');
           return;
         }
 
         setProfile(typedProfile);
       } catch (error) {
-        console.error('Error fetching profile:', error);
+        console.error('Error in fetchProfile:', error);
+        setError(t("errorLoadingProfile"));
         toast.error(t("errorLoadingProfile"));
       } finally {
         setLoading(false);
@@ -53,15 +66,17 @@ export default function Dashboard() {
     };
 
     fetchProfile();
-  }, [user, navigate]);
+  }, [user, navigate, t]);
 
   const handleProfileUpdate = (updatedProfile: Profile) => {
+    console.log("Updating profile:", updatedProfile);
     setProfile(updatedProfile);
     setIsEditing(false);
   };
 
   const handleAvatarUpdate = async (url: string) => {
     try {
+      console.log("Updating avatar URL:", url);
       const { error } = await supabase
         .from('profiles')
         .update({ avatar_url: url })
@@ -79,6 +94,7 @@ export default function Dashboard() {
 
   const handleGalleryUpdate = async (url: string) => {
     try {
+      console.log("Adding image to gallery:", url);
       const newGallery = [...(profile?.gallery || []), url];
       
       const { error } = await supabase
@@ -98,12 +114,20 @@ export default function Dashboard() {
 
   const handleGalleryDelete = async (imageUrl: string) => {
     try {
+      console.log("Deleting image from gallery:", imageUrl);
       const newGallery = profile?.gallery?.filter(url => url !== imageUrl) || [];
       
+      const { error } = await supabase
+        .from('profiles')
+        .update({ gallery: newGallery })
+        .eq('id', user?.id);
+
+      if (error) throw error;
+
       setProfile(prev => prev ? { ...prev, gallery: newGallery } : null);
       toast.success(t("imageDeletedFromGallery"));
     } catch (error) {
-      console.error('Error updating gallery:', error);
+      console.error('Error deleting from gallery:', error);
       toast.error(t("errorUpdatingGallery"));
     }
   };
@@ -114,6 +138,25 @@ export default function Dashboard() {
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[#9b87f5]"></div>
       </div>
     );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-[#1A1F2C] to-black">
+        <div className="text-white text-xl mb-4">{error}</div>
+        <button 
+          onClick={() => navigate('/login')}
+          className="px-4 py-2 bg-secondary text-white rounded hover:bg-secondary/80 transition-colors"
+        >
+          {t("backToLogin")}
+        </button>
+      </div>
+    );
+  }
+
+  if (!user) {
+    navigate('/login');
+    return null;
   }
 
   return (
