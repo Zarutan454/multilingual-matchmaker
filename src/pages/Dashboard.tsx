@@ -11,6 +11,7 @@ import { SidebarSection } from "@/components/dashboard/sections/SidebarSection";
 import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
+  console.log("Dashboard component rendering");
   const { t } = useLanguage();
   const { user } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -22,6 +23,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
+        console.log("fetchProfile starting, user:", user);
         if (!user) {
           console.log("No user found, redirecting to login");
           navigate('/login');
@@ -48,6 +50,7 @@ export default function Dashboard() {
 
         console.log("Profile data received:", profileData);
         const typedProfile = castToProfile(profileData);
+        console.log("Typed profile:", typedProfile);
 
         if (typedProfile.user_type === 'provider') {
           console.log("User is a provider, redirecting to provider dashboard");
@@ -68,69 +71,7 @@ export default function Dashboard() {
     fetchProfile();
   }, [user, navigate, t]);
 
-  const handleProfileUpdate = (updatedProfile: Profile) => {
-    console.log("Updating profile:", updatedProfile);
-    setProfile(updatedProfile);
-    setIsEditing(false);
-  };
-
-  const handleAvatarUpdate = async (url: string) => {
-    try {
-      console.log("Updating avatar URL:", url);
-      const { error } = await supabase
-        .from('profiles')
-        .update({ avatar_url: url })
-        .eq('id', user?.id);
-
-      if (error) throw error;
-
-      setProfile(prev => prev ? { ...prev, avatar_url: url } : null);
-      toast.success(t("profileImageUpdated"));
-    } catch (error) {
-      console.error('Error updating avatar:', error);
-      toast.error(t("errorUpdatingProfileImage"));
-    }
-  };
-
-  const handleGalleryUpdate = async (url: string) => {
-    try {
-      console.log("Adding image to gallery:", url);
-      const newGallery = [...(profile?.gallery || []), url];
-      
-      const { error } = await supabase
-        .from('profiles')
-        .update({ gallery: newGallery })
-        .eq('id', user?.id);
-
-      if (error) throw error;
-
-      setProfile(prev => prev ? { ...prev, gallery: newGallery } : null);
-      toast.success(t("imageAddedToGallery"));
-    } catch (error) {
-      console.error('Error updating gallery:', error);
-      toast.error(t("errorUpdatingGallery"));
-    }
-  };
-
-  const handleGalleryDelete = async (imageUrl: string) => {
-    try {
-      console.log("Deleting image from gallery:", imageUrl);
-      const newGallery = profile?.gallery?.filter(url => url !== imageUrl) || [];
-      
-      const { error } = await supabase
-        .from('profiles')
-        .update({ gallery: newGallery })
-        .eq('id', user?.id);
-
-      if (error) throw error;
-
-      setProfile(prev => prev ? { ...prev, gallery: newGallery } : null);
-      toast.success(t("imageDeletedFromGallery"));
-    } catch (error) {
-      console.error('Error deleting from gallery:', error);
-      toast.error(t("errorUpdatingGallery"));
-    }
-  };
+  console.log("Current state - loading:", loading, "error:", error, "profile:", profile);
 
   if (loading) {
     return (
