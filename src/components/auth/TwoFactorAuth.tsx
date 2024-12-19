@@ -10,6 +10,7 @@ export const TwoFactorAuth = () => {
   const [isEnabling2FA, setIsEnabling2FA] = useState(false);
   const [verificationCode, setVerificationCode] = useState('');
   const [showVerification, setShowVerification] = useState(false);
+  const [challengeId, setChallengeId] = useState<string>('');
   const { toast } = useToast();
   const { user } = useAuth();
 
@@ -18,11 +19,16 @@ export const TwoFactorAuth = () => {
     
     setIsEnabling2FA(true);
     try {
-      const { error } = await supabase.auth.mfa.enroll({
+      const { data, error } = await supabase.auth.mfa.enroll({
         factorType: 'totp'
       });
 
       if (error) throw error;
+
+      // Store the challenge ID for verification
+      if (data?.id) {
+        setChallengeId(data.id);
+      }
 
       setShowVerification(true);
       toast({
@@ -42,12 +48,21 @@ export const TwoFactorAuth = () => {
   };
 
   const verifyCode = async () => {
-    if (!user || !verificationCode) return;
+    if (!user || !verificationCode || !challengeId) return;
 
     setIsEnabling2FA(true);
     try {
+      // Create a new challenge for verification
+      const { data: challengeData, error: challengeError } = await supabase.auth.mfa.challenge({
+        factorId: 'totp'
+      });
+
+      if (challengeError) throw challengeError;
+
+      // Verify the code with the challenge
       const { error } = await supabase.auth.mfa.verify({
         factorId: 'totp',
+        challengeId: challengeData.id,
         code: verificationCode
       });
 
