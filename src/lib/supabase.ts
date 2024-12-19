@@ -25,8 +25,8 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
     headers: {
       'Content-Type': 'application/json'
     },
-    fetch: (...args) => {
-      return fetch(...args).catch(err => {
+    fetch: (url: RequestInfo | URL, options?: RequestInit) => {
+      return fetch(url, options).catch(err => {
         console.error('Fetch error:', err);
         toast.error('Verbindungsfehler: Bitte überprüfen Sie Ihre Internetverbindung');
         throw err;
