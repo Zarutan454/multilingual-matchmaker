@@ -21,10 +21,21 @@ interface RatingsListProps {
   providerId: string;
 }
 
+interface SupabaseRating {
+  id: string;
+  rating: number;
+  comment: string;
+  created_at: string;
+  user: {
+    full_name: string;
+    avatar_url: string;
+  };
+}
+
 export const RatingsList = ({ providerId }: RatingsListProps) => {
   const { t } = useLanguage();
 
-  const { data: ratings, isLoading } = useQuery({
+  const { data: ratings, isLoading } = useQuery<Rating[]>({
     queryKey: ["ratings", providerId],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -44,7 +55,7 @@ export const RatingsList = ({ providerId }: RatingsListProps) => {
 
       if (error) throw error;
       
-      return (data || []).map((item) => ({
+      return (data as SupabaseRating[]).map((item) => ({
         id: item.id,
         rating: item.rating,
         comment: item.comment,
@@ -53,7 +64,7 @@ export const RatingsList = ({ providerId }: RatingsListProps) => {
           full_name: item.user.full_name,
           avatar_url: item.user.avatar_url
         }
-      })) as Rating[];
+      }));
     },
   });
 
