@@ -3,25 +3,12 @@ import { toast } from "sonner";
 
 export const cleanDatabase = async () => {
   try {
-    // Profile-Tabelle bereinigen - Avatar und Gallery zurücksetzen
-    const { error: profileError } = await supabase
-      .from('profiles')
-      .update({
-        avatar_url: null,
-        gallery: [],
-        banner_url: null
-      })
-      .not('id', 'eq', 'system');
-
+    // Profile-Tabelle bereinigen mit SQL
+    const { error: profileError } = await supabase.rpc('clean_profiles');
     if (profileError) throw profileError;
 
-    // Nachrichten-Tabelle bereinigen - Medieninhalte entfernen
-    const { error: messagesError } = await supabase
-      .from('messages')
-      .update({
-        content: content => content.replace(/!\[.*?\]\(.*?\)/g, '[Bild entfernt]')
-      });
-
+    // Nachrichten-Tabelle bereinigen mit SQL
+    const { error: messagesError } = await supabase.rpc('clean_messages');
     if (messagesError) throw messagesError;
 
     // Storage-Bucket leeren
