@@ -1,14 +1,15 @@
-import { SelectQueryError } from '@supabase/supabase-js';
+import { PostgrestError } from '@supabase/supabase-js';
 
-export function isSelectQueryError(value: unknown): value is SelectQueryError<string> {
+export function isPostgrestError(value: unknown): value is PostgrestError {
   return (
     typeof value === 'object' &&
     value !== null &&
-    'error' in value &&
-    (value as any).error === true
+    'code' in value &&
+    'message' in value &&
+    'details' in value
   );
 }
 
 export function isValidData<T>(data: unknown): data is T {
-  return !isSelectQueryError(data);
+  return !isPostgrestError(data);
 }
