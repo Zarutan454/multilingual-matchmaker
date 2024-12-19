@@ -31,7 +31,7 @@ export const TimeSlotSelector = ({
         <label className="text-sm font-medium mb-1 block">
           {t("startTime")}
         </label>
-        <Select value={selectedStartTime} onValueChange={onStartTimeChange}>
+        <Select value={selectedStartTime || timeOptions[0]} onValueChange={onStartTimeChange}>
           <SelectTrigger>
             <SelectValue placeholder={t("selectStartTime")} />
           </SelectTrigger>
@@ -49,7 +49,7 @@ export const TimeSlotSelector = ({
         <label className="text-sm font-medium mb-1 block">
           {t("endTime")}
         </label>
-        <Select value={selectedEndTime} onValueChange={onEndTimeChange}>
+        <Select value={selectedEndTime || timeOptions[0]} onValueChange={onEndTimeChange}>
           <SelectTrigger>
             <SelectValue placeholder={t("selectEndTime")} />
           </SelectTrigger>
