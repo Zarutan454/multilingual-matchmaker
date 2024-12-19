@@ -1,8 +1,14 @@
-import { ReactNode } from 'react';
-import { Toast as ShadcnToast } from '@/components/ui/toast';
+import { LucideIcon } from 'lucide-react';
 
 declare module '@/hooks/use-toast' {
-  interface Toast extends ShadcnToast {
-    icon?: ReactNode;
+  interface Toast {
+    id: string;
+    title?: string;
+    description?: string;
+    action?: {
+      label: string;
+      onClick: () => void;
+    };
+    icon?: LucideIcon;
   }
 }
