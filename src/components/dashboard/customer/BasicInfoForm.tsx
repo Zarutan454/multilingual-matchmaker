@@ -18,9 +18,13 @@ export const BasicInfoForm = ({ form }: BasicInfoFormProps) => {
         name="full_name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>{t("fullName")}</FormLabel>
+            <FormLabel className="text-white">{t("fullName")}</FormLabel>
             <FormControl>
-              <Input {...field} value={field.value || ''} />
+              <Input 
+                {...field} 
+                value={field.value || ''} 
+                className="bg-black/30 border-[#9b87f5]/30 text-white placeholder:text-gray-400"
+              />
             </FormControl>
           </FormItem>
         )}
@@ -31,9 +35,13 @@ export const BasicInfoForm = ({ form }: BasicInfoFormProps) => {
         name="location"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>{t("location")}</FormLabel>
+            <FormLabel className="text-white">{t("location")}</FormLabel>
             <FormControl>
-              <Input {...field} value={field.value || ''} />
+              <Input 
+                {...field} 
+                value={field.value || ''} 
+                className="bg-black/30 border-[#9b87f5]/30 text-white placeholder:text-gray-400"
+              />
             </FormControl>
           </FormItem>
         )}
@@ -44,13 +52,14 @@ export const BasicInfoForm = ({ form }: BasicInfoFormProps) => {
         name="age"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>{t("age")}</FormLabel>
+            <FormLabel className="text-white">{t("age")}</FormLabel>
             <FormControl>
               <Input 
                 type="number" 
                 {...field} 
                 onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : '')}
                 value={field.value || ''}
+                className="bg-black/30 border-[#9b87f5]/30 text-white placeholder:text-gray-400"
               />
             </FormControl>
           </FormItem>
@@ -62,10 +71,10 @@ export const BasicInfoForm = ({ form }: BasicInfoFormProps) => {
         name="gender"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>{t("gender")}</FormLabel>
+            <FormLabel className="text-white">{t("gender")}</FormLabel>
             <Select onValueChange={field.onChange} value={field.value || ''}>
               <FormControl>
-                <SelectTrigger>
+                <SelectTrigger className="bg-black/30 border-[#9b87f5]/30 text-white">
                   <SelectValue placeholder={t("selectGender")} />
                 </SelectTrigger>
               </FormControl>

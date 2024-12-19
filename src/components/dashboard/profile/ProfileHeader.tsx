@@ -6,6 +6,7 @@ import { Edit, UserCog } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 interface ProfileHeaderProps {
   profile: Profile | null;
@@ -23,6 +24,7 @@ export const ProfileHeader = ({
   onProfileUpdate
 }: ProfileHeaderProps) => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
 
   const handleUserTypeChange = async (checked: boolean) => {
     try {
@@ -31,7 +33,6 @@ export const ProfileHeader = ({
         user_type: newUserType,
         category: checked ? 'VIP Begleitung' : null,
         service_categories: checked ? ['Dinner Dates', 'Events & Partys', 'Reisebegleitung'] : null,
-        // Zusätzliche Felder für Provider
         availability: checked ? [] : null,
         price_range: checked ? { min: 0, max: 0 } : null,
         services_offered: checked ? [] : null,
@@ -47,13 +48,20 @@ export const ProfileHeader = ({
         .single();
 
       if (error) throw error;
-
+      
       onProfileUpdate({
         ...profile!,
         ...updates
       } as Profile);
 
       toast.success(checked ? t("switchedToProvider") : t("switchedToCustomer"));
+      
+      // Automatische Weiterleitung zur entsprechenden Dashboard-Seite
+      if (checked) {
+        navigate('/provider-dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (error) {
       console.error('Error updating user type:', error);
       toast.error(t("errorUpdatingProfile"));
