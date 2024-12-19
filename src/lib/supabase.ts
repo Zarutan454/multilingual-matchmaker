@@ -20,9 +20,12 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
   global: {
     headers: {
       'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    },
+    fetch: (url, options = {}) => {
+      return fetch(url, {
+        ...options,
+        credentials: 'include',
+      });
     }
   },
   db: {
@@ -36,18 +39,22 @@ export const checkConnection = async (retries = 3): Promise<boolean> => {
     try {
       console.log(`Überprüfe Supabase Verbindung... Versuch ${i + 1}/${retries}`);
       
-      const { data, error } = await supabase.from('profiles').select('id').limit(1);
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id')
+        .limit(1)
+        .single();
 
       if (error) {
         console.error('Verbindungsfehler:', error);
-        toast.error(`Verbindungsfehler: ${error.message}`);
-        
         if (i === retries - 1) {
+          toast.error(`Datenbankverbindung fehlgeschlagen: ${error.message}`);
           return false;
         }
         
-        // Exponential backoff
-        await new Promise(resolve => setTimeout(resolve, Math.min(1000 * Math.pow(2, i), 10000)));
+        // Exponential backoff with jitter
+        const delay = Math.min(1000 * Math.pow(2, i) + Math.random() * 1000, 10000);
+        await new Promise(resolve => setTimeout(resolve, delay));
         continue;
       }
 
@@ -55,11 +62,15 @@ export const checkConnection = async (retries = 3): Promise<boolean> => {
       return true;
     } catch (error: any) {
       console.error('Fehler bei der Verbindungsprüfung:', error);
-      toast.error(`Verbindungsfehler: ${error.message}`);
       
       if (i === retries - 1) {
+        toast.error(`Verbindungsfehler: ${error.message}`);
         return false;
       }
+
+      // Exponential backoff with jitter for caught errors
+      const delay = Math.min(1000 * Math.pow(2, i) + Math.random() * 1000, 10000);
+      await new Promise(resolve => setTimeout(resolve, delay));
     }
   }
   return false;
@@ -93,11 +104,13 @@ if (typeof window !== 'undefined') {
   window.addEventListener('offline', handleConnectionChange);
   
   // Initial connection check
-  checkConnection(3).then(isConnected => {
-    if (!isConnected) {
-      toast.error('Verbindung zum Server konnte nicht hergestellt werden');
-    }
-  });
+  setTimeout(() => {
+    checkConnection(3).then(isConnected => {
+      if (!isConnected) {
+        console.error('Initial connection check failed');
+      }
+    });
+  }, 1000);
 }
 
 export const cleanup = () => {
