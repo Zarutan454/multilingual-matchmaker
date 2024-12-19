@@ -20,12 +20,6 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
     storage: window.localStorage,
     storageKey: 'supabase.auth.token',
   },
-  global: {
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    },
-  },
   db: {
     schema: 'public'
   },
@@ -66,3 +60,16 @@ export const retryOperation = async (
     }
   }
 };
+
+// Type guard for Supabase errors
+export const isSupabaseError = (error: unknown): error is { message: string } => {
+  return typeof error === 'object' && error !== null && 'message' in error;
+};
+
+// Helper function to safely cast database results
+export function castDatabaseResult<T>(data: unknown): T {
+  if (!data || typeof data !== 'object') {
+    throw new Error('Invalid data structure');
+  }
+  return data as T;
+}
