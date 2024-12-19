@@ -15,9 +15,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
     persistSession: true,
     autoRefreshToken: true,
     detectSessionInUrl: true,
-    storage: window.localStorage,
-    flowType: 'pkce',
-    debug: import.meta.env.DEV
+    storage: window.localStorage
   },
   global: {
     headers: {
@@ -27,58 +25,27 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
   },
   db: {
     schema: 'public'
-  },
-  realtime: {
-    params: {
-      eventsPerSecond: 10
-    }
   }
 });
 
-// Verbesserte Verbindungsprüfung mit Wiederholungslogik und Timeout
-export const checkConnection = async (retries = 3, delay = 2000) => {
-  for (let i = 0; i < retries; i++) {
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('count')
-        .limit(1)
-        .maybeSingle();
-
-      clearTimeout(timeoutId);
-
-      if (error) {
-        console.error(`Verbindungsversuch ${i + 1} fehlgeschlagen:`, error);
-        
-        if (i === retries - 1) {
-          toast.error('Verbindung zur Datenbank fehlgeschlagen');
-          return false;
-        }
-        
-        await new Promise(resolve => setTimeout(resolve, delay));
-        continue;
-      }
-
-      console.log('Datenbankverbindung erfolgreich getestet');
-      return true;
-    } catch (error) {
-      console.error(`Verbindungstest ${i + 1} fehlgeschlagen:`, error);
-      
-      if (i === retries - 1) {
-        toast.error('Keine Verbindung zur Datenbank möglich');
-        return false;
-      }
-      
-      await new Promise(resolve => setTimeout(resolve, delay));
+// Verbesserte Verbindungsprüfung
+export const checkConnection = async () => {
+  try {
+    const { data, error } = await supabase.auth.getSession();
+    
+    if (error) {
+      console.error('Verbindungsfehler:', error);
+      return false;
     }
+
+    return true;
+  } catch (error) {
+    console.error('Verbindungsfehler:', error);
+    return false;
   }
-  return false;
 };
 
-// Initialisiere Verbindung mit Wiederholungslogik
+// Initialisiere Verbindung
 let connectionInitialized = false;
 
 if (typeof window !== 'undefined' && !connectionInitialized) {
@@ -88,7 +55,7 @@ if (typeof window !== 'undefined' && !connectionInitialized) {
       console.log('Supabase Verbindung hergestellt');
     } else {
       console.error('Supabase Verbindung fehlgeschlagen');
-      toast.error('Verbindung zur Datenbank konnte nicht hergestellt werden. Bitte laden Sie die Seite neu.');
+      toast.error('Verbindung zur Datenbank konnte nicht hergestellt werden');
     }
   });
 }

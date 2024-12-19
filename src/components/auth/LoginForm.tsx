@@ -26,34 +26,40 @@ export const LoginForm = () => {
     
     setIsLoading(true);
     try {
+      // Versuche einzuloggen
       const { error: signInError } = await signIn(email, password);
+      
       if (signInError) {
+        console.error('Login error:', signInError);
         if (signInError.message.includes('Invalid login credentials')) {
           toast.error(t("invalidCredentials"));
         } else {
           toast.error(t("loginError"));
         }
-        console.error('Login error:', signInError);
         return;
       }
 
-      // Get the user's profile type after successful login
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('user_type')
-          .eq('id', user.id)
-          .single();
-
-        // Redirect based on user type
-        if (profile?.user_type === 'provider') {
-          navigate('/provider-dashboard');
-        } else {
-          navigate('/dashboard');
-        }
-        toast.success(t("loginSuccess"));
+      // Hole Benutzertyp nach erfolgreichem Login
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error(t("sessionError"));
+        return;
       }
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('user_type')
+        .eq('id', session.user.id)
+        .single();
+
+      // Weiterleitung basierend auf Benutzertyp
+      if (profile?.user_type === 'provider') {
+        navigate('/provider-dashboard');
+      } else {
+        navigate('/dashboard');
+      }
+      
+      toast.success(t("loginSuccess"));
     } catch (error) {
       console.error('Login error:', error);
       toast.error(t("loginError"));
