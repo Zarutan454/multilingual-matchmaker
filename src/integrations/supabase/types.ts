@@ -2,7 +2,15 @@ import { Database as DatabaseGenerated } from './generated.types';
 
 // Re-export the generated types
 export type { DatabaseGenerated as Database };
-export type Json = DatabaseGenerated['public']['Json'];
+
+// Export Json type explicitly
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[];
 
 // Export commonly used types
 export type Profile = DatabaseGenerated['public']['Tables']['profiles']['Row'];
