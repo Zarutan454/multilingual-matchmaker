@@ -18,6 +18,7 @@ let reconnectAttempts = 0;
 const MAX_RECONNECT_ATTEMPTS = 5;
 const MAX_RETRY_DELAY = 32000; // 32 seconds
 const INITIAL_RETRY_DELAY = 1000; // 1 second
+const CONNECTION_TIMEOUT = 30000; // 30 seconds
 
 const createSupabaseClient = () => {
   try {
@@ -33,6 +34,15 @@ const createSupabaseClient = () => {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+        },
+        fetch: (url, options = {}) => {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), CONNECTION_TIMEOUT);
+
+          return fetch(url, {
+            ...options,
+            signal: controller.signal,
+          }).finally(() => clearTimeout(timeoutId));
         }
       },
       realtime: {
@@ -48,6 +58,39 @@ const createSupabaseClient = () => {
     console.error('Fehler beim Erstellen des Supabase-Clients:', error);
     throw error;
   }
+};
+
+const testConnection = async (retries = 5): Promise<boolean> => {
+  if (!supabaseInstance) return false;
+  
+  for (let i = 0; i < retries; i++) {
+    try {
+      const { error } = await supabaseInstance
+        .from('profiles')
+        .select('id')
+        .limit(1)
+        .single();
+
+      if (error) {
+        if (i === retries - 1) {
+          console.error('Verbindung fehlgeschlagen:', error);
+          return false;
+        }
+        await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
+        continue;
+      }
+
+      return true;
+    } catch (error) {
+      if (i === retries - 1) {
+        console.error('Fehler beim Verbindungstest:', error);
+        return false;
+      }
+      await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
+    }
+  }
+
+  return false;
 };
 
 export const getSupabaseClient = () => {
@@ -109,24 +152,12 @@ const startHealthCheck = () => {
   }
 
   healthCheckInterval = setInterval(async () => {
-    if (!supabaseInstance) return;
-
-    try {
-      const { error } = await supabaseInstance
-        .from('profiles')
-        .select('id')
-        .limit(1)
-        .single();
-
-      if (error) {
-        console.warn('Verbindungsprüfung fehlgeschlagen:', error);
-        handleConnectionError();
-      }
-    } catch (error) {
-      console.error('Fehler bei der Verbindungsprüfung:', error);
+    const isConnected = await testConnection(3);
+    if (!isConnected && supabaseInstance) {
+      console.warn('Verbindungsprüfung fehlgeschlagen');
       handleConnectionError();
     }
-  }, 30000);
+  }, 60000); // Check every minute
 };
 
 export const cleanup = () => {
@@ -134,10 +165,10 @@ export const cleanup = () => {
     clearInterval(healthCheckInterval);
   }
   if (supabaseInstance) {
-    // Remove all realtime subscriptions
-    supabaseInstance.getSubscriptions().forEach(subscription => {
-      supabaseInstance?.removeSubscription(subscription);
-    });
+    const realtimeClient = supabaseInstance.realtime;
+    if (realtimeClient) {
+      realtimeClient.disconnect();
+    }
   }
   supabaseInstance = null;
   isInitializing = false;
@@ -146,9 +177,10 @@ export const cleanup = () => {
 
 // Event Listener für Online/Offline Status
 if (typeof window !== 'undefined') {
-  window.addEventListener('online', () => {
+  window.addEventListener('online', async () => {
     console.log('Online status detected');
-    if (!supabaseInstance) {
+    const isConnected = await testConnection();
+    if (!isConnected) {
       handleConnectionError();
     }
   });
