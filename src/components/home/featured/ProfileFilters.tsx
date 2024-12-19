@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { SearchBar } from "../../search/SearchBar";
 
 interface ProfileFiltersProps {
@@ -8,7 +7,9 @@ interface ProfileFiltersProps {
     category: string,
     country: string,
     state: string,
-    orientation: string
+    orientation: string,
+    priceRange: { min: number; max: number },
+    availability: Date | undefined
   ) => void;
 }
 
