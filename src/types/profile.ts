@@ -64,3 +64,43 @@ export interface Service {
 }
 
 export const MAX_GALLERY_IMAGES = 10;
+
+// Helper function to safely cast Supabase response to Profile
+export function castToProfile(data: Record<string, unknown>): Profile {
+  return {
+    id: String(data.id || ''),
+    full_name: data.full_name as string | null,
+    bio: data.bio as string | null,
+    avatar_url: data.avatar_url as string | null,
+    banner_url: data.banner_url as string | null,
+    location: data.location as string | null,
+    interests: data.interests as string | null,
+    occupation: data.occupation as string | null,
+    height: data.height as string | null,
+    weight: data.weight as string | null,
+    availability: (data.availability as string[]) || null,
+    service_categories: (data.service_categories as string[]) || null,
+    price_range: data.price_range as Profile['price_range'],
+    availability_status: (data.availability_status as Profile['availability_status']) || 'offline',
+    gallery: (data.gallery as string[]) || null,
+    languages: (data.languages as string[]) || undefined,
+    services: (data.services as Service[]) || undefined,
+    age: data.age as number | undefined,
+    gender: data.gender as string | undefined,
+    user_type: (data.user_type as 'customer' | 'provider') || 'customer',
+    last_seen: data.last_seen as string | null,
+  } as Profile;
+}
+
+// Helper function to safely cast Supabase response to Service
+export function castToService(data: Record<string, unknown>): Service {
+  return {
+    id: String(data.id || ''),
+    name: String(data.name || ''),
+    description: data.description as string | null,
+    duration: Number(data.duration || 0),
+    price: data.price as number | undefined,
+    category: data.category as string | undefined,
+    categories: (data.categories as string[]) || undefined,
+  };
+}

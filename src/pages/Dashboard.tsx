@@ -3,7 +3,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
-import { Profile } from "@/types/profile";
+import { Profile, castToProfile } from "@/types/profile";
 import { DashboardLayout } from "@/components/dashboard/sections/DashboardLayout";
 import { ProfileSection } from "@/components/dashboard/ProfileSection";
 import { GallerySection } from "@/components/dashboard/sections/GallerySection";
@@ -34,13 +34,16 @@ export default function Dashboard() {
 
         if (error) throw error;
 
+        // Use the casting function here
+        const typedProfile = castToProfile(profileData);
+
         // Redirect providers to their dashboard
-        if (profileData.user_type === 'provider') {
+        if (typedProfile.user_type === 'provider') {
           navigate('/provider-dashboard');
           return;
         }
 
-        setProfile(profileData as Profile);
+        setProfile(typedProfile);
       } catch (error) {
         console.error('Error fetching profile:', error);
         toast.error(t("errorLoadingProfile"));

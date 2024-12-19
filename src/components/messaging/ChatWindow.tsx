@@ -43,13 +43,16 @@ export const ChatWindow = ({ recipientId, recipientName }: ChatWindowProps) => {
 
         if (error) throw error;
 
-        setMessages(data.map(msg => ({
-          id: msg.id,
-          content: msg.content,
-          sender: msg.sender,
-          timestamp: new Date(msg.created_at),
+        // Properly type the messages
+        const typedMessages: Message[] = data.map(msg => ({
+          id: String(msg.id),
+          content: String(msg.content),
+          sender: String(msg.sender),
+          timestamp: new Date(msg.created_at as string),
           avatarUrl: msg.sender === user.id ? user.user_metadata?.avatar_url : undefined
-        })));
+        }));
+
+        setMessages(typedMessages);
       } catch (error) {
         console.error('Error loading messages:', error);
         toast({
@@ -78,9 +81,9 @@ export const ChatWindow = ({ recipientId, recipientName }: ChatWindowProps) => {
         (payload) => {
           const newMessage = payload.new;
           setMessages(prev => [...prev, {
-            id: newMessage.id,
-            content: newMessage.content,
-            sender: newMessage.sender,
+            id: String(newMessage.id),
+            content: String(newMessage.content),
+            sender: String(newMessage.sender),
             timestamp: new Date(newMessage.created_at),
             avatarUrl: newMessage.sender === user.id ? user.user_metadata?.avatar_url : undefined
           }]);

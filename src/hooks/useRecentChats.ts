@@ -22,7 +22,6 @@ export const useRecentChats = (user: User | null) => {
     queryFn: async (): Promise<ChatMessage[]> => {
       if (!user) return [];
 
-      // Nachrichten abrufen
       const { data: messages, error: messagesError } = await supabase
         .from('messages')
         .select(`
@@ -41,16 +40,19 @@ export const useRecentChats = (user: User | null) => {
         return [];
       }
 
-      // Profile für Sender und Empfänger abrufen
-      const userIds = messages.map(m => [m.sender, m.recipient]).flat();
-      const uniqueUserIds = [...new Set(userIds)];
-
-      const { data: profiles } = await supabase
-        .from('profiles')
-        .select('id, full_name, avatar_url')
-        .in('id', uniqueUserIds);
-
-      const profileMap = new Map(profiles?.map(p => [p.id, p]));
+      // Properly type the messages
+      const typedMessages: ChatMessage[] = messages.map(msg => ({
+        id: String(msg.id),
+        sender: String(msg.sender),
+        recipient: String(msg.recipient),
+        content: String(msg.content),
+        created_at: String(msg.created_at),
+        sender_name: null,
+        recipient_name: null,
+        avatar_url: null,
+        unread: !msg.read && msg.recipient === user.id,
+        unread_count: 0
+      }));
 
       // Ungelesene Nachrichten zählen
       const { count: unreadCount } = await supabase
@@ -60,18 +62,8 @@ export const useRecentChats = (user: User | null) => {
         .eq('read', false);
 
       // Daten transformieren
-      const transformedMessages = messages.map(message => ({
-        id: message.id,
-        sender: message.sender,
-        recipient: message.recipient,
-        content: message.content,
-        created_at: message.created_at,
-        sender_name: profileMap.get(message.sender)?.full_name || null,
-        recipient_name: profileMap.get(message.recipient)?.full_name || null,
-        avatar_url: message.sender === user.id 
-          ? profileMap.get(message.recipient)?.avatar_url 
-          : profileMap.get(message.sender)?.avatar_url,
-        unread: !message.read && message.recipient === user.id,
+      const transformedMessages = typedMessages.map(message => ({
+        ...message,
         unread_count: unreadCount || 0
       }));
 
