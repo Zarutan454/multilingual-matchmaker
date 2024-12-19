@@ -34,6 +34,11 @@ export interface Profile {
   reviews_count?: number;
   user_type: 'customer' | 'provider';
   last_seen: string | null;
+  // Added missing properties
+  is_verified?: boolean;
+  messages_count?: number;
+  average_rating?: number;
+  membership_level?: 'basic' | 'premium' | 'vip';
 }
 
 export interface Service {
