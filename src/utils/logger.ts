@@ -55,6 +55,15 @@ export class Logger {
   async getLogs(limit = 100): Promise<LogEntry[]> {
     return this.logs.slice(-limit);
   }
+
+  async getStats() {
+    return {
+      totalLogs: this.logs.length,
+      errorCount: this.logs.filter(log => log.level === 'error').length,
+      warningCount: this.logs.filter(log => log.level === 'warning').length,
+      infoCount: this.logs.filter(log => log.level === 'info').length
+    };
+  }
 }
 
 export const logger = Logger.getInstance();
