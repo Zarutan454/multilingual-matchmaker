@@ -18,7 +18,7 @@ let reconnectAttempts = 0;
 const MAX_RECONNECT_ATTEMPTS = 5;
 const MAX_RETRY_DELAY = 32000; // 32 seconds
 const INITIAL_RETRY_DELAY = 1000; // 1 second
-const CONNECTION_TIMEOUT = 30000; // 30 seconds
+const CONNECTION_TIMEOUT = 60000; // 60 seconds (increased from 30)
 
 const createSupabaseClient = () => {
   try {
@@ -42,13 +42,15 @@ const createSupabaseClient = () => {
           return fetch(url, {
             ...options,
             signal: controller.signal,
+            keepalive: true, // Add keepalive flag
           }).finally(() => clearTimeout(timeoutId));
         }
       },
       realtime: {
         params: {
           eventsPerSecond: 1
-        }
+        },
+        timeout: CONNECTION_TIMEOUT
       },
       db: {
         schema: 'public'
@@ -72,21 +74,27 @@ const testConnection = async (retries = 5): Promise<boolean> => {
         .single();
 
       if (error) {
+        console.warn(`Verbindungsversuch ${i + 1} fehlgeschlagen:`, error);
         if (i === retries - 1) {
           console.error('Verbindung fehlgeschlagen:', error);
           return false;
         }
-        await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
+        // Exponential backoff with jitter
+        const delay = Math.min(Math.random() * Math.pow(2, i) * 1000, MAX_RETRY_DELAY);
+        await new Promise(resolve => setTimeout(resolve, delay));
         continue;
       }
 
+      console.log('Verbindung erfolgreich getestet');
       return true;
     } catch (error) {
+      console.warn(`Verbindungsversuch ${i + 1} fehlgeschlagen:`, error);
       if (i === retries - 1) {
         console.error('Fehler beim Verbindungstest:', error);
         return false;
       }
-      await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
+      const delay = Math.min(Math.random() * Math.pow(2, i) * 1000, MAX_RETRY_DELAY);
+      await new Promise(resolve => setTimeout(resolve, delay));
     }
   }
 
@@ -157,7 +165,7 @@ const startHealthCheck = () => {
       console.warn('Verbindungsprüfung fehlgeschlagen');
       handleConnectionError();
     }
-  }, 60000); // Check every minute
+  }, 30000); // Check every 30 seconds
 };
 
 export const cleanup = () => {
