@@ -72,13 +72,14 @@ export const BasicInfoForm = ({ form }: BasicInfoFormProps) => {
         render={({ field }) => (
           <FormItem>
             <FormLabel className="text-white">{t("gender")}</FormLabel>
-            <Select onValueChange={field.onChange} value={field.value || ''}>
+            <Select onValueChange={field.onChange} value={field.value || 'not_specified'}>
               <FormControl>
                 <SelectTrigger className="bg-black/30 border-[#9b87f5]/30 text-white">
                   <SelectValue placeholder={t("selectGender")} />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
+                <SelectItem value="not_specified">{t("preferNotToSay")}</SelectItem>
                 <SelectItem value="male">{t("male")}</SelectItem>
                 <SelectItem value="female">{t("female")}</SelectItem>
                 <SelectItem value="other">{t("other")}</SelectItem>

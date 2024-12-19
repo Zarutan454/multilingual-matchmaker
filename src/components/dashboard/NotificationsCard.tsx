@@ -12,23 +12,36 @@ interface NotificationsCardProps {
 export const NotificationsCard = ({ user }: NotificationsCardProps) => {
   const { t } = useLanguage();
 
-  const { data: notifications = [] } = useQuery({
+  const { data: notifications = [], isError } = useQuery({
     queryKey: ['notifications', user?.id],
     queryFn: async () => {
       if (!user) return [];
 
-      const { data, error } = await supabase
-        .from('notifications')
-        .select('*')
-        .eq('recipient_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(5);
+      try {
+        const { data, error } = await supabase
+          .from('notifications')
+          .select('*')
+          .eq('recipient_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(5);
 
-      if (error) throw error;
-      return data || [];
+        if (error) {
+          console.error('Error fetching notifications:', error);
+          return [];
+        }
+
+        return data || [];
+      } catch (error) {
+        console.error('Error in notifications query:', error);
+        return [];
+      }
     },
     enabled: !!user
   });
+
+  if (isError) {
+    return null;
+  }
 
   return (
     <Card className="bg-black/50 backdrop-blur-sm border-[#9b87f5]/30 shadow-[0_0_15px_rgba(155,135,245,0.3)]">
@@ -43,25 +56,26 @@ export const NotificationsCard = ({ user }: NotificationsCardProps) => {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {notifications.map((notification) => (
-            <div
-              key={notification.id}
-              className="flex items-center gap-3 p-4 rounded-lg bg-black/30 hover:bg-[#9b87f5]/10 transition-colors"
-            >
-              <div className="flex-1">
-                <p className="text-white">{notification.title}</p>
-                <p className="text-sm text-gray-400">{notification.message}</p>
-                <span className="text-xs text-gray-500">
-                  {new Date(notification.created_at).toLocaleDateString()}
-                </span>
-              </div>
-              {!notification.read && (
-                <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
-              )}
-            </div>
-          ))}
-          {notifications.length === 0 && (
+          {notifications.length === 0 ? (
             <p className="text-center text-gray-400 py-4">{t("noNotifications")}</p>
+          ) : (
+            notifications.map((notification) => (
+              <div
+                key={notification.id}
+                className="flex items-center gap-3 p-4 rounded-lg bg-black/30 hover:bg-[#9b87f5]/10 transition-colors"
+              >
+                <div className="flex-1">
+                  <p className="text-white">{notification.title}</p>
+                  <p className="text-sm text-gray-400">{notification.message}</p>
+                  <span className="text-xs text-gray-500">
+                    {new Date(notification.created_at).toLocaleDateString()}
+                  </span>
+                </div>
+                {!notification.read && (
+                  <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
+                )}
+              </div>
+            ))
           )}
         </div>
       </CardContent>
