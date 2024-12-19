@@ -1,8 +1,9 @@
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { GalleryImage } from "./GalleryImage";
+import { GalleryFilters } from "./GalleryFilters";
 import { GalleryImage as GalleryImageType } from "@/types/gallery";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Trash2, Edit } from "lucide-react";
 import { toast } from "sonner";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -28,6 +29,12 @@ export const GalleryList = ({
   const { t } = useLanguage();
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [bulkCategory, setBulkCategory] = useState<string>("");
+  const [filters, setFilters] = useState({
+    search: "",
+    category: "",
+    sortBy: "date",
+    sortDirection: 'desc' as const
+  });
 
   const handleImageSelect = (imageId: string) => {
     setSelectedImages(prev => 
@@ -69,8 +76,53 @@ export const GalleryList = ({
     }
   };
 
+  const filteredAndSortedImages = useMemo(() => {
+    let filtered = [...images];
+
+    // Apply search filter
+    if (filters.search) {
+      filtered = filtered.filter(image => 
+        image.url.toLowerCase().includes(filters.search.toLowerCase())
+      );
+    }
+
+    // Apply category filter
+    if (filters.category) {
+      filtered = filtered.filter(image => 
+        image.category === filters.category
+      );
+    }
+
+    // Apply sorting
+    filtered.sort((a, b) => {
+      let comparison = 0;
+      
+      switch (filters.sortBy) {
+        case 'date':
+          comparison = new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+          break;
+        case 'name':
+          comparison = a.url.localeCompare(b.url);
+          break;
+        case 'size':
+          // If we had size information, we would use it here
+          comparison = 0;
+          break;
+      }
+
+      return filters.sortDirection === 'asc' ? comparison : -comparison;
+    });
+
+    return filtered;
+  }, [images, filters]);
+
   return (
     <div className="space-y-4">
+      <GalleryFilters 
+        categories={categories}
+        onFilterChange={setFilters}
+      />
+
       {selectedImages.length > 0 && (
         <div className="flex items-center gap-4 p-4 bg-black/20 rounded-lg">
           <span className="text-sm text-white">
@@ -116,8 +168,7 @@ export const GalleryList = ({
               ref={provided.innerRef}
               className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
             >
-              {images
-                .sort((a, b) => a.order - b.order)
+              {filteredAndSortedImages
                 .map((image, index) => (
                   <Draggable key={image.id} draggableId={image.id} index={index}>
                     {(provided) => (
