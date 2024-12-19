@@ -1,5 +1,6 @@
 import { Database } from '@/integrations/supabase/types';
-import { Profile, Service, Message, Notification, LogEntry } from '@/types/profile';
+import { Profile, Service } from '@/types/profile';
+import { Message } from '@/types/messages';
 import { BlogPost, NewsItem } from '@/types/cms';
 import { Rating } from '@/types/ratings';
 
@@ -20,13 +21,16 @@ export function transformProfile(row: ProfileRow): Profile {
     weight: row.weight || '',
     availability: row.availability || [],
     service_categories: row.service_categories || [],
-    price_range: row.price_range || { min: 0, max: 0 },
-    availability_status: row.availability_status || 'offline',
+    price_range: row.price_range ? {
+      min: typeof row.price_range === 'object' ? (row.price_range as any).min || 0 : 0,
+      max: typeof row.price_range === 'object' ? (row.price_range as any).max || 0 : 0
+    } : { min: 0, max: 0 },
+    availability_status: (row.availability_status as 'online' | 'offline' | 'busy') || 'offline',
     gallery: row.gallery || [],
     languages: row.languages || [],
     age: row.age || 0,
     gender: row.gender || '',
-    user_type: row.user_type || 'customer',
+    user_type: (row.user_type as 'customer' | 'provider') || 'customer',
     last_seen: row.last_seen,
     is_verified: false,
     messages_count: 0,
