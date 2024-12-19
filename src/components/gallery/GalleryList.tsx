@@ -18,6 +18,13 @@ interface GalleryListProps {
   categories: string[];
 }
 
+interface FilterState {
+  search: string;
+  category: string;
+  sortBy: string;
+  sortDirection: 'asc' | 'desc';
+}
+
 export const GalleryList = ({
   images,
   onDragEnd,
@@ -29,11 +36,11 @@ export const GalleryList = ({
   const { t } = useLanguage();
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [bulkCategory, setBulkCategory] = useState<string>("");
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<FilterState>({
     search: "",
     category: "",
     sortBy: "date",
-    sortDirection: "desc" as const
+    sortDirection: "desc"
   });
 
   const handleImageSelect = (imageId: string) => {
@@ -115,7 +122,6 @@ export const GalleryList = ({
   const handleImageNavigation = (currentIndex: number, direction: 'prev' | 'next') => {
     const newIndex = direction === 'prev' ? currentIndex - 1 : currentIndex + 1;
     if (newIndex >= 0 && newIndex < filteredAndSortedImages.length) {
-      // Die Navigation wird automatisch durch die Indizes in der GalleryImage-Komponente gesteuert
       return;
     }
   };
@@ -124,7 +130,7 @@ export const GalleryList = ({
     <div className="space-y-4">
       <GalleryFilters 
         categories={categories}
-        onFilterChange={setFilters}
+        onFilterChange={(newFilters) => setFilters(newFilters)}
       />
 
       {selectedImages.length > 0 && (
