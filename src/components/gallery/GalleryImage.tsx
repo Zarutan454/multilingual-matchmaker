@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Trash2, MoveVertical } from "lucide-react";
+import { Trash2, MoveVertical, Check } from "lucide-react";
 import { ImageEditor } from "./ImageEditor";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { GalleryImage as GalleryImageType } from "@/types/gallery";
@@ -15,6 +15,8 @@ interface GalleryImageProps {
   onCategoryChange: (imageId: string, category: string) => void;
   categories: string[];
   provided: any;
+  isSelected: boolean;
+  onSelect: () => void;
 }
 
 export const GalleryImage = ({
@@ -24,7 +26,9 @@ export const GalleryImage = ({
   onEdit,
   onCategoryChange,
   categories,
-  provided
+  provided,
+  isSelected,
+  onSelect
 }: GalleryImageProps) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
@@ -37,6 +41,24 @@ export const GalleryImage = ({
     >
       <Dialog>
         <div className="relative group">
+          <div 
+            className={`absolute top-2 left-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity ${
+              isSelected ? 'opacity-100' : ''
+            }`}
+          >
+            <Button
+              variant="secondary"
+              size="icon"
+              className={`rounded-full ${isSelected ? 'bg-primary text-white' : 'bg-black/50'}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelect();
+              }}
+            >
+              <Check className="h-4 w-4" />
+            </Button>
+          </div>
+
           <DialogTrigger asChild>
             <div 
               className="aspect-square cursor-pointer rounded-lg overflow-hidden"
