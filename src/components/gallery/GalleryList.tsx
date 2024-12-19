@@ -33,7 +33,7 @@ export const GalleryList = ({
     search: "",
     category: "",
     sortBy: "date",
-    sortDirection: 'desc' as const
+    sortDirection: "desc" as const
   });
 
   const handleImageSelect = (imageId: string) => {
@@ -79,21 +79,18 @@ export const GalleryList = ({
   const filteredAndSortedImages = useMemo(() => {
     let filtered = [...images];
 
-    // Apply search filter
     if (filters.search) {
       filtered = filtered.filter(image => 
         image.url.toLowerCase().includes(filters.search.toLowerCase())
       );
     }
 
-    // Apply category filter
     if (filters.category) {
       filtered = filtered.filter(image => 
         image.category === filters.category
       );
     }
 
-    // Apply sorting
     filtered.sort((a, b) => {
       let comparison = 0;
       
@@ -105,16 +102,23 @@ export const GalleryList = ({
           comparison = a.url.localeCompare(b.url);
           break;
         case 'size':
-          // If we had size information, we would use it here
           comparison = 0;
           break;
       }
 
-      return filters.sortDirection === 'asc' ? comparison : -comparison;
+      return filters.sortDirection === 'desc' ? comparison : -comparison;
     });
 
     return filtered;
   }, [images, filters]);
+
+  const handleImageNavigation = (currentIndex: number, direction: 'prev' | 'next') => {
+    const newIndex = direction === 'prev' ? currentIndex - 1 : currentIndex + 1;
+    if (newIndex >= 0 && newIndex < filteredAndSortedImages.length) {
+      // Die Navigation wird automatisch durch die Indizes in der GalleryImage-Komponente gesteuert
+      return;
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -168,24 +172,25 @@ export const GalleryList = ({
               ref={provided.innerRef}
               className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
             >
-              {filteredAndSortedImages
-                .map((image, index) => (
-                  <Draggable key={image.id} draggableId={image.id} index={index}>
-                    {(provided) => (
-                      <GalleryImage
-                        image={image}
-                        index={index}
-                        onDelete={onDeleteImage}
-                        onEdit={onEditImage}
-                        onCategoryChange={onCategoryChange}
-                        categories={categories}
-                        provided={provided}
-                        isSelected={selectedImages.includes(image.id)}
-                        onSelect={() => handleImageSelect(image.id)}
-                      />
-                    )}
-                  </Draggable>
-                ))}
+              {filteredAndSortedImages.map((image, index) => (
+                <Draggable key={image.id} draggableId={image.id} index={index}>
+                  {(provided) => (
+                    <GalleryImage
+                      image={image}
+                      index={index}
+                      onDelete={onDeleteImage}
+                      onEdit={onEditImage}
+                      onCategoryChange={onCategoryChange}
+                      categories={categories}
+                      provided={provided}
+                      isSelected={selectedImages.includes(image.id)}
+                      onSelect={() => handleImageSelect(image.id)}
+                      totalImages={filteredAndSortedImages.length}
+                      onNavigate={(direction) => handleImageNavigation(index, direction)}
+                    />
+                  )}
+                </Draggable>
+              ))}
               {provided.placeholder}
             </div>
           )}
