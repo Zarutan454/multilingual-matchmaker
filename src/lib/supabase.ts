@@ -20,62 +20,78 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
     params: {
       eventsPerSecond: 10
     }
+  },
+  global: {
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    fetch: (...args) => {
+      return fetch(...args).catch(err => {
+        console.error('Fetch error:', err);
+        toast.error('Verbindungsfehler: Bitte überprüfen Sie Ihre Internetverbindung');
+        throw err;
+      });
+    }
   }
 });
 
-// Verbindungsprüfung
+// Verbindungsprüfung mit Retry-Mechanismus
 export const checkConnection = async (retries = 3): Promise<boolean> => {
-  try {
-    console.log('Überprüfe Supabase Verbindung...');
-    
-    for (let i = 0; i < retries; i++) {
-      try {
-        const result = await Promise.race([
-          supabase.from('profiles').select('id').limit(1).single(),
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 10000))
-        ]);
+  for (let i = 0; i < retries; i++) {
+    try {
+      console.log(`Überprüfe Supabase Verbindung... Versuch ${i + 1}/${retries}`);
+      
+      const { data, error: queryError } = await supabase
+        .from('profiles')
+        .select('id')
+        .limit(1)
+        .maybeSingle();
 
-        if (result && !result.error) {
-          console.log('Supabase Verbindung erfolgreich');
-          return true;
-        }
-
-        if (i < retries - 1) {
-          console.log('Verbindungsversuch fehlgeschlagen, versuche es erneut...');
-          await new Promise(resolve => setTimeout(resolve, Math.min(1000 * Math.pow(2, i), 10000)));
-        }
-      } catch (error) {
+      if (queryError) {
+        console.error('Verbindungsfehler:', queryError);
         if (i === retries - 1) {
-          console.error('Maximale Anzahl an Verbindungsversuchen erreicht');
-          toast.error('Verbindung zum Server konnte nicht hergestellt werden');
+          toast.error('Verbindung zur Datenbank konnte nicht hergestellt werden');
           return false;
         }
+        // Exponentielles Backoff für Wiederholungsversuche
+        await new Promise(resolve => setTimeout(resolve, Math.min(1000 * Math.pow(2, i), 10000)));
+        continue;
+      }
+
+      console.log('Supabase Verbindung erfolgreich');
+      return true;
+    } catch (error) {
+      console.error('Fehler bei der Verbindungsprüfung:', error);
+      if (i === retries - 1) {
+        toast.error('Verbindung zur Datenbank konnte nicht hergestellt werden');
+        return false;
       }
     }
-  } catch (error) {
-    console.error('Fehler bei der Verbindungsprüfung:', error);
-    return false;
   }
   return false;
 };
 
 // Verbindungsüberwachung
-let lastOnlineCheck = 0;
+let connectionCheckTimeout: NodeJS.Timeout | null = null;
+let isCheckingConnection = false;
 
 const handleConnectionChange = async () => {
-  const now = Date.now();
-  if (now - lastOnlineCheck < 5000) return;
-  lastOnlineCheck = now;
+  if (isCheckingConnection) return;
+  isCheckingConnection = true;
 
-  if (navigator.onLine) {
-    console.log('Online status detected, checking connection...');
-    const isConnected = await checkConnection(3);
-    if (isConnected) {
-      toast.success('Verbindung wiederhergestellt');
+  try {
+    if (navigator.onLine) {
+      console.log('Online status detected, checking connection...');
+      const isConnected = await checkConnection(3);
+      if (isConnected) {
+        toast.success('Verbindung wiederhergestellt');
+      }
+    } else {
+      console.log('Offline status detected');
+      toast.error('Keine Internetverbindung');
     }
-  } else {
-    console.log('Offline status detected');
-    toast.error('Keine Internetverbindung');
+  } finally {
+    isCheckingConnection = false;
   }
 };
 
@@ -83,8 +99,8 @@ if (typeof window !== 'undefined') {
   window.addEventListener('online', handleConnectionChange);
   window.addEventListener('offline', handleConnectionChange);
 
-  // Initiale Verbindungsprüfung
-  setTimeout(() => {
+  // Initiale Verbindungsprüfung mit Verzögerung
+  connectionCheckTimeout = setTimeout(() => {
     checkConnection(3).then(isConnected => {
       if (!isConnected) {
         toast.error('Verbindung zum Server konnte nicht hergestellt werden');
@@ -92,5 +108,16 @@ if (typeof window !== 'undefined') {
     });
   }, 1000);
 }
+
+// Cleanup-Funktion für Event-Listener
+export const cleanup = () => {
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('online', handleConnectionChange);
+    window.removeEventListener('offline', handleConnectionChange);
+    if (connectionCheckTimeout) {
+      clearTimeout(connectionCheckTimeout);
+    }
+  }
+};
 
 export default supabase;
