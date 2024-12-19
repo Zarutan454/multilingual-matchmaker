@@ -16,4 +16,11 @@ export type RatingsTranslationKeys =
   | "thankYouForRating"
   | "errorSubmittingRating"
   | "pleaseSelectRating"
-  | "ratingComment";
+  | "ratingComment"
+  | "communicationRating"
+  | "professionalismRating"
+  | "cleanlinessRating"
+  | "locationRating"
+  | "valueRating"
+  | "pleaseRateAllCriteria"
+  | "overallRating";
