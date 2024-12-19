@@ -26,15 +26,15 @@ export const Navbar = () => {
     <nav
       className={`fixed w-full z-50 transition-all duration-300 ${
         isScrolled 
-          ? 'bg-white/90 backdrop-blur-md shadow-sm' 
-          : 'bg-white'
+          ? 'bg-[#1A1F2C]/90 backdrop-blur-md shadow-md' 
+          : 'bg-[#1A1F2C]'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <span className="text-xl font-bold text-black">
+            <span className="text-xl font-bold text-white">
               POPP<span className="text-secondary">*</span>IN
             </span>
           </Link>
@@ -49,7 +49,7 @@ export const Navbar = () => {
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-black hover:text-gray-600"
+              className="text-white hover:text-secondary transition-colors"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -59,7 +59,7 @@ export const Navbar = () => {
 
       {/* Mobile Navigation */}
       {isOpen && (
-        <div className="md:hidden bg-white/95 backdrop-blur-md">
+        <div className="md:hidden bg-[#1A1F2C]/95 backdrop-blur-md">
           <div className="px-2 pt-2 pb-3 space-y-1">
             <NavLinks
               className="flex flex-col items-center"
