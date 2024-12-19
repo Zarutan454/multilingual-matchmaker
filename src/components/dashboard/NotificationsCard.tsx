@@ -26,26 +26,26 @@ export const NotificationsCard = ({ user }: NotificationsCardProps) => {
           .limit(5);
 
         if (error) {
-          // If the table doesn't exist, return empty array instead of throwing
+          // Wenn die Tabelle nicht existiert, geben wir ein leeres Array zurück
           if (error.code === '42P01') {
-            console.log('Notifications table does not exist yet');
+            console.log('Notifications Tabelle existiert noch nicht');
             return [];
           }
-          console.error('Error fetching notifications:', error);
+          console.error('Fehler beim Laden der Benachrichtigungen:', error);
           return [];
         }
 
         return data || [];
       } catch (error) {
-        console.error('Error in notifications query:', error);
+        console.error('Fehler in der Notifications-Abfrage:', error);
         return [];
       }
     },
     enabled: !!user,
-    retry: false // Don't retry if table doesn't exist
+    retry: false // Keine Wiederholung wenn die Tabelle nicht existiert
   });
 
-  // Don't render anything if there's an error
+  // Bei einem Fehler zeigen wir nichts an
   if (isError) {
     return null;
   }
