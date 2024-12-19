@@ -20,10 +20,8 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
   global: {
     headers: {
       'Content-Type': 'application/json',
+      'Accept': 'application/json'
     }
-  },
-  db: {
-    schema: 'public'
   }
 });
 
@@ -97,14 +95,14 @@ if (typeof window !== 'undefined') {
   window.addEventListener('online', handleConnectionChange);
   window.addEventListener('offline', handleConnectionChange);
   
-  // Initial connection check with delay
+  // Initial connection check with increased delay
   setTimeout(() => {
     checkConnection(3).then(isConnected => {
       if (!isConnected) {
         console.error('Initial connection check failed');
       }
     });
-  }, 2000); // Increased delay to 2 seconds
+  }, 3000); // Increased delay to 3 seconds for initial connection
 }
 
 export const cleanup = () => {
