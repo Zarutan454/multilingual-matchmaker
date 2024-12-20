@@ -4,7 +4,7 @@ import { GalleryImage } from "./GalleryImage";
 
 interface GalleryGridProps {
   images: GalleryImageType[];
-  onDragEnd: (result: any) => void;
+  onDragEnd: (result: unknown) => void;
   onDeleteImage: (imageUrl: string) => void;
   onEditImage: (imageUrl: string, editedImage: Blob) => Promise<void>;
   onCategoryChange: (imageId: string, category: string) => void;
@@ -34,25 +34,31 @@ export const GalleryGrid = ({
             ref={provided.innerRef}
             className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
           >
-            {images.map((image, index) => (
-              <Draggable key={image.id} draggableId={image.id} index={index}>
-                {(provided) => (
-                  <GalleryImage
-                    image={image}
-                    index={index}
-                    onDelete={onDeleteImage}
-                    onEdit={onEditImage}
-                    onCategoryChange={onCategoryChange}
-                    categories={categories}
-                    provided={provided}
-                    isSelected={selectedImages.includes(image.id)}
-                    onSelect={() => onImageSelect(image.id)}
-                    totalImages={images.length}
-                    onNavigate={(direction) => onNavigate(index, direction)}
-                  />
-                )}
-              </Draggable>
-            ))}
+            {images.length > 0 ? (
+              images.map((image, index) => (
+                <Draggable key={image.id} draggableId={image.id} index={index}>
+                  {(provided) => (
+                    <GalleryImage
+                      image={image}
+                      index={index}
+                      onDelete={onDeleteImage}
+                      onEdit={onEditImage}
+                      onCategoryChange={onCategoryChange}
+                      categories={categories}
+                      provided={provided}
+                      isSelected={selectedImages.includes(image.id)}
+                      onSelect={() => onImageSelect(image.id)}
+                      totalImages={images.length}
+                      onNavigate={(direction) => onNavigate(index, direction)}
+                    />
+                  )}
+                </Draggable>
+              ))
+            ) : (
+              <div className="col-span-full text-center text-gray-500">
+                Keine Bilder vorhanden
+              </div>
+            )}
             {provided.placeholder}
           </div>
         )}

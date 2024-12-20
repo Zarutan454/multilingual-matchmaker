@@ -61,7 +61,7 @@ export const GalleryFilters = ({ categories, onFilterChange }: GalleryFiltersPro
             <SelectItem value="all">
               {t("allCategories")}
             </SelectItem>
-            {categories.map((cat) => (
+            {categories.length > 0 && categories.map((cat) => (
               <SelectItem key={cat} value={cat}>
                 {cat}
               </SelectItem>

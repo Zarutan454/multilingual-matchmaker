@@ -16,12 +16,12 @@ export const Gallery = ({
   categories = ["Portrait", "Ganzkörper", "Location"] 
 }: GalleryProps) => {
   const [galleryImages, setGalleryImages] = useState<GalleryImage[]>(
-    images.map((url, index) => ({
+    images.length > 0 ? images.map((url, index) => ({
       id: `image-${index}`,
       url,
       order: index,
       createdAt: new Date().toISOString(),
-    }))
+    })) : []
   );
 
   const handleDeleteImage = async (imageUrl: string) => {
@@ -81,12 +81,12 @@ export const Gallery = ({
     }
   };
 
-  const handleDragEnd = useCallback((result: any) => {
-    if (!result.destination) return;
+  const handleDragEnd = useCallback((result: unknown) => {
+    if (!result) return;
 
     const items = Array.from(galleryImages);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
+    const [reorderedItem] = items.splice((result as any).source.index, 1);
+    items.splice((result as any).destination.index, 0, reorderedItem);
 
     const reorderedItems = items.map((item, index) => ({
       ...item,
