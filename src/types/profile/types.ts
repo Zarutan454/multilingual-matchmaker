@@ -34,17 +34,9 @@ export interface Profile {
   is_verified?: boolean;
   messages_count?: number;
   average_rating?: number;
-  membership_level?: 'basic' | 'premium' | 'vip' | 'bronze' | 'silver' | 'gold';
-  hair_color?: string;
-  hair_length?: string;
-  hair_type?: string;
-  eye_color?: string;
-  skin_tone?: string;
-  grooming?: string;
-  body_type?: string;
-  bust_size?: string;
-  dress_size?: string;
-  nickname?: string;
+  membership_level?: 'basic' | 'premium' | 'vip';
+  working_hours?: any;
+  audit_log?: any[];
 }
 
 export interface Service {

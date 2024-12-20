@@ -1,11 +1,32 @@
-import { TranslationKey } from '../types/translationTypes';
+import { Translations } from '../types/translationTypes';
 
-const translations: Partial<Record<TranslationKey, string>> = {
-  'auth.verification.title': 'Age Verification',
-  'auth.verification.question': 'Are you at least 18 years old?',
-  'auth.verification.disclaimer': 'By continuing, you confirm that you are of legal age.',
-  'auth.verification.yes': 'Yes, I am over 18',
-  'auth.verification.no': 'No, I am under 18'
+export const enTranslations: Translations = {
+  login: 'Login',
+  register: 'Register',
+  logout: 'Logout',
+  email: 'Email',
+  password: 'Password',
+  profile: 'Profile',
+  settings: 'Settings',
+  services: 'Services',
+  availability: 'Availability',
+  save: 'Save',
+  cancel: 'Cancel',
+  delete: 'Delete',
+  edit: 'Edit',
+  serviceAdded: 'Service added',
+  serviceDeleted: 'Service deleted',
+  errorAddingService: 'Error adding service',
+  errorDeletingService: 'Error deleting service',
+  errorLoadingServices: 'Error loading services',
+  fullName: 'Full Name',
+  location: 'Location',
+  bio: 'Bio',
+  interests: 'Interests',
+  occupation: 'Occupation',
+  loading: 'Loading...',
+  error: 'Error',
+  success: 'Success'
 };
 
-export default translations;
+export default enTranslations;
