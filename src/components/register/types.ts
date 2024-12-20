@@ -1,5 +1,3 @@
-import { UseFormReturn } from "react-hook-form";
-
 export interface RegisterFormData {
   email: string;
   password: string;
@@ -7,11 +5,13 @@ export interface RegisterFormData {
   phoneNumber?: string;
   age?: string;
   country?: string;
-  nickname?: string;
+  nickname: string;
 }
 
 export interface RegisterFormFieldsProps {
-  form: UseFormReturn<RegisterFormData>;
+  form: any;
   userType: "customer" | "provider";
   setUserType: (type: "customer" | "provider") => void;
 }
+
+export type RegistrationFormValues = RegisterFormData;
