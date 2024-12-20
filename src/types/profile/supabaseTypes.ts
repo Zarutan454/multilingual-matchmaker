@@ -39,10 +39,23 @@ export type ProfileRow = {
   audit_log: Json[];
   working_hours: Json;
   membership_level: 'basic' | 'premium' | 'vip' | 'bronze' | 'silver' | 'gold' | null;
-  services: any[];
+  services: Service[];
   created_at?: string;
   updated_at?: string;
   contact_info?: Json;
   is_active?: boolean;
   last_login?: string;
+  measurements?: Json;
+  rates?: Json;
+  role?: string;
+  likes_count?: number;
 };
+
+export interface Service {
+  id: string;
+  name: string;
+  description: string | null;
+  duration: number;
+  price?: number;
+  categories?: string[];
+}

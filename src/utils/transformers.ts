@@ -34,7 +34,11 @@ export function transformProfile(row: ProfileRow): Profile {
     price_range: row.price_range as { min: number; max: number } || { min: 0, max: 0 },
     is_verified: row.is_verified || false,
     reviews_count: row.reviews_count || 0,
-    age: row.age || 0
+    age: row.age || 0,
+    measurements: row.measurements || null,
+    rates: row.rates || null,
+    role: row.role || '',
+    likes_count: row.likes_count || 0
   };
 }
 

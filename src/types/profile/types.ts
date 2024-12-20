@@ -59,6 +59,10 @@ export interface Profile {
     phone?: string;
     email?: string;
   };
+  measurements?: any;
+  rates?: any;
+  role?: string;
+  likes_count?: number;
 }
 
 export interface ProfileFormValues {
@@ -141,6 +145,21 @@ export const castToProfile = (data: any): Profile => {
     age: data.age || 0,
     price_range: data.price_range || { min: 0, max: 0 },
     is_verified: data.is_verified || false,
-    reviews_count: data.reviews_count || 0
+    reviews_count: data.reviews_count || 0,
+    measurements: data.measurements || null,
+    rates: data.rates || null,
+    role: data.role || '',
+    likes_count: data.likes_count || 0
+  };
+};
+
+export const castToService = (data: any): Service => {
+  return {
+    id: data.id,
+    name: data.name,
+    description: data.description,
+    duration: data.duration,
+    price: data.price,
+    categories: data.categories || []
   };
 };
