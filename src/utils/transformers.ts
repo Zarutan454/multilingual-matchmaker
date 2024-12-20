@@ -33,12 +33,14 @@ export function transformProfile(row: ProfileRow): Profile {
     interests: Array.isArray(row.interests) ? row.interests : row.interests ? [row.interests] : [],
     price_range: row.price_range as { min: number; max: number } || { min: 0, max: 0 },
     is_verified: row.is_verified || false,
-    reviews_count: row.reviews_count || 0,
+    reviews_count: 0,
     age: row.age || 0,
     measurements: row.measurements || null,
     rates: row.rates || null,
     role: row.role || '',
-    likes_count: row.likes_count || 0
+    likes_count: row.likes_count || 0,
+    services_offered: row.services_offered || [],
+    verification_status: row.verification_status || ''
   };
 }
 

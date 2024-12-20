@@ -3,11 +3,11 @@ export interface Translations {
   delete: string;
   edit: string;
   serviceAdded: string;
-  profileUpdated: string;
-  errorUpdatingProfile: string;
-  galleryUpdated: string;
-  imageDeleted: string;
-  errorDeletingImage: string;
+  serviceDeleted: string;
+  errorAddingService: string;
+  errorDeletingService: string;
+  fillAllFields: string;
+  pleaseLogin: string;
   [key: string]: string;
 }
 

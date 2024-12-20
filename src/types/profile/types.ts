@@ -63,13 +63,24 @@ export interface Profile {
   rates?: any;
   role?: string;
   likes_count?: number;
+  services_offered?: string[];
+  verification_status?: string;
+}
+
+export interface Service {
+  id: string;
+  name: string;
+  description: string | null;
+  duration: number;
+  price?: number;
+  categories?: string[];
 }
 
 export interface ProfileFormValues {
   fullName: string;
   bio: string;
   location: string;
-  interests: string;
+  interests: string[];
   occupation: string;
   height: string;
   weight: string;
@@ -95,23 +106,6 @@ export interface ProfileFormValues {
   services?: Service[];
   languages?: string[];
 }
-
-export interface Service {
-  id: string;
-  name: string;
-  description: string | null;
-  duration: number;
-  price?: number;
-  category?: string;
-  categories?: string[];
-}
-
-export interface ProfilesResponse {
-  profiles: Profile[];
-  total: number;
-}
-
-export const MAX_GALLERY_IMAGES = 10;
 
 export const castToProfile = (data: any): Profile => {
   const priceRangeData = data.price_range as { min: number; max: number } | null;
@@ -149,7 +143,9 @@ export const castToProfile = (data: any): Profile => {
     measurements: data.measurements || null,
     rates: data.rates || null,
     role: data.role || '',
-    likes_count: data.likes_count || 0
+    likes_count: data.likes_count || 0,
+    services_offered: data.services_offered || [],
+    verification_status: data.verification_status || ''
   };
 };
 
