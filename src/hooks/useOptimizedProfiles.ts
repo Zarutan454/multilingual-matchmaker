@@ -48,6 +48,7 @@ export const useOptimizedProfiles = ({
           .eq('is_active', true)
           .order('last_seen', { ascending: false });
 
+        // Optimierte Filterlogik
         if (filters?.searchTerm) {
           query = query.textSearch('full_name', filters.searchTerm, {
             type: 'websearch',
@@ -71,6 +72,7 @@ export const useOptimizedProfiles = ({
           query = query.eq('role', filters.membershipLevel);
         }
 
+        // Pagination optimieren
         const from = page * pageSize;
         const to = from + pageSize - 1;
         query = query.range(from, to);
@@ -119,8 +121,8 @@ export const useOptimizedProfiles = ({
         throw error;
       }
     },
-    staleTime: 1000 * 60 * 5, // 5 minutes cache
-    gcTime: 1000 * 60 * 30, // 30 minutes garbage collection
+    staleTime: 1000 * 60 * 5, // 5 Minuten Cache
+    gcTime: 1000 * 60 * 30, // 30 Minuten Garbage Collection
     enabled,
     meta: {
       errorMessage: 'Fehler beim Laden der Profile'
