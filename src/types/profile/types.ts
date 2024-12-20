@@ -10,6 +10,7 @@ export interface ContactInfo {
 }
 
 export interface ServiceInfo {
+  services?: string[];
   categories: string[];
   description: string;
   pricing: {
@@ -26,7 +27,9 @@ export interface ServiceInfo {
 export interface Profile {
   id: string;
   full_name: string;
+  name: string;
   bio?: string;
+  image: string;
   avatar_url?: string;
   banner_url?: string;
   user_type: 'customer' | 'provider';
@@ -35,8 +38,6 @@ export interface Profile {
   verification_status: 'pending' | 'verified' | 'rejected';
   created_at?: string;
   updated_at?: string;
-  name: string;
-  image: string;
   category: string;
   coordinates: [number, number];
   location: string;
@@ -50,11 +51,26 @@ export interface Profile {
   rating: number;
   reviews: number;
   languages: string[];
+  age?: number;
   phone?: string;
   email?: string;
+  interests?: string;
+  occupation?: string;
+  availability?: string[];
+  service_categories?: string[];
+  price_range?: {
+    min: number;
+    max: number;
+  };
+  availability_status?: 'online' | 'offline' | 'busy';
+  gallery?: string[];
+  is_verified?: boolean;
+  last_seen?: string;
 }
 
 export interface ProfilesResponse {
   profiles: Profile[];
   total: number;
 }
+
+export const MAX_GALLERY_IMAGES = 10;

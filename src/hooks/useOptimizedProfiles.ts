@@ -21,8 +21,8 @@ interface ProfilesResponse {
   total: number;
 }
 
-const CACHE_TIME = 1000 * 60 * 5; // 5 Minuten
-const STALE_TIME = 1000 * 30; // 30 Sekunden
+const CACHE_TIME = 1000 * 60 * 5; // 5 minutes
+const STALE_TIME = 1000 * 30; // 30 seconds
 
 export const useOptimizedProfiles = ({
   page,
@@ -61,39 +61,48 @@ export const useOptimizedProfiles = ({
           profiles: (data || []).map((profile): Profile => ({
             id: profile.id,
             full_name: profile.full_name || '',
+            name: profile.full_name || '',
+            image: profile.avatar_url || '',
             bio: profile.bio || '',
             avatar_url: profile.avatar_url || '',
             banner_url: profile.banner_url || '',
+            category: profile.category || '',
             location: profile.location || '',
-            interests: profile.interests || '',
-            occupation: profile.occupation || '',
-            height: profile.height || '',
-            weight: profile.weight || '',
-            availability: profile.availability || [],
-            service_categories: profile.service_categories || [],
-            price_range: profile.price_range ? {
-              min: typeof profile.price_range === 'object' ? (profile.price_range as any).min || 0 : 0,
-              max: typeof profile.price_range === 'object' ? (profile.price_range as any).max || 0 : 0
-            } : null,
-            availability_status: (profile.availability_status as 'online' | 'offline' | 'busy') || 'offline',
-            gallery: profile.gallery || [],
+            coordinates: [0, 0],
+            status: profile.availability_status || 'offline',
+            rating: 0,
+            reviews: 0,
             languages: profile.languages || [],
-            contact_info: profile.contact_info || {},
-            service_info: {
-              services: [],
-              working_hours: {},
-              rates: {}
+            spokenLanguages: profile.languages || [],
+            serviceCategories: profile.service_categories || [],
+            priceRange: {
+              min: profile.price_range?.min || 0,
+              max: profile.price_range?.max || 0
             },
-            last_seen: profile.last_seen,
-            user_type: (profile.user_type as 'customer' | 'provider') || 'customer',
-            is_verified: false,
-            verification_status: 'pending'
+            user_type: profile.user_type || 'provider',
+            contact_info: {
+              phone: profile.phone,
+              email: profile.email
+            },
+            service_info: {
+              categories: profile.service_categories || [],
+              description: profile.bio || '',
+              pricing: {
+                hourly: profile.price_range?.min || 0,
+              },
+              availability: {
+                days: profile.availability || [],
+                hours: ''
+              }
+            },
+            verification_status: 'pending',
+            age: profile.age
           })),
           total: count || 0
         };
       } catch (error) {
-        console.error('Fehler beim Laden der Profile:', error);
-        toast.error('Fehler beim Laden der Profile');
+        console.error('Error loading profiles:', error);
+        toast.error('Error loading profiles');
         throw error;
       }
     },
@@ -101,7 +110,7 @@ export const useOptimizedProfiles = ({
     gcTime: CACHE_TIME,
     enabled,
     meta: {
-      errorMessage: 'Fehler beim Laden der Profile'
+      errorMessage: 'Error loading profiles'
     }
   });
 };

@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
-import { Profile } from '@/types/profile/types';
+import { Profile, ProfilesResponse } from '@/types/profile/types';
 
 interface UseProfilesProps {
   page: number;
@@ -15,11 +15,6 @@ interface UseProfilesProps {
   };
   availability?: string;
   itemsPerPage?: number;
-}
-
-export interface ProfilesResponse {
-  profiles: Profile[];
-  total: number;
 }
 
 export const useProfiles = ({
@@ -65,41 +60,46 @@ export const useProfiles = ({
           throw error;
         }
 
-        const profiles: Profile[] = data?.map(profile => ({
+        const profiles: Profile[] = (data || []).map(profile => ({
           id: profile.id,
+          full_name: profile.full_name || '',
           name: profile.full_name || '',
           image: profile.avatar_url || '',
-          avatar_url: profile.avatar_url,
-          banner_url: profile.banner_url,
+          bio: profile.bio || '',
+          avatar_url: profile.avatar_url || '',
+          banner_url: profile.banner_url || '',
           category: profile.category || '',
           location: profile.location || '',
-          coordinates: null,
+          coordinates: [0, 0],
           status: profile.availability_status || 'offline',
           rating: 0,
           reviews: 0,
           languages: profile.languages || [],
-          age: profile.age || 0,
-          service_categories: profile.service_categories || [],
-          price_range: profile.price_range || null,
-          last_seen: profile.last_seen,
-          interests: profile.interests,
-          occupation: profile.occupation,
-          availability: profile.availability,
-          availability_status: profile.availability_status || 'offline',
-          gallery: profile.gallery,
-          contact_info: {
-            phone: profile.contact_info?.phone || null,
-            email: profile.contact_info?.email || null,
-          },
-          service_info: {
-            services: [],
-            working_hours: {},
-            rates: {},
+          spokenLanguages: profile.languages || [],
+          serviceCategories: profile.service_categories || [],
+          priceRange: {
+            min: profile.price_range?.min || 0,
+            max: profile.price_range?.max || 0
           },
           user_type: profile.user_type || 'provider',
-          is_verified: false,
+          contact_info: {
+            phone: profile.phone,
+            email: profile.email
+          },
+          service_info: {
+            categories: profile.service_categories || [],
+            description: profile.bio || '',
+            pricing: {
+              hourly: profile.price_range?.min || 0,
+            },
+            availability: {
+              days: profile.availability || [],
+              hours: ''
+            }
+          },
           verification_status: 'pending',
-        })) || [];
+          age: profile.age
+        }));
 
         return {
           profiles,
