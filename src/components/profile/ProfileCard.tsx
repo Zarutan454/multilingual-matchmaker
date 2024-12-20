@@ -9,6 +9,7 @@ import { usePresence } from "@/hooks/usePresence";
 import { ProfileAvatar } from "./card/ProfileAvatar";
 import { ProfileInfo } from "./card/ProfileInfo";
 import { ProfileActions } from "./card/ProfileActions";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface ProfileCardProps {
   profile: Profile;
@@ -17,6 +18,7 @@ interface ProfileCardProps {
 
 export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isOnline, setIsOnline] = useState(profile.status === "online");
   const [lastSeen, setLastSeen] = useState<string | null>(null);
@@ -25,12 +27,18 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
   usePresence();
 
   const handleFavoriteClick = async () => {
+    if (!user) {
+      toast.error("Bitte melden Sie sich an");
+      return;
+    }
+
     try {
       if (isFavorite) {
         const { error } = await supabase
           .from('favorites')
           .delete()
-          .eq('profile_id', profile.id);
+          .eq('profile_id', profile.id)
+          .eq('user_id', user.id);
         
         if (error) throw error;
         setIsFavorite(false);
@@ -38,7 +46,10 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
       } else {
         const { error } = await supabase
           .from('favorites')
-          .insert([{ profile_id: profile.id }]);
+          .insert({
+            profile_id: profile.id,
+            user_id: user.id
+          });
         
         if (error) throw error;
         setIsFavorite(true);
@@ -61,6 +72,7 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
             src={profile.image} 
             alt={profile.name}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            loading="lazy"
           />
           <div className="absolute inset-0 bg-gradient-dark opacity-60" />
 
@@ -82,6 +94,7 @@ export const ProfileCard = ({ profile, onChatClick }: ProfileCardProps) => {
 
             <ProfileActions
               profileId={profile.id}
+              userId={user?.id}
               onChatClick={() => setIsChatOpen(true)}
               onFavoriteClick={handleFavoriteClick}
               isFavorite={isFavorite}
