@@ -9,14 +9,14 @@ export interface ImagePreviewProps {
   onNavigate: (direction: "prev" | "next") => void;
 }
 
-export const ImagePreview: React.FC<ImagePreviewProps> = ({
+export const ImagePreview = ({
   src,
   zoomLevel,
   onZoom,
   index,
   totalImages,
   onNavigate
-}) => {
+}: ImagePreviewProps) => {
   return (
     <div className="relative w-full h-full">
       <img
