@@ -17,22 +17,10 @@ export interface Profile {
   } | null;
   availability_status: 'online' | 'offline' | 'busy';
   gallery: string[] | null;
-  languages?: string[];
+  languages: string[] | null;
   services?: Service[];
   age?: number;
   gender?: string;
-  name?: string; // Added for compatibility
-  image?: string; // Added for compatibility
-  category?: string; // Added for compatibility
-  coordinates?: { // Added for compatibility
-    lat: number;
-    lng: number;
-  };
-  status?: string; // Added for compatibility
-  rating?: number;
-  reviews?: number;
-  spokenLanguages?: string[];
-  serviceCategories?: string[];
   user_type: 'customer' | 'provider';
   last_seen: string | null;
   is_verified?: boolean;

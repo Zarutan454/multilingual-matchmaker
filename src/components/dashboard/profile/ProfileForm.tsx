@@ -35,7 +35,7 @@ export const ProfileForm = ({ profile, userId, onProfileUpdate }: ProfileFormPro
       services: profile?.services || [],
       languages: profile?.languages || [],
       priceRange: profile?.price_range || { min: 0, max: 0 },
-      availabilityStatus: (profile?.availability_status as 'online' | 'offline' | 'busy') || 'offline'
+      availabilityStatus: profile?.availability_status || 'offline'
     },
   });
 
@@ -92,20 +92,14 @@ export const ProfileForm = ({ profile, userId, onProfileUpdate }: ProfileFormPro
         availability_status: data.availabilityStatus
       };
 
-      const { error } = await supabase
+      const { data: updatedProfile, error } = await supabase
         .from('profiles')
         .update(updateData)
-        .eq('id', userId);
-
-      if (error) throw error;
-
-      const { data: updatedProfile, error: fetchError } = await supabase
-        .from('profiles')
-        .select('*')
         .eq('id', userId)
+        .select()
         .single();
 
-      if (fetchError) throw fetchError;
+      if (error) throw error;
 
       onProfileUpdate(updatedProfile as Profile);
       toast.success(t("profileUpdated"));
@@ -118,7 +112,7 @@ export const ProfileForm = ({ profile, userId, onProfileUpdate }: ProfileFormPro
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-black/80 backdrop-blur-md rounded-lg p-8 max-w-md w-full text-center border border-[#FFD700]/30 shadow-[0_0_15px_rgba(218,165,32,0.3)]">
       <div className="flex flex-col items-center space-y-4">
         <div className="relative">
           <Avatar className="h-24 w-24 border-2 border-[#FFD700]/30">
@@ -163,12 +157,23 @@ export const ProfileForm = ({ profile, userId, onProfileUpdate }: ProfileFormPro
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="bio" className="text-white text-sm">
-          {t("bio")}
+        <Label htmlFor="height" className="text-white text-sm">
+          {t("height")}
         </Label>
         <Input
-          id="bio"
-          {...register("bio")}
+          id="height"
+          {...register("height")}
+          className="bg-black/50 border-[#FFD700]/30 text-white placeholder-neutral-400 focus:border-[#FFD700] transition-colors"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="weight" className="text-white text-sm">
+          {t("weight")}
+        </Label>
+        <Input
+          id="weight"
+          {...register("weight")}
           className="bg-black/50 border-[#FFD700]/30 text-white placeholder-neutral-400 focus:border-[#FFD700] transition-colors"
         />
       </div>
