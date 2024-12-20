@@ -18,12 +18,12 @@ export const FeaturedProfiles = () => {
   const [category, setCategory] = useState("");
   const [orientation, setOrientation] = useState("");
   const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 });
-  const [availability, setAvailability] = useState<Date>();
+  const [availability, setAvailability] = useState<string>();
   const [page, setPage] = useState(0);
 
   usePresence();
 
-  const { data: profiles = [], isLoading, error } = useProfiles({
+  const { data, isLoading, error } = useProfiles({
     page,
     searchTerm,
     location,
@@ -33,6 +33,8 @@ export const FeaturedProfiles = () => {
     availability,
     itemsPerPage: ITEMS_PER_PAGE
   });
+
+  const profiles = data?.profiles || [];
 
   const handleChatClick = (e: React.MouseEvent, profileId: string) => {
     e.stopPropagation();
@@ -55,7 +57,7 @@ export const FeaturedProfiles = () => {
     setCategory(category);
     setOrientation(orientation);
     setPriceRange(priceRange);
-    setAvailability(availability);
+    setAvailability(availability?.toISOString());
     setPage(0);
   };
 
@@ -109,7 +111,7 @@ export const FeaturedProfiles = () => {
           {selectedProfile && (
             <ChatWindow
               recipientId={selectedProfile}
-              recipientName={profiles.find(p => p.id === selectedProfile)?.name || ""}
+              recipientName={profiles.find(p => p.id === selectedProfile)?.full_name || ""}
             />
           )}
         </DialogContent>

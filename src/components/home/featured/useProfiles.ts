@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { Profile } from '@/types/profile/types';
+import { transformProfile } from '@/utils/transformers';
 
 interface UseProfilesProps {
   page: number;
@@ -17,6 +18,11 @@ interface UseProfilesProps {
   itemsPerPage?: number;
 }
 
+interface ProfilesResponse {
+  profiles: Profile[];
+  total: number;
+}
+
 export const useProfiles = ({
   page = 0,
   searchTerm = '',
@@ -27,7 +33,7 @@ export const useProfiles = ({
   availability,
   itemsPerPage = 12,
 }: UseProfilesProps) => {
-  return useQuery({
+  return useQuery<ProfilesResponse>({
     queryKey: ['profiles', page, searchTerm, location, category, orientation, priceRange, availability],
     queryFn: async () => {
       console.log('Fetching profiles with params:', {
@@ -72,7 +78,7 @@ export const useProfiles = ({
         }
 
         return {
-          profiles: data as Profile[],
+          profiles: (data || []).map(transformProfile),
           total: count || 0,
         };
       } catch (error) {
