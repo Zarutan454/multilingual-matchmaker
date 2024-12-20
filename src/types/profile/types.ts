@@ -14,9 +14,9 @@ export interface Profile {
   price_range: { min: number; max: number } | null;
   availability_status: 'online' | 'offline' | 'busy';
   gallery: string[] | null;
-  languages: string[] | null;
+  languages: string[];
   services?: Service[];
-  age?: number;
+  age: number;
   gender?: string;
   name: string;
   image: string;
@@ -46,23 +46,6 @@ export interface Service {
   duration: number;
   price?: number;
   category?: string;
-}
-
-export interface ProfileFormValues {
-  fullName: string;
-  bio: string;
-  location: string;
-  interests: string;
-  occupation: string;
-  height: string;
-  weight: string;
-  languages: string[];
-  services: Service[];
-  priceRange: {
-    min: number;
-    max: number;
-  };
-  availabilityStatus: 'online' | 'offline' | 'busy';
 }
 
 export interface ProfilesResponse {
