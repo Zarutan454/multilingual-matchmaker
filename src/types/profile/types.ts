@@ -154,7 +154,8 @@ export const castToProfile = (data: any): Profile => {
     likes_count: data.likes_count || 0,
     services_offered: data.services_offered || [],
     verification_status: data.verification_status || '',
-    nickname: data.nickname || ''
+    nickname: data.nickname || '',
+    membership_level: data.membership_level || 'basic'
   };
 };
 

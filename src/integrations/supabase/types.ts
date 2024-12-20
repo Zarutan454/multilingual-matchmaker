@@ -221,9 +221,14 @@ export type Database = {
           likes_count: number | null
           location: string | null
           measurements: Json | null
+          membership_level: string | null
+          nickname: string | null
           occupation: string | null
           price_range: Json | null
           rates: Json | null
+          rating: number | null
+          reviews: number | null
+          reviews_count: number | null
           role: string | null
           service_categories: string[] | null
           services_offered: string[] | null
@@ -267,9 +272,14 @@ export type Database = {
           likes_count?: number | null
           location?: string | null
           measurements?: Json | null
+          membership_level?: string | null
+          nickname?: string | null
           occupation?: string | null
           price_range?: Json | null
           rates?: Json | null
+          rating?: number | null
+          reviews?: number | null
+          reviews_count?: number | null
           role?: string | null
           service_categories?: string[] | null
           services_offered?: string[] | null
@@ -313,9 +323,14 @@ export type Database = {
           likes_count?: number | null
           location?: string | null
           measurements?: Json | null
+          membership_level?: string | null
+          nickname?: string | null
           occupation?: string | null
           price_range?: Json | null
           rates?: Json | null
+          rating?: number | null
+          reviews?: number | null
+          reviews_count?: number | null
           role?: string | null
           service_categories?: string[] | null
           services_offered?: string[] | null
