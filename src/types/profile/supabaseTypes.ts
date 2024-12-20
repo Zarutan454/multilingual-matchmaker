@@ -22,16 +22,20 @@ export type ProfileRow = {
   gender: string | null;
   user_type: string;
   last_seen: string | null;
-  is_active?: boolean;
-  coordinates?: { lat: number; lng: number };
-  status?: string;
-  rating?: number;
-  reviews?: number;
-  membership_level?: 'basic' | 'premium' | 'vip' | 'bronze' | 'silver' | 'gold';
+  reviews_count: number | null;
+  is_verified: boolean | null;
+  hair_color: string | null;
+  hair_length: string | null;
+  hair_type: string | null;
+  eye_color: string | null;
+  skin_tone: string | null;
+  grooming: string | null;
+  body_type: string | null;
+  bust_size: string | null;
+  dress_size: string | null;
+  nickname: string | null;
+  rating: number | null;
+  reviews: number | null;
+  audit_log: Json[];
+  working_hours: Json;
 };
-
-export interface SupabaseQueryResponse {
-  data: ProfileRow[] | null;
-  error: Error | null;
-  count: number | null;
-}

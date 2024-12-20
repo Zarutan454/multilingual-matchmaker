@@ -36,6 +36,7 @@ export function transformProfile(row: ProfileRow): Profile {
     status: row.availability_status || 'offline',
     rating: 0,
     reviews: 0,
+    reviews_count: 0,
     spokenLanguages: row.languages || [],
     serviceCategories: row.service_categories || [],
     priceRange: row.price_range ? {
@@ -48,16 +49,16 @@ export function transformProfile(row: ProfileRow): Profile {
     messages_count: 0,
     average_rating: 0,
     membership_level: 'basic',
-    hair_color: row.hair_color,
-    hair_length: row.hair_length,
-    hair_type: row.hair_type,
-    eye_color: row.eye_color,
-    skin_tone: row.skin_tone,
-    grooming: row.grooming,
-    body_type: row.body_type,
-    bust_size: row.bust_size,
-    dress_size: row.dress_size,
-    nickname: row.nickname
+    hair_color: null,
+    hair_length: null,
+    hair_type: null,
+    eye_color: null,
+    skin_tone: null,
+    grooming: null,
+    body_type: null,
+    bust_size: null,
+    dress_size: null,
+    nickname: null
   };
 }
 
