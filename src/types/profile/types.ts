@@ -5,6 +5,9 @@ import { ContactInfo } from './contactInfo';
 import { ServiceInfo } from './serviceInfo';
 
 export interface Profile extends BaseProfile {
+  id: string;
+  name?: string;
+  image?: string;
   avatar_url: string | null;
   banner_url: string | null;
   interests: string | null;
@@ -24,8 +27,13 @@ export interface Profile extends BaseProfile {
   appearance?: Appearance;
   measurements?: Measurements;
   likes_count?: number;
-  height?: string | null;
-  weight?: string | null;
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
+  category?: string;
+  rating?: number;
+  reviews?: number;
 }
 
 export type AvailabilityStatus = 'online' | 'offline' | 'busy';

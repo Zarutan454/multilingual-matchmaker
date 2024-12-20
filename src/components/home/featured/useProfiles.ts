@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { Profile } from '@/types/profile/types';
-import { transformProfile } from '@/utils/transformers';
 
 interface UseProfilesProps {
   page: number;
@@ -18,7 +17,7 @@ interface UseProfilesProps {
   itemsPerPage?: number;
 }
 
-interface ProfilesResponse {
+export interface ProfilesResponse {
   profiles: Profile[];
   total: number;
 }
@@ -36,17 +35,6 @@ export const useProfiles = ({
   return useQuery<ProfilesResponse>({
     queryKey: ['profiles', page, searchTerm, location, category, orientation, priceRange, availability],
     queryFn: async () => {
-      console.log('Fetching profiles with params:', {
-        page,
-        searchTerm,
-        location,
-        category,
-        orientation,
-        priceRange,
-        availability,
-        itemsPerPage
-      });
-
       try {
         let query = supabase
           .from('profiles')
@@ -77,20 +65,51 @@ export const useProfiles = ({
           throw error;
         }
 
+        const profiles: Profile[] = data?.map(profile => ({
+          id: profile.id,
+          name: profile.full_name || '',
+          image: profile.avatar_url || '',
+          avatar_url: profile.avatar_url,
+          banner_url: profile.banner_url,
+          category: profile.category || '',
+          location: profile.location || '',
+          coordinates: null,
+          status: profile.availability_status || 'offline',
+          rating: 0,
+          reviews: 0,
+          languages: profile.languages || [],
+          age: profile.age || 0,
+          service_categories: profile.service_categories || [],
+          price_range: profile.price_range || null,
+          last_seen: profile.last_seen,
+          interests: profile.interests,
+          occupation: profile.occupation,
+          availability: profile.availability,
+          availability_status: profile.availability_status || 'offline',
+          gallery: profile.gallery,
+          contact_info: {
+            phone: profile.contact_info?.phone || null,
+            email: profile.contact_info?.email || null,
+          },
+          service_info: {
+            services: [],
+            working_hours: {},
+            rates: {},
+          },
+          user_type: profile.user_type || 'provider',
+          is_verified: false,
+          verification_status: 'pending',
+        })) || [];
+
         return {
-          profiles: (data || []).map(transformProfile),
+          profiles,
           total: count || 0,
         };
       } catch (error) {
         console.error('Error fetching profiles:', error);
+        toast.error('Error loading profiles');
         throw error;
       }
     },
-    staleTime: 1000 * 60 * 5, // 5 minutes
-    gcTime: 1000 * 60 * 30,   // 30 minutes
-    retry: 3,
-    meta: {
-      errorMessage: 'Fehler beim Laden der Profile'
-    }
   });
 };

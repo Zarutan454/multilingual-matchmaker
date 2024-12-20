@@ -7,6 +7,20 @@ import { useAuth } from "../../contexts/AuthContext";
 import { supabase } from "../../lib/supabase";
 import { RegisterFormFields } from "./RegisterFormFields";
 import { Loader2 } from "lucide-react";
+import { Form } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const formSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+  confirmPassword: z.string().min(6),
+  phoneNumber: z.string().optional(),
+  age: z.string().optional(),
+  country: z.string().optional(),
+  nickname: z.string().min(2),
+});
 
 export const RegisterForm = () => {
   const { t } = useLanguage();
@@ -14,68 +28,53 @@ export const RegisterForm = () => {
   const { signUp } = useAuth();
   
   const [userType, setUserType] = useState<"customer" | "provider">("customer");
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    confirmPassword: "",
-    phoneNumber: "",
-    age: "",
-    country: "",
-    nickname: "",
-  });
   const [isLoading, setIsLoading] = useState(false);
   const [retryTimeout, setRetryTimeout] = useState(0);
 
-  const validateProviderData = () => {
-    if (userType === "provider") {
-      if (!formData.phoneNumber) {
-        toast.error(t("phoneRequired"));
-        return false;
-      }
-      if (!formData.age || parseInt(formData.age) < 18) {
-        toast.error(t("mustBe18"));
-        return false;
-      }
-      if (!formData.country) {
-        toast.error(t("countryRequired"));
-        return false;
-      }
-    }
-    return true;
-  };
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+      phoneNumber: "",
+      age: "",
+      country: "",
+      nickname: "",
+    },
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (retryTimeout > 0) {
       toast.error(`${t("pleaseWait")} ${retryTimeout} ${t("seconds")}`);
       return;
     }
 
-    if (!formData.email || !formData.password || !formData.confirmPassword || !formData.nickname) {
-      toast.error(t("fillAllFields"));
-      return;
-    }
-
-    if (formData.password !== formData.confirmPassword) {
+    if (values.password !== values.confirmPassword) {
       toast.error(t("passwordsDoNotMatch"));
       return;
     }
 
-    if (formData.password.length < 6) {
-      toast.error(t("passwordTooShort"));
-      return;
-    }
-
-    if (!validateProviderData()) {
-      return;
+    if (userType === "provider") {
+      if (!values.phoneNumber) {
+        toast.error(t("phoneRequired"));
+        return;
+      }
+      if (!values.age || parseInt(values.age) < 18) {
+        toast.error(t("mustBe18"));
+        return;
+      }
+      if (!values.country) {
+        toast.error(t("countryRequired"));
+        return;
+      }
     }
 
     try {
       setIsLoading(true);
       console.log("Starting registration process...");
       
-      const { data: signUpData, error: signUpError } = await signUp(formData.email, formData.password);
+      const { data: signUpData, error: signUpError } = await signUp(values.email, values.password);
       
       if (signUpError) {
         console.error("SignUp error:", signUpError);
@@ -118,10 +117,10 @@ export const RegisterForm = () => {
           {
             id: signUpData.user.id,
             user_type: userType,
-            full_name: formData.nickname,
-            phone: formData.phoneNumber,
-            age: formData.age ? parseInt(formData.age) : null,
-            location: formData.country,
+            full_name: values.nickname,
+            phone: values.phoneNumber,
+            age: values.age ? parseInt(values.age) : null,
+            location: values.country,
             is_verified: false,
             verification_status: 'pending'
           }
@@ -136,10 +135,10 @@ export const RegisterForm = () => {
       const { error: metadataError } = await supabase.auth.updateUser({
         data: {
           user_type: userType,
-          phone: formData.phoneNumber,
-          age: formData.age,
-          country: formData.country,
-          nickname: formData.nickname,
+          phone: values.phoneNumber,
+          age: values.age,
+          country: values.country,
+          nickname: values.nickname,
           last_nickname_change: new Date().toISOString()
         }
       });
@@ -163,30 +162,31 @@ export const RegisterForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <RegisterFormFields
-        userType={userType}
-        setUserType={setUserType}
-        formData={formData}
-        setFormData={setFormData}
-      />
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <RegisterFormFields
+          userType={userType}
+          setUserType={setUserType}
+          form={form}
+        />
 
-      <Button 
-        type="submit" 
-        className="w-full bg-secondary hover:bg-secondary/80 text-white transition-colors"
-        disabled={isLoading || retryTimeout > 0}
-      >
-        {isLoading ? (
-          <div className="flex items-center justify-center">
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            <span>{t("registering")}</span>
-          </div>
-        ) : retryTimeout > 0 ? (
-          `${t("waitFor")} ${retryTimeout}s`
-        ) : (
-          t("submit")
-        )}
-      </Button>
-    </form>
+        <Button 
+          type="submit" 
+          className="w-full bg-secondary hover:bg-secondary/80 text-white transition-colors"
+          disabled={isLoading || retryTimeout > 0}
+        >
+          {isLoading ? (
+            <div className="flex items-center justify-center">
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <span>{t("registering")}</span>
+            </div>
+          ) : retryTimeout > 0 ? (
+            `${t("waitFor")} ${retryTimeout}s`
+          ) : (
+            t("submit")
+          )}
+        </Button>
+      </form>
+    </Form>
   );
 };
