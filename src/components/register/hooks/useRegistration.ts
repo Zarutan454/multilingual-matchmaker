@@ -78,9 +78,7 @@ export const useRegistration = () => {
             is_verified: false,
             verification_status: 'pending'
           }
-        ], {
-          onConflict: 'id'
-        });
+        ]);
 
       if (profileError) {
         console.error("Profile creation error:", profileError);
@@ -88,21 +86,6 @@ export const useRegistration = () => {
         return;
       }
 
-      const { error: metadataError } = await supabase.auth.updateUser({
-        data: {
-          user_type: values.userType,
-          phone: values.phoneNumber,
-          age: values.age,
-          country: values.country,
-          nickname: values.nickname,
-          last_nickname_change: new Date().toISOString()
-        }
-      });
-
-      if (metadataError) {
-        console.error("Metadata update error:", metadataError);
-      }
-      
       console.log("Registration successful!");
       toast.success(t("registrationSuccess"));
       toast.info(t("pleaseCheckEmail"));
