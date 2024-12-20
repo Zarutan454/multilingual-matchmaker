@@ -7,5 +7,8 @@ export interface Translations {
   serviceUpdated: string;
   profileUpdated: string;
   errorUpdatingProfile: string;
+  loading: string;
+  error: string;
+  success: string;
   [key: string]: string;
 }

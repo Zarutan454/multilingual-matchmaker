@@ -6,6 +6,7 @@ export interface RegisterFormData {
   age?: string;
   country?: string;
   nickname: string;
+  userType: "customer" | "provider";
 }
 
 export interface RegisterFormFieldsProps {

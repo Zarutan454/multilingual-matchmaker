@@ -1,4 +1,5 @@
 import { Database } from "@/integrations/supabase/types";
+import { Json } from "@/integrations/supabase/generated.types";
 
 export interface Profile {
   id: string;
@@ -25,33 +26,16 @@ export interface Profile {
     max: number;
   };
   user_type: 'customer' | 'provider';
-  contact_info: {
-    phone: string;
-    email: string;
-  };
-  service_info: {
-    categories: string[];
-    description: string;
-    pricing: {
-      hourly: number;
-    };
-    availability: {
-      days: string[];
-      hours: string;
-    };
-  };
-  verification_status: string;
-  age: number;
-  interests?: string[];
+  interests: string[];
   occupation?: string;
-  height?: number;
-  weight?: number;
+  height?: string;
+  weight?: string;
   services?: Service[];
   gallery?: string[];
   working_hours?: any;
   availability?: string[];
   availability_status?: string;
-  audit_log?: any[];
+  audit_log?: Json[];
   body_type?: string;
   bust_size?: string;
   gender?: string;
@@ -67,6 +51,11 @@ export interface Profile {
   average_rating?: number;
   membership_level?: string;
   reviews_count?: number;
+  age?: number;
+  price_range?: {
+    min: number;
+    max: number;
+  };
 }
 
 export interface Service {
@@ -99,6 +88,17 @@ export interface ProfileFormValues {
     phoneNumber: string;
     relationship: string;
   };
+  priceRange?: {
+    min: number;
+    max: number;
+  };
+  availabilityStatus?: string;
+  nickname?: string;
+}
+
+export interface ProfilesResponse {
+  profiles: Profile[];
+  total: number;
 }
 
 export const MAX_GALLERY_IMAGES = 10;
@@ -131,48 +131,24 @@ export const castToProfile = (data: Database['public']['Tables']['profiles']['Ro
       max: priceRangeData?.max || 0
     },
     user_type: data.user_type as 'customer' | 'provider',
-    contact_info: {
-      phone: '',
-      email: ''
-    },
-    service_info: {
-      categories: data.service_categories || [],
-      description: data.bio || '',
-      pricing: {
-        hourly: priceRangeData?.min || 0,
-      },
-      availability: {
-        days: data.availability || [],
-        hours: ''
-      }
-    },
-    verification_status: 'pending',
-    age: data.age || 0,
     interests: [],
-    occupation: data.occupation || '',
-    height: 0,
-    weight: 0,
-    services: [],
-    gallery: data.gallery || [],
-    working_hours: data.working_hours,
-    availability: data.availability,
-    availability_status: data.availability_status,
-    audit_log: data.audit_log,
-    body_type: data.body_type,
-    bust_size: data.bust_size,
-    gender: data.gender,
-    hair_color: data.hair_color,
-    hair_length: data.hair_length,
-    hair_type: data.hair_type,
-    eye_color: data.eye_color,
-    skin_tone: data.skin_tone,
-    grooming: data.grooming,
-    dress_size: data.dress_size,
-    is_verified: data.is_verified,
+    age: data.age || 0,
+    gender: data.gender || '',
+    hair_color: data.hair_color || '',
+    hair_length: data.hair_length || '',
+    hair_type: data.hair_type || '',
+    eye_color: data.eye_color || '',
+    skin_tone: data.skin_tone || '',
+    grooming: data.grooming || '',
+    body_type: data.body_type || '',
+    bust_size: data.bust_size || '',
+    dress_size: data.dress_size || '',
+    is_verified: data.is_verified || false,
     messages_count: 0,
     average_rating: 0,
     membership_level: 'basic',
-    reviews_count: data.reviews_count
+    reviews_count: data.reviews_count || 0,
+    price_range: priceRangeData || { min: 0, max: 0 }
   };
 };
 
