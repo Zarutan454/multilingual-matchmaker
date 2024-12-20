@@ -46,7 +46,7 @@ export const ContentManager = () => {
     try {
       const table = type === 'blog' ? 'blog_posts' : 'news_items';
       const { error } = await supabase.from(table).insert({
-        title: 'New Draft',
+        title: t('admin.content.newDraft'),
         content: '',
         published: false,
         publishedAt: new Date().toISOString(),
@@ -60,10 +60,10 @@ export const ContentManager = () => {
       });
 
       if (error) throw error;
-      toast.success(`New ${type} post created`);
+      toast.success(t('admin.content.createdSuccess', { type }));
     } catch (error) {
       console.error('Error creating content:', error);
-      toast.error('Failed to create content');
+      toast.error(t('admin.content.createError'));
     }
   };
 
