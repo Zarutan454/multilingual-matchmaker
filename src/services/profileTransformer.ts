@@ -41,6 +41,6 @@ export const transformProfile = (profile: ProfileRow): Profile => {
     is_verified: false,
     messages_count: 0,
     average_rating: 0,
-    membership_level: 'bronze'
+    membership_level: 'basic'
   };
 };

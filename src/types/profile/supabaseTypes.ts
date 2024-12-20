@@ -23,6 +23,10 @@ export type ProfileRow = {
   user_type: string;
   last_seen: string | null;
   is_active?: boolean;
+  coordinates?: { lat: number; lng: number };
+  status?: string;
+  rating?: number;
+  reviews?: number;
 };
 
 export interface SupabaseQueryResponse {

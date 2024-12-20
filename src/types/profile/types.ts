@@ -36,7 +36,7 @@ export interface Profile {
   is_verified?: boolean;
   messages_count?: number;
   average_rating?: number;
-  membership_level?: 'vip' | 'bronze' | 'silver' | 'gold';
+  membership_level?: 'basic' | 'premium' | 'vip' | 'bronze' | 'silver' | 'gold';
 }
 
 export interface Service {
