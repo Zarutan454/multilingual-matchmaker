@@ -1,4 +1,4 @@
-import { Profile } from "@/types/profile";
+import { Profile } from "@/types/profile/types";
 import { ImageUploadSection } from "./ImageUploadSection";
 import { Card } from "@/components/ui/card";
 import { ProfileHeader } from "./profile/ProfileHeader";
