@@ -36,7 +36,7 @@ export interface Profile {
   is_verified?: boolean;
   messages_count?: number;
   average_rating?: number;
-  membership_level?: 'basic' | 'premium' | 'vip';
+  membership_level?: 'basic' | 'premium' | 'vip' | 'bronze' | 'silver' | 'gold';
 }
 
 export interface Service {
@@ -46,6 +46,27 @@ export interface Service {
   duration: number;
   price?: number;
   category?: string;
+}
+
+export interface ProfileFormValues {
+  fullName: string;
+  bio: string;
+  avatar?: File;
+  location: string;
+  interests: string;
+  occupation: string;
+  height: string;
+  weight: string;
+  languages: string[];
+  services: Service[];
+  priceRange: {
+    min: number;
+    max: number;
+  };
+  availabilityStatus: 'online' | 'offline' | 'busy';
+  serviceCategories: string[];
+  gender?: string;
+  age?: number;
 }
 
 export interface ProfilesResponse {

@@ -27,6 +27,7 @@ export type ProfileRow = {
   status?: string;
   rating?: number;
   reviews?: number;
+  membership_level?: 'basic' | 'premium' | 'vip' | 'bronze' | 'silver' | 'gold';
 };
 
 export interface SupabaseQueryResponse {
