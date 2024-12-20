@@ -28,7 +28,7 @@ export const useOptimizedProfiles = ({
   filters,
   enabled = true
 }: UseProfilesProps) => {
-  return useQuery<ProfilesResponse>({
+  return useQuery({
     queryKey: ['optimized-profiles', page, pageSize, filters],
     queryFn: async () => {
       try {
@@ -114,7 +114,7 @@ export const useOptimizedProfiles = ({
       }
     },
     staleTime: STALE_TIME,
-    cacheTime: CACHE_TIME,
+    gcTime: CACHE_TIME,
     enabled,
     meta: {
       errorMessage: 'Error loading profiles'

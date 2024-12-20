@@ -7,6 +7,7 @@ import { ProfileFilters } from "./featured/ProfileFilters";
 import { ProfilePagination } from "./featured/ProfilePagination";
 import { useOptimizedProfiles } from "@/hooks/useOptimizedProfiles";
 import { toast } from "sonner";
+import { Profile } from "@/types/profile/types";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -34,7 +35,7 @@ export const FeaturedProfiles = () => {
     }
   });
 
-  const profiles = data?.profiles || [];
+  const profiles: Profile[] = data?.profiles || [];
 
   const handleChatClick = (e: React.MouseEvent, profileId: string) => {
     e.stopPropagation();
