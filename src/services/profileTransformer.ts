@@ -18,11 +18,11 @@ export const transformProfile = (profile: ProfileRow): Profile => {
     availability: profile.availability || [],
     service_categories: profile.service_categories || [],
     price_range: priceRangeData || { min: 0, max: 0 },
-    availability_status: profile.availability_status as 'online' | 'offline' | 'busy' || 'offline',
+    availability_status: (profile.availability_status as 'online' | 'offline' | 'busy') || 'offline',
     gallery: profile.gallery || [],
     languages: profile.languages || [],
     age: profile.age || 0,
-    gender: profile.gender || null,
+    gender: profile.gender || undefined,
     name: profile.full_name || '',
     image: profile.avatar_url || '',
     category: profile.category || '',
@@ -36,11 +36,11 @@ export const transformProfile = (profile: ProfileRow): Profile => {
     spokenLanguages: profile.languages || [],
     serviceCategories: profile.service_categories || [],
     priceRange: priceRangeData || { min: 0, max: 0 },
-    user_type: profile.user_type as 'customer' | 'provider',
+    user_type: (profile.user_type as 'customer' | 'provider') || 'customer',
     last_seen: profile.last_seen,
     is_verified: false,
     messages_count: 0,
     average_rating: 0,
-    membership_level: 'basic'
+    membership_level: 'bronze'
   };
 };
