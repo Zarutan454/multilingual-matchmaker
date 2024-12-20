@@ -48,12 +48,17 @@ export const config: Partial<Database> = {
           updated_at: '',
           verification_status: '',
           weight: '',
-          working_hours: null
+          working_hours: null,
+          reviews_count: 0,
+          nickname: '',
+          rating: 0,
+          reviews: 0
         },
         Insert: {
           id: ''
         },
-        Update: {}
+        Update: {},
+        Relationships: []
       }
     }
   }

@@ -65,6 +65,7 @@ export interface Profile {
   likes_count?: number;
   services_offered?: string[];
   verification_status?: string;
+  nickname?: string;
 }
 
 export interface Service {
@@ -74,37 +75,6 @@ export interface Service {
   duration: number;
   price?: number;
   categories?: string[];
-}
-
-export interface ProfileFormValues {
-  fullName: string;
-  bio: string;
-  location: string;
-  interests: string[];
-  occupation: string;
-  height: string;
-  weight: string;
-  avatar?: File;
-  gallery?: (File | string)[];
-  gender?: string;
-  dateOfBirth?: string;
-  nationality?: string;
-  spokenLanguages?: string[];
-  preferredCommunication?: string;
-  emergencyContact?: {
-    name: string;
-    phoneNumber: string;
-    relationship: string;
-  };
-  priceRange?: {
-    min: number;
-    max: number;
-  };
-  availabilityStatus?: string;
-  nickname?: string;
-  serviceCategories?: string[];
-  services?: Service[];
-  languages?: string[];
 }
 
 export interface ProfilesResponse {
@@ -133,7 +103,7 @@ export const castToProfile = (data: any): Profile => {
     },
     status: data.availability_status || 'offline',
     rating: data.rating || 0,
-    reviews: data.reviews || 0,
+    reviews: data.reviews_count || 0,
     languages: data.languages || [],
     spokenLanguages: data.languages || [],
     serviceCategories: data.service_categories || [],
@@ -152,7 +122,8 @@ export const castToProfile = (data: any): Profile => {
     role: data.role || '',
     likes_count: data.likes_count || 0,
     services_offered: data.services_offered || [],
-    verification_status: data.verification_status || ''
+    verification_status: data.verification_status || '',
+    nickname: data.nickname || ''
   };
 };
 

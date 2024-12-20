@@ -3,8 +3,8 @@ export interface Translations {
   delete: string;
   edit: string;
   serviceAdded: string;
-  serviceDeleted: string;
   errorAddingService: string;
+  serviceDeleted: string;
   errorDeletingService: string;
   fillAllFields: string;
   pleaseLogin: string;
@@ -15,3 +15,5 @@ export interface Translations {
   errorDeletingImage: string;
   [key: string]: string;
 }
+
+export type TranslationKey = keyof Translations;
