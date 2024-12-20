@@ -2,6 +2,9 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { Profile, ProfilesResponse } from '@/types/profile/types';
+import { Database } from '@/integrations/supabase/types';
+
+type ProfileRow = Database['public']['Tables']['profiles']['Row'];
 
 interface UseProfilesProps {
   page: number;
@@ -60,7 +63,7 @@ export const useProfiles = ({
           throw error;
         }
 
-        const profiles: Profile[] = (data || []).map(profile => {
+        const profiles: Profile[] = (data || []).map((profile: ProfileRow) => {
           const priceRangeData = profile.price_range as { min: number; max: number } | null;
           
           return {
@@ -89,8 +92,8 @@ export const useProfiles = ({
             },
             user_type: profile.user_type as 'customer' | 'provider',
             contact_info: {
-              phone: profile.phone || '',
-              email: profile.email || ''
+              phone: (profile as any).phone || '',
+              email: (profile as any).email || ''
             },
             service_info: {
               categories: profile.service_categories || [],

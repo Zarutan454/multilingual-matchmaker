@@ -57,6 +57,8 @@ export interface Profile {
   reviews: number;
   languages: string[];
   age: number;
+  phone?: string;
+  email?: string;
   interests?: string;
   occupation?: string;
   availability?: string[];
@@ -69,8 +71,6 @@ export interface Profile {
   gallery?: string[];
   is_verified?: boolean;
   last_seen?: string;
-  phone?: string;
-  email?: string;
 }
 
 export interface ProfilesResponse {
