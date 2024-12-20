@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Profile } from "@/types/profile";
+import { Profile, ProfileFormValues } from "@/types/profile/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,7 +23,7 @@ export const ProfileForm = ({ profile, userId, onProfileUpdate }: ProfileFormPro
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
 
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit } = useForm<ProfileFormValues>({
     defaultValues: {
       fullName: profile?.full_name || "",
       nickname: profile?.nickname || "",
@@ -33,6 +33,10 @@ export const ProfileForm = ({ profile, userId, onProfileUpdate }: ProfileFormPro
       bio: profile?.bio || "",
       interests: profile?.interests || "",
       occupation: profile?.occupation || "",
+      services: profile?.services || [],
+      languages: profile?.languages || [],
+      priceRange: profile?.price_range || { min: 0, max: 0 },
+      availabilityStatus: (profile?.availability_status as 'online' | 'offline' | 'busy') || 'offline'
     },
   });
 
@@ -74,21 +78,25 @@ export const ProfileForm = ({ profile, userId, onProfileUpdate }: ProfileFormPro
     }
   };
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: ProfileFormValues) => {
     setIsSubmitting(true);
     try {
+      const updateData = {
+        full_name: data.fullName,
+        nickname: data.nickname,
+        location: data.location,
+        height: data.height,
+        weight: data.weight,
+        bio: data.bio,
+        interests: data.interests,
+        occupation: data.occupation,
+        price_range: data.priceRange,
+        availability_status: data.availabilityStatus
+      };
+
       const { error } = await supabase
         .from('profiles')
-        .update({
-          full_name: data.fullName,
-          nickname: data.nickname,
-          location: data.location,
-          height: data.height,
-          weight: data.weight,
-          bio: data.bio,
-          interests: data.interests,
-          occupation: data.occupation
-        })
+        .update(updateData)
         .eq('id', userId);
 
       if (error) throw error;
@@ -141,6 +149,17 @@ export const ProfileForm = ({ profile, userId, onProfileUpdate }: ProfileFormPro
         <Input
           id="fullName"
           {...register("fullName")}
+          className="bg-black/50 border-[#FFD700]/30 text-white placeholder-neutral-400 focus:border-[#FFD700] transition-colors"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="nickname" className="text-white text-sm">
+          {t("nickname")}
+        </Label>
+        <Input
+          id="nickname"
+          {...register("nickname")}
           className="bg-black/50 border-[#FFD700]/30 text-white placeholder-neutral-400 focus:border-[#FFD700] transition-colors"
         />
       </div>

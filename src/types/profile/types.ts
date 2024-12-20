@@ -1,62 +1,51 @@
-export interface ContactInfo {
-  phone?: string;
-  email?: string;
-  website?: string;
-  social?: {
-    instagram?: string;
-    twitter?: string;
-    facebook?: string;
-  };
-}
-
-export interface ServiceInfo {
-  services?: string[];
-  categories: string[];
-  description: string;
-  pricing: {
-    hourly?: number;
-    daily?: number;
-    custom?: string;
-  };
-  availability: {
-    days: string[];
-    hours: string;
-  };
-}
-
-export interface Coordinates {
-  lat: number;
-  lng: number;
-}
-
 export interface Profile {
   id: string;
-  full_name: string;
-  name: string;
-  bio?: string;
-  image: string;
-  avatar_url?: string;
-  banner_url?: string;
-  user_type: 'customer' | 'provider';
-  contact_info: ContactInfo;
-  service_info?: ServiceInfo;
-  verification_status: 'pending' | 'verified' | 'rejected';
-  created_at?: string;
-  updated_at?: string;
-  category: string;
-  coordinates: Coordinates;
+  full_name: string | null;
+  nickname?: string;
+  bio: string | null;
+  avatar_url: string | null;
+  location: string | null;
+  interests: string | null;
+  occupation: string | null;
+  height: string | null;
+  weight: string | null;
+  availability: string[] | null;
+  service_categories: string[] | null;
+  price_range: {
+    min: number;
+    max: number;
+  } | null;
+  availability_status: string | null;
+  languages?: string[];
+  services?: Service[];
+  age?: number;
+}
+
+export interface ProfileFormValues {
+  fullName: string;
+  nickname?: string;
+  bio: string;
   location: string;
-  status: string;
-  spokenLanguages: string[];
-  serviceCategories: string[];
+  interests: string;
+  occupation: string;
+  height: string;
+  weight: string;
+  languages: string[];
+  services: Service[];
   priceRange: {
     min: number;
     max: number;
   };
-  rating: number;
-  reviews: number;
-  languages: string[];
-  age: number;
+  availabilityStatus: 'online' | 'offline' | 'busy';
+}
+
+export interface Service {
+  id: string;
+  name: string;
+  description: string | null;
+  duration: number;
+  price?: number;
+  category?: string;
 }
 
 export interface ProfilesResponse {
