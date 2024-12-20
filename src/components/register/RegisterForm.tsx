@@ -125,7 +125,10 @@ export const RegisterForm = () => {
             id: signUpData.user.id,
             user_type: userType,
             full_name: values.nickname,
-            phone: values.phoneNumber,
+            contact_info: {
+              phone: values.phoneNumber,
+              email: values.email
+            },
             age: values.age ? parseInt(values.age) : null,
             location: values.country,
             is_verified: false,
