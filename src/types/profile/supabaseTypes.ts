@@ -1,4 +1,3 @@
-import { Database } from '@/integrations/supabase/types';
 import { Json } from '@/integrations/supabase/generated.types';
 
 export type ProfileRow = {
@@ -8,20 +7,21 @@ export type ProfileRow = {
   banner_url: string | null;
   bio: string | null;
   location: string | null;
+  interests: string | null;
+  occupation: string | null;
+  height: string | null;
+  weight: string | null;
   category: string | null;
   availability_status: string | null;
   languages: string[] | null;
   service_categories: string[] | null;
   price_range: Json | null;
   availability: string[] | null;
+  gallery: string[] | null;
   age: number | null;
-  user_type: string;  // Changed from 'customer' | 'provider' to string to match Supabase
-  contact_info: {
-    phone?: string;
-    email?: string;
-  } | null;
-  lat?: number;
-  lng?: number;
+  gender: string | null;
+  user_type: string;
+  last_seen: string | null;
   is_active?: boolean;
 };
 

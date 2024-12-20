@@ -21,6 +21,18 @@ export interface Profile {
   services?: Service[];
   age?: number;
   gender?: string;
+  name?: string;
+  image?: string;
+  category?: string;
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
+  status?: string;
+  rating?: number;
+  reviews?: number;
+  spokenLanguages?: string[];
+  serviceCategories?: string[];
   user_type: 'customer' | 'provider';
   last_seen: string | null;
   is_verified?: boolean;
