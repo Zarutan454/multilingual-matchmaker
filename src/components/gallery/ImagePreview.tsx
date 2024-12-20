@@ -26,11 +26,12 @@ export const ImagePreview = ({
           variant="ghost"
           size="icon"
           className="absolute left-4 text-white hover:bg-white/20"
-          onClick={() => onNavigate('prev')}
+          onClick={function() { return onNavigate('prev'); }}
         >
           <ChevronLeft className="h-8 w-8" />
         </Button>
       )}
+      
       {index < totalImages - 1 && (
         <Button
           variant="ghost"

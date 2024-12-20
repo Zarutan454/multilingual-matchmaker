@@ -21,17 +21,16 @@ export class Logger {
   async log(level: LogEntry['level'], message: string, metadata?: Record<string, any>) {
     const timestamp = new Date().toISOString();
     const logEntry: LogEntry = {
-      level,
-      message,
-      timestamp,
-      metadata,
+      level: level,
+      message: message,
+      timestamp: timestamp,
+      metadata: metadata,
     };
 
     try {
       console.log(`[${level.toUpperCase()}] ${message}`, metadata || '');
       this.logs.push(logEntry);
       
-      // Trim logs if they exceed 1000 entries
       if (this.logs.length > 1000) {
         this.logs = this.logs.slice(-1000);
       }

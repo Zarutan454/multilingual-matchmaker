@@ -8,7 +8,7 @@ import { GalleryImage as GalleryImageType } from "@/types/gallery";
 
 interface GalleryListProps {
   images: GalleryImageType[];
-  onDragEnd: (result: any) => void;
+  onDragEnd: (result: unknown) => void;
   onDeleteImage: (imageUrl: string) => void;
   onEditImage: (imageUrl: string, editedImage: Blob) => Promise<void>;
   onCategoryChange: (imageId: string, category: string) => void;
