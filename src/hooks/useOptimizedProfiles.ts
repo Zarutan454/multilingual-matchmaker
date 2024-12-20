@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { Profile } from "@/types/profile/types";
+import { Profile, ProfilesResponse, Coordinates } from "@/types/profile/types";
 import { toast } from "sonner";
 
 interface UseProfilesProps {
@@ -14,11 +14,6 @@ interface UseProfilesProps {
     membershipLevel?: string;
   };
   enabled?: boolean;
-}
-
-interface ProfilesResponse {
-  profiles: Profile[];
-  total: number;
 }
 
 const CACHE_TIME = 1000 * 60 * 5; // 5 minutes
@@ -57,8 +52,15 @@ export const useOptimizedProfiles = ({
 
         if (error) throw error;
 
-        return {
-          profiles: (data || []).map((profile): Profile => ({
+        const profiles: Profile[] = (data || []).map(profile => {
+          const coordinates: Coordinates = {
+            lat: 0,
+            lng: 0
+          };
+
+          const priceRange = typeof profile.price_range === 'object' ? profile.price_range : { min: 0, max: 0 };
+
+          return {
             id: profile.id,
             full_name: profile.full_name || '',
             name: profile.full_name || '',
@@ -68,7 +70,7 @@ export const useOptimizedProfiles = ({
             banner_url: profile.banner_url || '',
             category: profile.category || '',
             location: profile.location || '',
-            coordinates: [0, 0],
+            coordinates,
             status: profile.availability_status || 'offline',
             rating: 0,
             reviews: 0,
@@ -76,19 +78,19 @@ export const useOptimizedProfiles = ({
             spokenLanguages: profile.languages || [],
             serviceCategories: profile.service_categories || [],
             priceRange: {
-              min: profile.price_range?.min || 0,
-              max: profile.price_range?.max || 0
+              min: priceRange.min || 0,
+              max: priceRange.max || 0
             },
-            user_type: profile.user_type || 'provider',
+            user_type: profile.user_type as 'customer' | 'provider',
             contact_info: {
-              phone: profile.phone,
-              email: profile.email
+              phone: profile.phone as string,
+              email: profile.email as string
             },
             service_info: {
               categories: profile.service_categories || [],
               description: profile.bio || '',
               pricing: {
-                hourly: profile.price_range?.min || 0,
+                hourly: priceRange.min || 0,
               },
               availability: {
                 days: profile.availability || [],
@@ -97,7 +99,11 @@ export const useOptimizedProfiles = ({
             },
             verification_status: 'pending',
             age: profile.age
-          })),
+          };
+        });
+
+        return {
+          profiles,
           total: count || 0
         };
       } catch (error) {

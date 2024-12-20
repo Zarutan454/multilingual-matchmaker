@@ -24,6 +24,11 @@ export interface ServiceInfo {
   };
 }
 
+export interface Coordinates {
+  lat: number;
+  lng: number;
+}
+
 export interface Profile {
   id: string;
   full_name: string;
@@ -39,7 +44,7 @@ export interface Profile {
   created_at?: string;
   updated_at?: string;
   category: string;
-  coordinates: [number, number];
+  coordinates: Coordinates;
   location: string;
   status: string;
   spokenLanguages: string[];
@@ -52,8 +57,6 @@ export interface Profile {
   reviews: number;
   languages: string[];
   age?: number;
-  phone?: string;
-  email?: string;
   interests?: string;
   occupation?: string;
   availability?: string[];
