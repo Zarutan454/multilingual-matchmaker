@@ -96,6 +96,13 @@ export const RegisterForm = () => {
           toast.error(`${t("tooManyAttempts")} ${waitTime} ${t("seconds")}`);
           return;
         }
+
+        // Handle user already exists error
+        if (signUpError.message.includes("already registered") || signUpError.message.includes("already exists")) {
+          toast.error("Diese E-Mail-Adresse ist bereits registriert. Bitte melden Sie sich stattdessen an.");
+          navigate("/login");
+          return;
+        }
         
         if (signUpError.message.includes("email")) {
           toast.error(t("emailAlreadyExists"));
