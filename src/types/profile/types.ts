@@ -69,6 +69,8 @@ export interface Profile {
   gallery?: string[];
   is_verified?: boolean;
   last_seen?: string;
+  phone?: string;
+  email?: string;
 }
 
 export interface ProfilesResponse {

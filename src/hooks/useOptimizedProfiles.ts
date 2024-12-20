@@ -1,7 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabase";
-import { Profile, ProfilesResponse } from "@/types/profile/types";
-import { toast } from "sonner";
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/lib/supabase';
+import { Profile, ProfilesResponse } from '@/types/profile/types';
+import { toast } from 'sonner';
 
 interface UseProfilesProps {
   page: number;
