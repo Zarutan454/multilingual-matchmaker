@@ -20,7 +20,7 @@ export const ServiceManager = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   const { data: services = [], isLoading } = useQuery({
-    queryKey: ['services', user?.id],
+    queryKey: ['services', user?.id, user, user?.id],
     queryFn: async () => {
       if (!user) return [];
       const { data, error } = await supabase
