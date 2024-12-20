@@ -11,10 +11,7 @@ export interface Profile {
   weight: string | null;
   availability: string[] | null;
   service_categories: string[] | null;
-  price_range: {
-    min: number;
-    max: number;
-  } | null;
+  price_range: { min: number; max: number } | null;
   availability_status: 'online' | 'offline' | 'busy';
   gallery: string[] | null;
   languages: string[] | null;
@@ -33,12 +30,22 @@ export interface Profile {
   reviews?: number;
   spokenLanguages?: string[];
   serviceCategories?: string[];
+  priceRange?: { min: number; max: number };
   user_type: 'customer' | 'provider';
   last_seen: string | null;
   is_verified?: boolean;
   messages_count?: number;
   average_rating?: number;
   membership_level?: 'basic' | 'premium' | 'vip';
+}
+
+export interface Service {
+  id: string;
+  name: string;
+  description: string | null;
+  duration: number;
+  price?: number;
+  category?: string;
 }
 
 export interface ProfileFormValues {
@@ -56,15 +63,6 @@ export interface ProfileFormValues {
     max: number;
   };
   availabilityStatus: 'online' | 'offline' | 'busy';
-}
-
-export interface Service {
-  id: string;
-  name: string;
-  description: string | null;
-  duration: number;
-  price?: number;
-  category?: string;
 }
 
 export interface ProfilesResponse {
