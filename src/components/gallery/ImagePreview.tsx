@@ -33,7 +33,7 @@ export const ImagePreview = ({
           Zoom Out
         </button>
         <button
-          onClick={() => onZoom("in")}
+          onClick={() => { onZoom("in"); }}
           className="bg-black/50 text-white px-4 py-2 rounded"
         >
           Zoom In
@@ -44,7 +44,7 @@ export const ImagePreview = ({
       </div>
       {index > 0 && (
         <button
-          onClick={() => onNavigate("prev")}
+          onClick={function() { return onNavigate("prev") }}
           className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white px-4 py-2 rounded"
         >
           Previous

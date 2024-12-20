@@ -32,7 +32,7 @@ export const EmailUpdateForm = () => {
       <Input
         type="email"
         value={newEmail}
-        onChange={(e) => setNewEmail(e.target.value)}
+        onChange={(e) => { setNewEmail(e.target.value); }}
         placeholder={t('newEmail')}
         className="max-w-sm"
       />

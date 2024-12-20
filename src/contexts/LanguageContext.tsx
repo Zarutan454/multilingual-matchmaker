@@ -19,7 +19,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const translateAndCache = useCallback(async (text: string, targetLang: Language): Promise<string> => {
     if (!text) return "";
     
-    const cacheKey = `${targetLang}:${text}`;
+    const cacheKey = ""+targetLang+":"+text;
     
     if (translationCache.has(cacheKey)) {
       return translationCache.get(cacheKey)!;

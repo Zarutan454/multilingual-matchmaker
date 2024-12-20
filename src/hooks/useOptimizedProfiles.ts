@@ -43,7 +43,7 @@ export const useOptimizedProfiles = ({
         }
 
         if (filters?.location) {
-          query = query.ilike('location', `%${filters.location}%`);
+          query = query.ilike('location', "%"+filters.location+"%");
         }
 
         if (filters?.category) {
@@ -54,7 +54,6 @@ export const useOptimizedProfiles = ({
 
         if (error) throw error;
 
-        // Cast the raw data to ProfileRow before transformation
         const rawProfiles = data as unknown as ProfileRow[];
         const profiles: Profile[] = (rawProfiles || []).map(profile => transformProfile(profile));
 

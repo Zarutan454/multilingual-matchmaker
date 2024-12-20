@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { RealtimeChannel } from '@supabase/supabase-js';
@@ -26,7 +26,7 @@ export const useOptimizedPresence = () => {
       }
     };
 
-    const channel = supabase.channel(`presence_${user.id}`);
+    const channel = supabase.channel("presence_"+user.id);
     channelRef.current = channel;
 
     channel

@@ -15,7 +15,7 @@ export const GenderSelection = () => {
       {/* Linke Seite - Frau */}
       <div 
         className="w-1/2 relative cursor-pointer group"
-        onClick={() => handleSelection('female')}
+        onClick={function() { return handleSelection('female') }}
       >
         <div 
           className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
