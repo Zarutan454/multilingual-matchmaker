@@ -6,6 +6,7 @@ export const transformProfile = (profile: ProfileRow): Profile => {
 
   return {
     id: profile.id,
+    full_name: profile.full_name || '',
     name: profile.full_name || '',
     image: profile.avatar_url || '',
     bio: profile.bio || '',
@@ -29,8 +30,8 @@ export const transformProfile = (profile: ProfileRow): Profile => {
     },
     user_type: profile.user_type as 'customer' | 'provider',
     contact_info: {
-      phone: profile.phone || '',
-      email: profile.email || ''
+      phone: (profile as any).contact_info?.phone || '',
+      email: (profile as any).contact_info?.email || ''
     },
     service_info: {
       categories: profile.service_categories || [],

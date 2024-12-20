@@ -57,20 +57,6 @@ export interface Profile {
   reviews: number;
   languages: string[];
   age: number;
-  phone?: string;
-  email?: string;
-  interests?: string;
-  occupation?: string;
-  availability?: string[];
-  service_categories?: string[];
-  price_range?: {
-    min: number;
-    max: number;
-  };
-  availability_status?: 'online' | 'offline' | 'busy';
-  gallery?: string[];
-  is_verified?: boolean;
-  last_seen?: string;
 }
 
 export interface ProfilesResponse {
