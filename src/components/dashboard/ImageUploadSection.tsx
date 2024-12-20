@@ -18,6 +18,7 @@ interface ImageUploadSectionProps {
 export const ImageUploadSection = ({ userId, onImageUploaded, type, imageUrl, onImageDelete }: ImageUploadSectionProps) => {
   const { t } = useLanguage();
   const [isUploading, setIsUploading] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
@@ -38,8 +39,9 @@ export const ImageUploadSection = ({ userId, onImageUploaded, type, imageUrl, on
         .from('uploads')
         .getPublicUrl(filePath);
 
-      onImageUploaded(publicUrl);
+      await onImageUploaded(publicUrl);
       toast.success(t("imageUploaded"));
+      setIsDialogOpen(false);
     } catch (error) {
       console.error('Error uploading image:', error);
       toast.error(t("errorUploadingImage"));
@@ -51,8 +53,7 @@ export const ImageUploadSection = ({ userId, onImageUploaded, type, imageUrl, on
   const handleDelete = async () => {
     try {
       if (imageUrl && onImageDelete) {
-        // Extract the file path from the URL
-        const filePath = imageUrl.split('/').pop();
+        const filePath = imageUrl.split('/uploads/').pop();
         if (!filePath) {
           toast.error(t("invalidFilePath"));
           return;
@@ -66,6 +67,7 @@ export const ImageUploadSection = ({ userId, onImageUploaded, type, imageUrl, on
 
         onImageDelete();
         toast.success(t("imageDeleted"));
+        setIsDialogOpen(false);
       }
     } catch (error) {
       console.error('Error deleting image:', error);
@@ -74,7 +76,7 @@ export const ImageUploadSection = ({ userId, onImageUploaded, type, imageUrl, on
   };
 
   return (
-    <Dialog>
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
         <Button 
           variant="outline" 
