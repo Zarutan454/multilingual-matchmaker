@@ -15,13 +15,14 @@ export type ProfileRow = {
   price_range: Json | null;
   availability: string[] | null;
   age: number | null;
-  user_type: 'customer' | 'provider';
+  user_type: string;  // Changed from 'customer' | 'provider' to string to match Supabase
   contact_info: {
     phone?: string;
     email?: string;
   } | null;
   lat?: number;
   lng?: number;
+  is_active?: boolean;
 };
 
 export interface SupabaseQueryResponse {

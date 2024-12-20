@@ -15,8 +15,8 @@ export const transformProfile = (profile: ProfileRow): Profile => {
     category: profile.category || '',
     location: profile.location || '',
     coordinates: {
-      lat: 0,
-      lng: 0
+      lat: profile.lat || 0,
+      lng: profile.lng || 0
     },
     status: profile.availability_status || 'offline',
     rating: 0,
@@ -28,10 +28,12 @@ export const transformProfile = (profile: ProfileRow): Profile => {
       min: priceRangeData?.min || 0,
       max: priceRangeData?.max || 0
     },
-    user_type: profile.user_type as 'customer' | 'provider',
+    user_type: (profile.user_type === 'provider' || profile.user_type === 'customer') 
+      ? profile.user_type 
+      : 'customer',
     contact_info: {
-      phone: (profile as any).contact_info?.phone || '',
-      email: (profile as any).contact_info?.email || ''
+      phone: profile.contact_info?.phone || '',
+      email: profile.contact_info?.email || ''
     },
     service_info: {
       categories: profile.service_categories || [],

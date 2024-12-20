@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { Profile, ProfilesResponse } from '@/types/profile/types';
+import { ProfileRow } from '@/types/profile/supabaseTypes';
 import { toast } from 'sonner';
 import { transformProfile } from '@/services/profileTransformer';
 
@@ -53,7 +54,9 @@ export const useOptimizedProfiles = ({
 
         if (error) throw error;
 
-        const profiles: Profile[] = (data || []).map(transformProfile);
+        // Cast the raw data to ProfileRow before transformation
+        const rawProfiles = data as unknown as ProfileRow[];
+        const profiles: Profile[] = (rawProfiles || []).map(profile => transformProfile(profile));
 
         return {
           profiles,
