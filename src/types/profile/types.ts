@@ -77,6 +77,37 @@ export interface Service {
   categories?: string[];
 }
 
+export interface ProfileFormValues {
+  fullName: string;
+  bio: string;
+  location: string;
+  interests: string[];
+  occupation: string;
+  height: string;
+  weight: string;
+  avatar?: File;
+  gallery?: (File | string)[];
+  gender?: string;
+  dateOfBirth?: string;
+  nationality?: string;
+  spokenLanguages?: string[];
+  preferredCommunication?: string;
+  emergencyContact?: {
+    name: string;
+    phoneNumber: string;
+    relationship: string;
+  };
+  priceRange?: {
+    min: number;
+    max: number;
+  };
+  availabilityStatus?: string;
+  nickname?: string;
+  serviceCategories?: string[];
+  services?: Service[];
+  languages?: string[];
+}
+
 export interface ProfilesResponse {
   profiles: Profile[];
   total: number;
