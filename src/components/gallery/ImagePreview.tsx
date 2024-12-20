@@ -7,7 +7,7 @@ interface ImagePreviewProps {
   onZoom: (direction: 'in' | 'out') => void;
 }
 
-const ImagePreview: React.FC<ImagePreviewProps> = ({ imageUrl, onZoom }) => {
+export const ImagePreview: React.FC<ImagePreviewProps> = ({ imageUrl, onZoom }) => {
   return (
     <div className="relative">
       <img src={imageUrl} alt="Preview" className="w-full h-auto" />
@@ -24,7 +24,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ imageUrl, onZoom }) => {
           variant="outline"
           size="icon"
           className="absolute bottom-4 left-4"
-          onClick={function() { return onZoom('out') }}
+          onClick={() => onZoom('out')}
         >
           <ZoomOut className="h-4 w-4" />
         </Button>

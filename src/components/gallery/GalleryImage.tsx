@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { GalleryImage as GalleryImageType } from "@/types/gallery";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { ImageControls } from "./ImageControls";
-import { ImagePreview } from "./ImagePreview";
+import ImagePreview from "./ImagePreview";
 
 interface GalleryImageProps {
   image: GalleryImageType;

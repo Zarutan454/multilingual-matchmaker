@@ -37,6 +37,15 @@ export interface Profile {
   membership_level?: 'basic' | 'premium' | 'vip';
   working_hours?: any;
   audit_log?: any[];
+  hair_color?: string;
+  hair_length?: string;
+  hair_type?: string;
+  eye_color?: string;
+  skin_tone?: string;
+  grooming?: string;
+  body_type?: string;
+  bust_size?: string;
+  dress_size?: string;
 }
 
 export interface Service {
