@@ -80,6 +80,7 @@ export interface ProfileFormValues {
   availabilityStatus?: string;
   nickname?: string;
   serviceCategories?: string[];
+  services?: Service[];
 }
 
 export interface Service {
@@ -127,7 +128,7 @@ export const castToProfile = (data: any): Profile => {
       max: priceRangeData?.max || 0
     },
     user_type: data.user_type as 'customer' | 'provider',
-    interests: data.interests ? [data.interests] : [],
+    interests: Array.isArray(data.interests) ? data.interests : data.interests ? [data.interests] : [],
     age: data.age || 0,
     gender: data.gender || '',
     reviews_count: data.reviews_count || 0

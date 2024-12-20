@@ -3,12 +3,12 @@ export interface Translations {
   delete: string;
   edit: string;
   serviceAdded: string;
-  serviceDeleted: string;
-  serviceUpdated: string;
   profileUpdated: string;
   errorUpdatingProfile: string;
-  loading: string;
-  error: string;
-  success: string;
+  galleryUpdated: string;
+  imageDeleted: string;
+  errorDeletingImage: string;
   [key: string]: string;
 }
+
+export type TranslationKey = keyof Translations;
