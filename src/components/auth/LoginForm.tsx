@@ -26,7 +26,6 @@ export const LoginForm = () => {
     
     setIsLoading(true);
     try {
-      // Versuche einzuloggen
       const { error: signInError } = await signIn(email, password);
       
       if (signInError) {
@@ -39,20 +38,27 @@ export const LoginForm = () => {
         return;
       }
 
-      // Hole Benutzertyp nach erfolgreichem Login
+      // Get current session
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         toast.error(t("sessionError"));
         return;
       }
 
-      const { data: profile } = await supabase
+      // Get profile data from profiles table
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('user_type')
         .eq('id', session.user.id)
-        .single();
+        .maybeSingle();
 
-      // Weiterleitung basierend auf Benutzertyp
+      if (profileError) {
+        console.error('Profile fetch error:', profileError);
+        toast.error(t("profileError"));
+        return;
+      }
+
+      // Redirect based on user type from profile
       if (profile?.user_type === 'provider') {
         navigate('/provider-dashboard');
       } else {

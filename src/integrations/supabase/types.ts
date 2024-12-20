@@ -214,6 +214,7 @@ export type Database = {
           id: string
           interests: string | null
           is_active: boolean | null
+          is_verified: boolean | null
           languages: string[] | null
           last_login: string | null
           last_seen: string | null
@@ -258,6 +259,7 @@ export type Database = {
           id: string
           interests?: string | null
           is_active?: boolean | null
+          is_verified?: boolean | null
           languages?: string[] | null
           last_login?: string | null
           last_seen?: string | null
@@ -302,6 +304,7 @@ export type Database = {
           id?: string
           interests?: string | null
           is_active?: boolean | null
+          is_verified?: boolean | null
           languages?: string[] | null
           last_login?: string | null
           last_seen?: string | null
