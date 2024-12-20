@@ -1,22 +1,15 @@
-import React from 'react';
-import { useLanguage } from "../../contexts/LanguageContext";
+import React from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "../../components/ui/form";
-import { Input } from "../../components/ui/input";
-import { Button } from "../../components/ui/button";
-import { Dispatch, SetStateAction } from "react";
-import { UseFormReturn } from "react-hook-form";
-
-interface RegisterFormFieldsProps {
-  userType: "customer" | "provider";
-  setUserType: Dispatch<SetStateAction<"customer" | "provider">>;
-  form: UseFormReturn<Record<string, unknown>>;
-}
+} from "@/components/ui/form";
+import { RegisterFormFieldsProps, RegisterFormData } from "./types";
 
 export function RegisterFormFields({ 
   userType, 
@@ -58,7 +51,7 @@ export function RegisterFormFields({
               <FormControl>
                 <Input
                   type="email"
-                  className="background-black/30 border-[#9b87f5]/30 text-white"
+                  className="bg-black/30 border-[#9b87f5]/30 text-white"
                   placeholder="email@example.com"
                   {...field}
                   data-test-id="email-input"
@@ -79,7 +72,7 @@ export function RegisterFormFields({
               <FormLabel className="text-white">{t("AUTH.REGISTER.NICKNAME")}</FormLabel>
               <FormControl>
                 <Input
-                  className="background-black/30 border-[#9b87f5]/30 text-white"
+                  className="bg-black/30 border-[#9b87f5]/30 text-white"
                   {...field}
                   data-test-id="nickname-input"
                 />
@@ -100,7 +93,7 @@ export function RegisterFormFields({
               <FormControl>
                 <Input
                   type="password"
-                  className="background-black/30 border-[#9b87f5]/30 text-white"
+                  className="bg-black/30 border-[#9b87f5]/30 text-white"
                   {...field}
                   data-test-id="password-input"
                 />
@@ -121,7 +114,7 @@ export function RegisterFormFields({
               <FormControl>
                 <Input
                   type="password"
-                  className="background-black/30 border-[#9b87f5]/30 text-white"
+                  className="bg-black/30 border-[#9b87f5]/30 text-white"
                   {...field}
                   data-test-id="confirm-password-input"
                 />
@@ -144,7 +137,7 @@ export function RegisterFormFields({
                   <FormControl>
                     <Input
                       type="tel"
-                      className="background-black/30 border-[#9b87f5]/30 text-white"
+                      className="bg-black/30 border-[#9b87f5]/30 text-white"
                       {...field}
                       data-test-id="phone-number-input"
                     />
@@ -165,7 +158,7 @@ export function RegisterFormFields({
                   <FormControl>
                     <Input
                       type="number"
-                      className="background-black/30 border-[#9b87f5]/30 text-white"
+                      className="bg-black/30 border-[#9b87f5]/30 text-white"
                       min="18"
                       {...field}
                       data-test-id="age-input"
@@ -186,7 +179,7 @@ export function RegisterFormFields({
                   <FormLabel className="text-white">{t("AUTH.REGISTER.COUNTRY")}</FormLabel>
                   <FormControl>
                     <Input
-                      className="background-black/30 border-[#9b87f5]/30 text-white"
+                      className="bg-black/30 border-[#9b87f5]/30 text-white"
                       {...field}
                       data-test-id="country-input"
                     />
