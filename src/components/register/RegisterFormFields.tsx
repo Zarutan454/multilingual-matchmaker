@@ -1,120 +1,135 @@
-import { useLanguage } from "@/contexts/LanguageContext";
+import React from 'react';
+import { useLanguage } from "../../contexts/LanguageContext";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+} from "../../components/ui/form";
+import { Input } from "../../components/ui/input";
+import { Button } from "../../components/ui/button";
 import { Dispatch, SetStateAction } from "react";
 import { UseFormReturn } from "react-hook-form";
 
 interface RegisterFormFieldsProps {
   userType: "customer" | "provider";
   setUserType: Dispatch<SetStateAction<"customer" | "provider">>;
-  form: UseFormReturn<any>;
+  form: UseFormReturn<Record<string, unknown>>;
 }
 
-export const RegisterFormFields = ({ 
+export function RegisterFormFields({ 
   userType, 
   setUserType, 
   form 
-}: RegisterFormFieldsProps) => {
+}: RegisterFormFieldsProps): JSX.Element {
   const { t } = useLanguage();
 
   return (
-    <div className="space-y-6">
-      <div className="flex gap-4 mb-6">
+    <div className="space-y-6" data-test-id="register-form-fields">
+      <div className="flex gap-4 margin-bottom-6">
         <Button
           type="button"
           variant={userType === "customer" ? "default" : "outline"}
-          className={`flex-1 ${userType === "customer" ? "bg-[#9b87f5] hover:bg-[#7E69AB]" : "hover:bg-[#9b87f5]/10"}`}
-          onClick={() => { setUserType("customer"); }}
+          className={"flex-1 " + (userType === "customer" ? "bg-[#9b87f5] hover:bg-[#7E69AB]" : "hover:bg-[#9b87f5]/10")}
+          onClick={function() { setUserType("customer"); }}
+          data-test-id="customer-type-button"
         >
-          Kunde
+          {t("AUTH.REGISTER.CUSTOMER")}
         </Button>
         <Button
           type="button"
           variant={userType === "provider" ? "default" : "outline"}
-          className={`flex-1 ${userType === "provider" ? "bg-[#9b87f5] hover:bg-[#7E69AB]" : "hover:bg-[#9b87f5]/10"}`}
-          onClick={() => { setUserType("provider"); }}
+          className={"flex-1 " + (userType === "provider" ? "bg-[#9b87f5] hover:bg-[#7E69AB]" : "hover:bg-[#9b87f5]/10")}
+          onClick={function() { setUserType("provider"); }}
+          data-test-id="provider-type-button"
         >
-          Dienstleister
+          {t("AUTH.REGISTER.PROVIDER")}
         </Button>
       </div>
 
       <FormField
         control={form.control}
         name="email"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className="text-white">{t("email")}</FormLabel>
-            <FormControl>
-              <Input
-                type="email"
-                className="bg-black/30 border-[#9b87f5]/30 text-white"
-                placeholder="email@example.com"
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
+        render={function({ field }) {
+          return (
+            <FormItem>
+              <FormLabel className="text-white">{t("AUTH.REGISTER.EMAIL")}</FormLabel>
+              <FormControl>
+                <Input
+                  type="email"
+                  className="background-black/30 border-[#9b87f5]/30 text-white"
+                  placeholder="email@example.com"
+                  {...field}
+                  data-test-id="email-input"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          );
+        }}
       />
 
       <FormField
         control={form.control}
         name="nickname"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className="text-white">{t("nickname")}</FormLabel>
-            <FormControl>
-              <Input
-                className="bg-black/30 border-[#9b87f5]/30 text-white"
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
+        render={function({ field }) {
+          return (
+            <FormItem>
+              <FormLabel className="text-white">{t("AUTH.REGISTER.NICKNAME")}</FormLabel>
+              <FormControl>
+                <Input
+                  className="background-black/30 border-[#9b87f5]/30 text-white"
+                  {...field}
+                  data-test-id="nickname-input"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          );
+        }}
       />
 
       <FormField
         control={form.control}
         name="password"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className="text-white">{t("password")}</FormLabel>
-            <FormControl>
-              <Input
-                type="password"
-                className="bg-black/30 border-[#9b87f5]/30 text-white"
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
+        render={function({ field }) {
+          return (
+            <FormItem>
+              <FormLabel className="text-white">{t("AUTH.REGISTER.PASSWORD")}</FormLabel>
+              <FormControl>
+                <Input
+                  type="password"
+                  className="background-black/30 border-[#9b87f5]/30 text-white"
+                  {...field}
+                  data-test-id="password-input"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          );
+        }}
       />
 
       <FormField
         control={form.control}
         name="confirmPassword"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className="text-white">{t("confirmPassword")}</FormLabel>
-            <FormControl>
-              <Input
-                type="password"
-                className="bg-black/30 border-[#9b87f5]/30 text-white"
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
+        render={function({ field }) {
+          return (
+            <FormItem>
+              <FormLabel className="text-white">{t("AUTH.REGISTER.CONFIRM_PASSWORD")}</FormLabel>
+              <FormControl>
+                <Input
+                  type="password"
+                  className="background-black/30 border-[#9b87f5]/30 text-white"
+                  {...field}
+                  data-test-id="confirm-password-input"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          );
+        }}
       />
 
       {userType === "provider" && (
@@ -122,58 +137,67 @@ export const RegisterFormFields = ({
           <FormField
             control={form.control}
             name="phoneNumber"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-white">{t("phoneNumber")}</FormLabel>
-                <FormControl>
-                  <Input
-                    type="tel"
-                    className="bg-black/30 border-[#9b87f5]/30 text-white"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            render={function({ field }) {
+              return (
+                <FormItem>
+                  <FormLabel className="text-white">{t("AUTH.REGISTER.PHONE_NUMBER")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="tel"
+                      className="background-black/30 border-[#9b87f5]/30 text-white"
+                      {...field}
+                      data-test-id="phone-number-input"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
           />
 
           <FormField
             control={form.control}
             name="age"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-white">{t("age")}</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    className="bg-black/30 border-[#9b87f5]/30 text-white"
-                    min="18"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            render={function({ field }) {
+              return (
+                <FormItem>
+                  <FormLabel className="text-white">{t("AUTH.REGISTER.AGE")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      className="background-black/30 border-[#9b87f5]/30 text-white"
+                      min="18"
+                      {...field}
+                      data-test-id="age-input"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
           />
 
           <FormField
             control={form.control}
             name="country"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-white">{t("country")}</FormLabel>
-                <FormControl>
-                  <Input
-                    className="bg-black/30 border-[#9b87f5]/30 text-white"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            render={function({ field }) {
+              return (
+                <FormItem>
+                  <FormLabel className="text-white">{t("AUTH.REGISTER.COUNTRY")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      className="background-black/30 border-[#9b87f5]/30 text-white"
+                      {...field}
+                      data-test-id="country-input"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
           />
         </>
       )}
     </div>
   );
-};
+}
