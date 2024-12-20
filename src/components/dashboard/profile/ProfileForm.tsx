@@ -19,7 +19,7 @@ const formSchema = z.object({
   location: z.string().min(1, 'Standort ist erforderlich'),
   age: z.number().min(18, 'Alter muss mindestens 18 sein').max(100, 'Ungültiges Alter').optional(),
   interests: z.string().optional(),
-  gender: z.enum(['male', 'female', 'other'], {
+  gender: z.enum(['male', 'female', 'other', 'not_specified'], {
     required_error: 'Bitte wählen Sie ein Geschlecht',
   }),
 });
@@ -32,7 +32,7 @@ export const ProfileForm = ({ profile, userId, onProfileUpdate }: ProfileFormPro
       location: profile?.location || "",
       age: profile?.age || undefined,
       interests: profile?.interests || "",
-      gender: (profile?.gender as "male" | "female" | "other") || undefined,
+      gender: (profile?.gender as "male" | "female" | "other" | "not_specified") || "not_specified",
     },
   });
 
@@ -82,19 +82,38 @@ export const ProfileForm = ({ profile, userId, onProfileUpdate }: ProfileFormPro
   }, []);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const isSessionValid = await checkSession();
-    if (!isSessionValid) return;
+    try {
+      const isSessionValid = await checkSession();
+      if (!isSessionValid) return;
 
-    const updatedProfile: Profile = {
-      ...profile!,
-      full_name: data.full_name,
-      location: data.location,
-      age: data.age,
-      interests: data.interests,
-      gender: data.gender,
-    };
+      const updatedProfile: Profile = {
+        ...profile!,
+        full_name: data.full_name,
+        location: data.location,
+        age: data.age,
+        interests: data.interests,
+        gender: data.gender,
+      };
 
-    onProfileUpdate(updatedProfile);
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          full_name: data.full_name,
+          location: data.location,
+          age: data.age,
+          interests: data.interests,
+          gender: data.gender,
+        })
+        .eq('id', userId);
+
+      if (error) throw error;
+
+      onProfileUpdate(updatedProfile);
+      toast.success("Profil erfolgreich aktualisiert");
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      toast.error("Fehler beim Aktualisieren des Profils");
+    }
   };
 
   return (
