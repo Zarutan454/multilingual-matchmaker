@@ -6,20 +6,29 @@ import { usePresence } from "@/hooks/usePresence";
 import { ProfileFilters } from "./featured/ProfileFilters";
 import { ProfilePagination } from "./featured/ProfilePagination";
 import { useOptimizedProfiles } from "@/hooks/useOptimizedProfiles";
-import { toast } from "sonner";
 import { Profile } from "@/types/profile/types";
 
 const ITEMS_PER_PAGE = 12;
 
+interface SearchFilters {
+  searchTerm: string;
+  location: string;
+  category: string;
+  orientation: string;
+  priceRange: { min: number; max: number };
+  availability?: string;
+}
+
 export const FeaturedProfiles = () => {
   const [selectedProfile, setSelectedProfile] = useState<string | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [location, setLocation] = useState("");
-  const [category, setCategory] = useState("");
-  const [orientation, setOrientation] = useState("");
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 });
-  const [availability, setAvailability] = useState<string>();
+  const [filters, setFilters] = useState<SearchFilters>({
+    searchTerm: "",
+    location: "",
+    category: "",
+    orientation: "",
+    priceRange: { min: 0, max: 1000 }
+  });
   const [page, setPage] = useState(0);
 
   usePresence();
@@ -28,10 +37,10 @@ export const FeaturedProfiles = () => {
     page,
     pageSize: ITEMS_PER_PAGE,
     filters: {
-      searchTerm,
-      location,
-      category,
-      orientation
+      searchTerm: filters.searchTerm,
+      location: filters.location,
+      category: filters.category,
+      orientation: filters.orientation
     }
   });
 
@@ -53,17 +62,18 @@ export const FeaturedProfiles = () => {
     priceRange: { min: number; max: number },
     availability: Date | undefined
   ) => {
-    setSearchTerm(searchTerm);
-    setLocation(location);
-    setCategory(category);
-    setOrientation(orientation);
-    setPriceRange(priceRange);
-    setAvailability(availability?.toISOString());
+    setFilters({
+      searchTerm,
+      location,
+      category,
+      orientation,
+      priceRange,
+      availability: availability?.toISOString()
+    });
     setPage(0);
   };
 
   if (error) {
-    console.error('Error in FeaturedProfiles:', error);
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] text-red-500 space-y-4">
         <p>Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.</p>
@@ -112,7 +122,7 @@ export const FeaturedProfiles = () => {
           {selectedProfile && (
             <ChatWindow
               recipientId={selectedProfile}
-              recipientName={profiles.find(p => p.id === selectedProfile)?.full_name || ""}
+              recipientName={profiles.find(p => p.id === selectedProfile)?.name || ""}
             />
           )}
         </DialogContent>
