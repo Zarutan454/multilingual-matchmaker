@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { useAuth } from "../../contexts/AuthContext";
 import { supabase } from "../../lib/supabase";
 import { RegisterFormFields } from "./RegisterFormFields";
+import { Loader2 } from "lucide-react";
 
 export const RegisterForm = () => {
   const { t } = useLanguage();
@@ -151,7 +152,6 @@ export const RegisterForm = () => {
       toast.success(t("registrationSuccess"));
       toast.info(t("pleaseCheckEmail"));
       
-      // Redirect to the appropriate dashboard based on user type
       navigate(userType === "provider" ? "/provider-dashboard" : "/dashboard");
       
     } catch (error) {
@@ -176,7 +176,16 @@ export const RegisterForm = () => {
         className="w-full bg-secondary hover:bg-secondary/80 text-white transition-colors"
         disabled={isLoading || retryTimeout > 0}
       >
-        {isLoading ? t("registering") : retryTimeout > 0 ? `${t("waitFor")} ${retryTimeout}s` : t("submit")}
+        {isLoading ? (
+          <div className="flex items-center justify-center">
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <span>{t("registering")}</span>
+          </div>
+        ) : retryTimeout > 0 ? (
+          `${t("waitFor")} ${retryTimeout}s`
+        ) : (
+          t("submit")
+        )}
       </Button>
     </form>
   );

@@ -1,7 +1,5 @@
-import { useForm } from "react-hook-form";
 import { useLanguage } from "@/contexts/LanguageContext";
 import {
-  Form,
   FormControl,
   FormField,
   FormItem,
@@ -9,25 +7,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { Dispatch, SetStateAction } from "react";
-
-const formSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-  userType: z.enum(["customer", "provider"]),
-});
-
-type FormData = z.infer<typeof formSchema>;
 
 interface RegisterFormFieldsProps {
   userType: "customer" | "provider";
@@ -52,76 +33,131 @@ interface RegisterFormFieldsProps {
   }>>;
 }
 
-export const RegisterFormFields = ({ userType, setUserType, formData, setFormData }: RegisterFormFieldsProps) => {
+export const RegisterFormFields = ({ 
+  userType, 
+  setUserType, 
+  formData, 
+  setFormData 
+}: RegisterFormFieldsProps) => {
   const { t } = useLanguage();
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-      userType: "customer",
-    },
-  });
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit((data) => console.log(data))} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t("email")}</FormLabel>
-              <FormControl>
-                <Input {...field} type="email" value={formData.email} 
-                  onChange={(e) => setFormData({...formData, email: e.target.value})} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t("password")}</FormLabel>
-              <FormControl>
-                <Input {...field} type="password" value={formData.password}
-                  onChange={(e) => setFormData({...formData, password: e.target.value})} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="userType"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t("userType")}</FormLabel>
-              <Select value={userType} onValueChange={(value: "customer" | "provider") => setUserType(value)}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder={t("selectUserType")} />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="customer">{t("registerAsCustomer")}</SelectItem>
-                  <SelectItem value="provider">{t("registerAsProvider")}</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <Button type="submit" className="w-full">
-          {t("register")}
+    <div className="space-y-6">
+      <div className="flex gap-4 mb-6">
+        <Button
+          type="button"
+          variant={userType === "customer" ? "secondary" : "outline"}
+          className="flex-1"
+          onClick={() => setUserType("customer")}
+        >
+          {t("registerAsCustomer")}
         </Button>
-      </form>
-    </Form>
+        <Button
+          type="button"
+          variant={userType === "provider" ? "secondary" : "outline"}
+          className="flex-1"
+          onClick={() => setUserType("provider")}
+        >
+          {t("registerAsProvider")}
+        </Button>
+      </div>
+
+      <FormItem>
+        <FormLabel>{t("email")}</FormLabel>
+        <FormControl>
+          <Input
+            type="email"
+            value={formData.email}
+            onChange={(e) => setFormData({...formData, email: e.target.value})}
+            className="bg-[#222222] border-neutral-700 text-white"
+            placeholder="email@example.com"
+          />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+
+      <FormItem>
+        <FormLabel>{t("nickname")}</FormLabel>
+        <FormControl>
+          <Input
+            type="text"
+            value={formData.nickname}
+            onChange={(e) => setFormData({...formData, nickname: e.target.value})}
+            className="bg-[#222222] border-neutral-700 text-white"
+          />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+
+      <FormItem>
+        <FormLabel>{t("password")}</FormLabel>
+        <FormControl>
+          <Input
+            type="password"
+            value={formData.password}
+            onChange={(e) => setFormData({...formData, password: e.target.value})}
+            className="bg-[#222222] border-neutral-700 text-white"
+          />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+
+      <FormItem>
+        <FormLabel>{t("confirmPassword")}</FormLabel>
+        <FormControl>
+          <Input
+            type="password"
+            value={formData.confirmPassword}
+            onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+            className="bg-[#222222] border-neutral-700 text-white"
+          />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+
+      {userType === "provider" && (
+        <>
+          <FormItem>
+            <FormLabel>{t("phoneNumber")}</FormLabel>
+            <FormControl>
+              <Input
+                type="tel"
+                value={formData.phoneNumber}
+                onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})}
+                className="bg-[#222222] border-neutral-700 text-white"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+
+          <FormItem>
+            <FormLabel>{t("age")}</FormLabel>
+            <FormControl>
+              <Input
+                type="number"
+                value={formData.age}
+                onChange={(e) => setFormData({...formData, age: e.target.value})}
+                className="bg-[#222222] border-neutral-700 text-white"
+                min="18"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+
+          <FormItem>
+            <FormLabel>{t("country")}</FormLabel>
+            <FormControl>
+              <Input
+                type="text"
+                value={formData.country}
+                onChange={(e) => setFormData({...formData, country: e.target.value})}
+                className="bg-[#222222] border-neutral-700 text-white"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </>
+      )}
+    </div>
   );
 };
