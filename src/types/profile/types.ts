@@ -51,6 +51,14 @@ export interface Profile {
   membership_level?: string;
   reviews_count?: number;
   age?: number;
+  price_range?: {
+    min: number;
+    max: number;
+  };
+  contact_info?: {
+    phone?: string;
+    email?: string;
+  };
 }
 
 export interface ProfileFormValues {
@@ -81,6 +89,7 @@ export interface ProfileFormValues {
   nickname?: string;
   serviceCategories?: string[];
   services?: Service[];
+  languages?: string[];
 }
 
 export interface Service {
@@ -118,8 +127,8 @@ export const castToProfile = (data: any): Profile => {
       lng: 0
     },
     status: data.availability_status || 'offline',
-    rating: 0,
-    reviews: 0,
+    rating: data.rating || 0,
+    reviews: data.reviews || 0,
     languages: data.languages || [],
     spokenLanguages: data.languages || [],
     serviceCategories: data.service_categories || [],
@@ -130,18 +139,8 @@ export const castToProfile = (data: any): Profile => {
     user_type: data.user_type as 'customer' | 'provider',
     interests: Array.isArray(data.interests) ? data.interests : data.interests ? [data.interests] : [],
     age: data.age || 0,
-    gender: data.gender || '',
+    price_range: data.price_range || { min: 0, max: 0 },
+    is_verified: data.is_verified || false,
     reviews_count: data.reviews_count || 0
-  };
-};
-
-export const castToService = (data: any): Service => {
-  return {
-    id: data.id,
-    name: data.name,
-    description: data.description,
-    duration: data.duration,
-    price: data.price,
-    categories: data.categories
   };
 };

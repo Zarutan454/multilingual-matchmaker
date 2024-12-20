@@ -30,7 +30,11 @@ export function transformProfile(row: ProfileRow): Profile {
       max: priceRangeData?.max || 0
     },
     user_type: (row.user_type as 'customer' | 'provider') || 'customer',
-    interests: Array.isArray(row.interests) ? row.interests : row.interests ? [row.interests] : []
+    interests: Array.isArray(row.interests) ? row.interests : row.interests ? [row.interests] : [],
+    price_range: row.price_range as { min: number; max: number } || { min: 0, max: 0 },
+    is_verified: row.is_verified || false,
+    reviews_count: row.reviews_count || 0,
+    age: row.age || 0
   };
 }
 

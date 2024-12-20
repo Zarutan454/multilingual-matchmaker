@@ -40,4 +40,9 @@ export type ProfileRow = {
   working_hours: Json;
   membership_level: 'basic' | 'premium' | 'vip' | 'bronze' | 'silver' | 'gold' | null;
   services: any[];
+  created_at?: string;
+  updated_at?: string;
+  contact_info?: Json;
+  is_active?: boolean;
+  last_login?: string;
 };
