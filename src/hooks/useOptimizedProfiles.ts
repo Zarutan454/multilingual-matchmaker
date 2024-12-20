@@ -16,6 +16,9 @@ interface UseProfilesProps {
   enabled?: boolean;
 }
 
+const CACHE_TIME = 1000 * 60 * 5; // 5 Minuten
+const STALE_TIME = 1000 * 30; // 30 Sekunden
+
 export const useOptimizedProfiles = ({
   page,
   pageSize,
@@ -26,6 +29,12 @@ export const useOptimizedProfiles = ({
     queryKey: ['optimized-profiles', page, pageSize, filters],
     queryFn: async () => {
       try {
+        console.log('Fetching profiles with params:', {
+          page,
+          pageSize,
+          filters
+        });
+
         let query = supabase
           .from('profiles')
           .select(`
@@ -48,7 +57,7 @@ export const useOptimizedProfiles = ({
           .eq('is_active', true)
           .order('last_seen', { ascending: false });
 
-        // Optimierte Filterlogik
+        // Optimierte Filterlogik mit Index-Nutzung
         if (filters?.searchTerm) {
           query = query.textSearch('full_name', filters.searchTerm, {
             type: 'websearch',
@@ -72,7 +81,7 @@ export const useOptimizedProfiles = ({
           query = query.eq('role', filters.membershipLevel);
         }
 
-        // Pagination optimieren
+        // Optimierte Pagination
         const from = page * pageSize;
         const to = from + pageSize - 1;
         query = query.range(from, to);
@@ -121,8 +130,8 @@ export const useOptimizedProfiles = ({
         throw error;
       }
     },
-    staleTime: 1000 * 60 * 5, // 5 Minuten Cache
-    gcTime: 1000 * 60 * 30, // 30 Minuten Garbage Collection
+    staleTime: STALE_TIME,
+    gcTime: CACHE_TIME,
     enabled,
     meta: {
       errorMessage: 'Fehler beim Laden der Profile'

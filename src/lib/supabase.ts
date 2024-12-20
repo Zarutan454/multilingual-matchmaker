@@ -2,46 +2,62 @@ import { createClient } from '@supabase/supabase-js';
 import { toast } from "sonner";
 import { Database } from '@/integrations/supabase/types';
 
-// Singleton pattern für Supabase Client
-let supabaseInstance: ReturnType<typeof createClient<Database>> | null = null;
+class SupabaseClientSingleton {
+  private static instance: ReturnType<typeof createClient<Database>> | null = null;
+  private static isInitializing = false;
 
-export const getSupabase = () => {
-  if (supabaseInstance) return supabaseInstance;
+  public static getInstance(): ReturnType<typeof createClient<Database>> {
+    if (this.instance) return this.instance;
+    
+    if (this.isInitializing) {
+      throw new Error('SupabaseClient is still initializing');
+    }
 
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-  const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    this.isInitializing = true;
 
-  if (!supabaseUrl || !supabaseKey) {
-    const error = 'Supabase Anmeldedaten fehlen in der Umgebungskonfiguration';
-    console.error(error);
-    toast.error(error);
-    throw new Error(error);
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !supabaseKey) {
+      const error = 'Supabase Anmeldedaten fehlen in der Umgebungskonfiguration';
+      console.error(error);
+      toast.error(error);
+      throw new Error(error);
+    }
+
+    this.instance = createClient<Database>(supabaseUrl, supabaseKey, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true,
+        storage: window.localStorage,
+        storageKey: 'supabase.auth.token',
+      },
+      db: {
+        schema: 'public'
+      },
+      global: {
+        headers: { 'Cache-Control': 'max-age=300' },
+      }
+    });
+
+    this.isInitializing = false;
+    return this.instance;
+  }
+}
+
+export const supabase = SupabaseClientSingleton.getInstance();
+
+// Optimierte Verbindungsprüfung mit Caching
+let lastConnectionCheck = 0;
+const CONNECTION_CHECK_INTERVAL = 60000; // 1 Minute
+
+export const checkConnection = async () => {
+  const now = Date.now();
+  if (now - lastConnectionCheck < CONNECTION_CHECK_INTERVAL) {
+    return true; // Nutze gecachtes Ergebnis
   }
 
-  supabaseInstance = createClient<Database>(supabaseUrl, supabaseKey, {
-    auth: {
-      autoRefreshToken: true,
-      persistSession: true,
-      detectSessionInUrl: true,
-      storage: window.localStorage,
-      storageKey: 'supabase.auth.token',
-    },
-    db: {
-      schema: 'public'
-    },
-    // Füge Caching-Optionen hinzu
-    global: {
-      headers: { 'Cache-Control': 'max-age=300' }, // 5 Minuten Cache
-    }
-  });
-
-  return supabaseInstance;
-};
-
-export const supabase = getSupabase();
-
-// Add connection health check
-export const checkConnection = async () => {
   try {
     const { data, error } = await supabase
       .from('profiles')
@@ -49,6 +65,8 @@ export const checkConnection = async () => {
       .limit(1);
       
     if (error) throw error;
+    
+    lastConnectionCheck = now;
     console.log('Verbindung erfolgreich getestet');
     return true;
   } catch (error) {
@@ -57,12 +75,12 @@ export const checkConnection = async () => {
   }
 };
 
-// Add retry mechanism for failed requests
-export const retryOperation = async (
-  operation: () => Promise<any>,
+// Optimierte Retry-Funktion mit exponential backoff
+export const retryOperation = async <T>(
+  operation: () => Promise<T>,
   maxRetries = 3,
-  delay = 1000
-) => {
+  baseDelay = 1000
+): Promise<T> => {
   for (let i = 1; i <= maxRetries; i++) {
     try {
       return await operation();
@@ -71,20 +89,9 @@ export const retryOperation = async (
       
       if (i === maxRetries) throw error;
       
-      await new Promise(resolve => setTimeout(resolve, delay * i));
+      const delay = baseDelay * Math.pow(2, i - 1) + Math.random() * 1000;
+      await new Promise(resolve => setTimeout(resolve, delay));
     }
   }
+  throw new Error('Maximale Anzahl an Versuchen erreicht');
 };
-
-// Type guard for Supabase errors
-export const isSupabaseError = (error: unknown): error is { message: string } => {
-  return typeof error === 'object' && error !== null && 'message' in error;
-};
-
-// Helper function to safely cast database results
-export function castDatabaseResult<T>(data: unknown): T {
-  if (!data || typeof data !== 'object') {
-    throw new Error('Invalid data structure');
-  }
-  return data as T;
-}
