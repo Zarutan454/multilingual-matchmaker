@@ -230,6 +230,7 @@ export type Database = {
           skin_tone: string | null
           updated_at: string
           user_type: string | null
+          verification_status: string | null
           weight: string | null
           working_hours: Json | null
         }
@@ -275,6 +276,7 @@ export type Database = {
           skin_tone?: string | null
           updated_at?: string
           user_type?: string | null
+          verification_status?: string | null
           weight?: string | null
           working_hours?: Json | null
         }
@@ -320,6 +322,7 @@ export type Database = {
           skin_tone?: string | null
           updated_at?: string
           user_type?: string | null
+          verification_status?: string | null
           weight?: string | null
           working_hours?: Json | null
         }
