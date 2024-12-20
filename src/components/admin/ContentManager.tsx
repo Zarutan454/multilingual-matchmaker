@@ -60,7 +60,7 @@ export const ContentManager = () => {
       });
 
       if (error) throw error;
-      toast.success(t('admin.content.createdSuccess', { type }));
+      toast.success(t('admin.content.createdSuccess'));
     } catch (error) {
       console.error('Error creating content:', error);
       toast.error(t('admin.content.createError'));

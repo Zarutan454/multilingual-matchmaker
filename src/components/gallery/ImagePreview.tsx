@@ -37,7 +37,7 @@ export const ImagePreview = ({
           variant="ghost"
           size="icon"
           className="absolute right-4 text-white hover:bg-white/20"
-          onClick={() => onNavigate('next')}
+          onClick={function() { return onNavigate('next'); }}
         >
           <ChevronRight className="h-8 w-8" />
         </Button>
@@ -48,7 +48,7 @@ export const ImagePreview = ({
           variant="ghost"
           size="icon"
           className="text-white hover:bg-white/20"
-          onClick={() => onZoom('out')}
+          onClick={function() { return onZoom('out'); }}
           disabled={zoomLevel <= 1}
         >
           <ZoomOut className="h-6 w-6" />
@@ -57,7 +57,7 @@ export const ImagePreview = ({
           variant="ghost"
           size="icon"
           className="text-white hover:bg-white/20"
-          onClick={() => onZoom('in')}
+          onClick={function() { return onZoom('in'); }}
           disabled={zoomLevel >= 3}
         >
           <ZoomIn className="h-6 w-6" />
