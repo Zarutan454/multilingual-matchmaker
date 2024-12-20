@@ -89,8 +89,8 @@ export const useProfiles = ({
             },
             user_type: profile.user_type as 'customer' | 'provider',
             contact_info: {
-              phone: profile.phone as string,
-              email: profile.email as string
+              phone: profile.phone || '',
+              email: profile.email || ''
             },
             service_info: {
               categories: profile.service_categories || [],
