@@ -20,12 +20,14 @@ const formSchema = z.object({
   nickname: z.string().min(2),
 });
 
+type FormValues = z.infer<typeof formSchema>;
+
 export const RegisterForm = () => {
   const { t } = useLanguage();
   const [userType, setUserType] = useState<"customer" | "provider">("customer");
   const { handleRegistration, isLoading, retryTimeout } = useRegistration();
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
@@ -38,7 +40,7 @@ export const RegisterForm = () => {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: FormValues) => {
     if (values.password !== values.confirmPassword) {
       form.setError("confirmPassword", { message: t("passwordsDoNotMatch") });
       return;
@@ -60,7 +62,13 @@ export const RegisterForm = () => {
     }
 
     const registrationData: RegistrationFormValues = {
-      ...values,
+      email: values.email,
+      password: values.password,
+      confirmPassword: values.confirmPassword,
+      phoneNumber: values.phoneNumber,
+      age: values.age,
+      country: values.country,
+      nickname: values.nickname,
       userType,
     };
 
