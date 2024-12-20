@@ -6,7 +6,9 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ChatWindow } from "../components/messaging/ChatWindow";
-import { Profile } from "@/components/profile/types";
+import { Profile } from "@/types/profile";
+import { ProfileRow } from "@/types/profile/supabaseTypes";
+import { transformProfile } from "@/utils/transformers";
 
 export default function Listings() {
   const [selectedProfile, setSelectedProfile] = useState<string | null>(null);
@@ -31,21 +33,7 @@ export default function Listings() {
         throw error;
       }
 
-      return data.map((profile: any): Profile => ({
-        id: profile.id,
-        name: profile.full_name || 'Anonymous',
-        image: profile.avatar_url,
-        category: profile.service_categories?.[0] || 'VIP Begleitung',
-        location: profile.location || 'Unknown',
-        coordinates: { lat: 0, lng: 0 },
-        status: profile.availability_status || 'offline',
-        rating: 4.8,
-        reviews: 0,
-        spokenLanguages: profile.languages || ['Deutsch'],
-        age: profile.age || 25,
-        serviceCategories: profile.service_categories || [],
-        priceRange: profile.price_range || { min: 0, max: 0 }
-      }));
+      return (data as ProfileRow[]).map(profile => transformProfile(profile));
     }
   });
 
