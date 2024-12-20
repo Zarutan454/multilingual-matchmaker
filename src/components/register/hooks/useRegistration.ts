@@ -62,39 +62,30 @@ export const useRegistration = () => {
         return;
       }
 
-      // Check if profile already exists
-      const { data: existingProfile } = await supabase
+      const { error: profileError } = await supabase
         .from('profiles')
-        .select('id')
-        .eq('id', signUpData.user.id)
-        .single();
+        .upsert([
+          {
+            id: signUpData.user.id,
+            user_type: values.userType,
+            full_name: values.nickname,
+            contact_info: {
+              phone: values.phoneNumber,
+              email: values.email
+            },
+            age: values.age ? parseInt(values.age) : null,
+            location: values.country,
+            is_verified: false,
+            verification_status: 'pending'
+          }
+        ], {
+          onConflict: 'id'
+        });
 
-      if (!existingProfile) {
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .upsert([
-            {
-              id: signUpData.user.id,
-              user_type: values.userType,
-              full_name: values.nickname,
-              contact_info: {
-                phone: values.phoneNumber,
-                email: values.email
-              },
-              age: values.age ? parseInt(values.age) : null,
-              location: values.country,
-              is_verified: false,
-              verification_status: 'pending'
-            }
-          ], {
-            onConflict: 'id'
-          });
-
-        if (profileError) {
-          console.error("Profile creation error:", profileError);
-          toast.error(t("profileCreationError"));
-          return;
-        }
+      if (profileError) {
+        console.error("Profile creation error:", profileError);
+        toast.error(t("profileCreationError"));
+        return;
       }
 
       const { error: metadataError } = await supabase.auth.updateUser({

@@ -8,14 +8,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterFormFields } from "./RegisterFormFields";
 import { Loader2 } from "lucide-react";
 import { useRegistration } from "./hooks/useRegistration";
+import { RegistrationFormValues } from "./types";
 
 const formSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
   confirmPassword: z.string().min(6),
-  phoneNumber: z.string().optional(),
-  age: z.string().optional(),
-  country: z.string().optional(),
+  phoneNumber: z.string(),
+  age: z.string(),
+  country: z.string(),
   nickname: z.string().min(2),
 });
 
@@ -58,7 +59,12 @@ export const RegisterForm = () => {
       }
     }
 
-    await handleRegistration({ ...values, userType });
+    const registrationData: RegistrationFormValues = {
+      ...values,
+      userType,
+    };
+
+    await handleRegistration(registrationData);
   };
 
   return (
