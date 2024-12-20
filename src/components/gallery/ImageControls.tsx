@@ -74,13 +74,14 @@ export const ImageControls = ({
 
       <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
         <Select
-          value={category}
+          value={category || "uncategorized"}
           onValueChange={(value) => onCategoryChange(imageId, value)}
         >
           <SelectTrigger className="bg-black/50 border-none text-white">
             <SelectValue placeholder="Kategorie wählen" />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="uncategorized">Keine Kategorie</SelectItem>
             {categories.map((category) => (
               <SelectItem key={category} value={category}>
                 {category}

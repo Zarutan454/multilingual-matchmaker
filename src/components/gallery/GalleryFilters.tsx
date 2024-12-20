@@ -50,7 +50,7 @@ export const GalleryFilters = ({ categories, onFilterChange }: GalleryFiltersPro
           </div>
         </div>
 
-        <Select value={category} onValueChange={(value) => {
+        <Select value={category || "all"} onValueChange={(value) => {
           setCategory(value);
           handleFilterChange();
         }}>
@@ -58,7 +58,7 @@ export const GalleryFilters = ({ categories, onFilterChange }: GalleryFiltersPro
             <SelectValue placeholder={t("selectCategory")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">
+            <SelectItem value="all">
               {t("allCategories")}
             </SelectItem>
             {categories.map((cat) => (

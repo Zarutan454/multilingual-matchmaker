@@ -37,7 +37,7 @@ export const TimeSlotSelector = ({
           </SelectTrigger>
           <SelectContent>
             {timeOptions.map((time) => (
-              <SelectItem key={time} value={time}>
+              <SelectItem key={time} value={time || "00:00"}>
                 {time}
               </SelectItem>
             ))}
@@ -55,7 +55,7 @@ export const TimeSlotSelector = ({
           </SelectTrigger>
           <SelectContent>
             {timeOptions.map((time) => (
-              <SelectItem key={time} value={time}>
+              <SelectItem key={time} value={time || "00:00"}>
                 {time}
               </SelectItem>
             ))}

@@ -29,11 +29,12 @@ export const BulkActions = ({
       <span className="text-sm text-white">
         {selectedImages.length} {t("imagesSelected")}
       </span>
-      <Select value={bulkCategory} onValueChange={setBulkCategory}>
+      <Select value={bulkCategory || "uncategorized"} onValueChange={setBulkCategory}>
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder={t("selectCategory")} />
         </SelectTrigger>
         <SelectContent>
+          <SelectItem value="uncategorized">{t("noCategory")}</SelectItem>
           {categories.map((category) => (
             <SelectItem key={category} value={category}>
               {category}
