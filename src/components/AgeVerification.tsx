@@ -54,10 +54,10 @@ export const AgeVerification = ({ onVerified }: AgeVerificationProps) => {
         <div className="absolute inset-0 backdrop-blur-[2px]"></div>
         <div className="bg-black/80 backdrop-blur-md rounded-lg p-8 max-w-md w-full text-center animate-fade-in border border-[#FFD700]/30 relative z-10 shadow-[0_0_15px_rgba(218,165,32,0.3)]">
           <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-red-500 mb-4">{t("accessDenied")}</h2>
-          <p className="text-white mb-4 text-lg">{t("mustBe18")}</p>
+          <h2 className="text-2xl font-bold text-red-500 mb-4">{t("auth.verification.accessDenied")}</h2>
+          <p className="text-white mb-4 text-lg">{t("auth.verification.mustBe18")}</p>
           <div className="text-sm text-white/80 hover:text-white transition-colors">
-            <Link to="/terms" className="hover:text-[#FFD700] transition-colors">{t("terms")}</Link>
+            <Link to="/terms" className="hover:text-[#FFD700] transition-colors">{t("common.terms")}</Link>
           </div>
         </div>
       </div>
@@ -89,12 +89,12 @@ export const AgeVerification = ({ onVerified }: AgeVerificationProps) => {
       <div className="absolute inset-0 backdrop-blur-[2px]"></div>
       <div className="bg-black/80 backdrop-blur-md rounded-lg p-8 max-w-md w-full text-center animate-fade-in border border-[#FFD700]/30 relative z-10 shadow-[0_0_15px_rgba(218,165,32,0.3)]">
         <Shield className="w-12 h-12 text-[#FFD700] mx-auto mb-4" />
-        <h2 className="text-2xl font-bold text-white mb-4">{t("ageVerification")}</h2>
-        <p className="mb-6 text-lg text-white">{t("ageQuestion")}</p>
+        <h2 className="text-2xl font-bold text-white mb-4">{t("auth.verification.title")}</h2>
+        <p className="mb-6 text-lg text-white">{t("auth.verification.question")}</p>
         
         <div className="space-y-4">
           <div className="text-sm text-white/90 mb-6">
-            {t("legalDisclaimer")}
+            {t("auth.verification.legalDisclaimer")}
           </div>
           
           <div className="flex flex-col gap-4">
@@ -102,22 +102,22 @@ export const AgeVerification = ({ onVerified }: AgeVerificationProps) => {
               onClick={() => handleVerification(true)}
               className="w-full bg-[#FFD700] hover:bg-[#DAA520] text-black font-semibold transition-colors"
             >
-              {t("yes")}
+              {t("common.yes")}
             </Button>
             <Button
               onClick={() => handleVerification(false)}
               variant="outline"
               className="w-full border-[#FFD700]/30 text-white hover:bg-[#FFD700]/10 hover:border-[#FFD700]/50 transition-all"
             >
-              {t("no")}
+              {t("common.no")}
             </Button>
           </div>
 
           <div className="text-xs text-white/90 mt-6">
-            <p className="mb-2">{t("byProceeding")}</p>
+            <p className="mb-2">{t("auth.verification.proceedingNote")}</p>
             <div className="flex justify-center gap-4">
-              <Link to="/terms" className="hover:text-[#FFD700] transition-colors">{t("terms")}</Link>
-              <Link to="/privacy" className="hover:text-[#FFD700] transition-colors">{t("privacy")}</Link>
+              <Link to="/terms" className="hover:text-[#FFD700] transition-colors">{t("common.terms")}</Link>
+              <Link to="/privacy" className="hover:text-[#FFD700] transition-colors">{t("common.privacy")}</Link>
             </div>
           </div>
         </div>

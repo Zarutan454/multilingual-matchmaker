@@ -10,9 +10,11 @@ import { toast } from 'sonner';
 import { Loader2, Plus } from 'lucide-react';
 import type { BlogPost, NewsItem } from '@/types/cms';
 import { LoggingDashboard } from './LoggingDashboard';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export const ContentManager = () => {
   const [activeTab, setActiveTab] = useState<'blog' | 'news' | 'logs'>('blog');
+  const { t } = useLanguage();
   
   const { data: blogPosts, isLoading: loadingBlog } = useQuery({
     queryKey: ['blog-posts'],
@@ -69,16 +71,16 @@ export const ContentManager = () => {
     <div className="container mx-auto p-6">
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'blog' | 'news' | 'logs')}>
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="blog">Blog Posts</TabsTrigger>
-          <TabsTrigger value="news">News</TabsTrigger>
-          <TabsTrigger value="logs">System Logs</TabsTrigger>
+          <TabsTrigger value="blog">{t("admin.content.blogPosts")}</TabsTrigger>
+          <TabsTrigger value="news">{t("admin.content.news")}</TabsTrigger>
+          <TabsTrigger value="logs">{t("admin.content.systemLogs")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="blog">
           <Card>
             <CardHeader>
-              <CardTitle>Blog Posts</CardTitle>
-              <CardDescription>Manage your blog content here</CardDescription>
+              <CardTitle>{t("admin.content.blogPosts")}</CardTitle>
+              <CardDescription>{t("admin.content.manageBlogContent")}</CardDescription>
             </CardHeader>
             <CardContent>
               {loadingBlog ? (
@@ -95,8 +97,11 @@ export const ContentManager = () => {
                           {new Date(post.publishedAt).toLocaleDateString()}
                         </p>
                       </div>
-                      <Button variant="outline" onClick={() => toast.info('Edit functionality coming soon')}>
-                        Edit
+                      <Button 
+                        variant="outline" 
+                        onClick={() => toast.info(t("admin.content.editComingSoon"))}
+                      >
+                        {t("common.edit")}
                       </Button>
                     </div>
                   ))}
@@ -105,7 +110,7 @@ export const ContentManager = () => {
             </CardContent>
             <CardFooter>
               <Button onClick={() => handleCreateContent('blog')} className="w-full">
-                <Plus className="mr-2 h-4 w-4" /> New Blog Post
+                <Plus className="mr-2 h-4 w-4" /> {t("admin.content.newBlogPost")}
               </Button>
             </CardFooter>
           </Card>
@@ -114,8 +119,8 @@ export const ContentManager = () => {
         <TabsContent value="news">
           <Card>
             <CardHeader>
-              <CardTitle>News Items</CardTitle>
-              <CardDescription>Manage your news content here</CardDescription>
+              <CardTitle>{t("admin.content.news")}</CardTitle>
+              <CardDescription>{t("admin.content.manageNewsContent")}</CardDescription>
             </CardHeader>
             <CardContent>
               {loadingNews ? (
@@ -129,11 +134,14 @@ export const ContentManager = () => {
                       <div>
                         <h3 className="font-medium">{item.title}</h3>
                         <p className="text-sm text-gray-500">
-                          Priority: {item.priority}
+                          {new Date(item.publishedAt).toLocaleDateString()}
                         </p>
                       </div>
-                      <Button variant="outline" onClick={() => toast.info('Edit functionality coming soon')}>
-                        Edit
+                      <Button 
+                        variant="outline" 
+                        onClick={() => toast.info(t("admin.content.editComingSoon"))}
+                      >
+                        {t("common.edit")}
                       </Button>
                     </div>
                   ))}
@@ -142,7 +150,7 @@ export const ContentManager = () => {
             </CardContent>
             <CardFooter>
               <Button onClick={() => handleCreateContent('news')} className="w-full">
-                <Plus className="mr-2 h-4 w-4" /> New News Item
+                <Plus className="mr-2 h-4 w-4" /> {t("admin.content.newNewsItem")}
               </Button>
             </CardFooter>
           </Card>

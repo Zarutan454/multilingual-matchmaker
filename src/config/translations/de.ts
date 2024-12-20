@@ -64,4 +64,24 @@ export const deTranslations: Translations = {
   valueRating: "Preis-Leistung",
   pleaseRateAllCriteria: "Bitte bewerten Sie alle Kriterien",
   overallRating: "Gesamtbewertung",
+
+  "auth.verification.title": "Altersverifikation",
+  "auth.verification.question": "Sind Sie 18 Jahre oder älter?",
+  "auth.verification.accessDenied": "Zugriff verweigert",
+  "auth.verification.mustBe18": "Sie müssen mindestens 18 Jahre alt sein",
+  "auth.verification.legalDisclaimer": "Diese Website enthält Inhalte für Erwachsene. Mit dem Fortfahren bestätigen Sie, dass Sie volljährig sind und die Gesetze Ihres Landes einhalten.",
+  "auth.verification.proceedingNote": "Durch Fortfahren akzeptieren Sie unsere Nutzungsbedingungen und bestätigen die Einhaltung lokaler Gesetze.",
+  
+  "admin.content.blogPosts": "Blog-Beiträge",
+  "admin.content.news": "Neuigkeiten",
+  "admin.content.systemLogs": "System-Protokolle",
+  "admin.content.manageBlogContent": "Verwalten Sie hier Ihre Blog-Inhalte",
+  "admin.content.editComingSoon": "Bearbeitungsfunktion kommt in Kürze",
+  "admin.content.newBlogPost": "Neuer Blog-Beitrag",
+  
+  "common.edit": "Bearbeiten",
+  "common.yes": "Ja",
+  "common.no": "Nein",
+  "common.terms": "AGB",
+  "common.privacy": "Datenschutz",
 };

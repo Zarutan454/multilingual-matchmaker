@@ -98,4 +98,24 @@ export const enTranslations: Translations = {
   valueRating: "Value for Money",
   pleaseRateAllCriteria: "Please rate all criteria",
   overallRating: "Overall Rating",
+
+  "auth.verification.title": "Age Verification",
+  "auth.verification.question": "Are you 18 or older?",
+  "auth.verification.accessDenied": "Access Denied",
+  "auth.verification.mustBe18": "You must be 18 or older",
+  "auth.verification.legalDisclaimer": "This website contains adult content. By proceeding, you confirm that you are of legal age and comply with the laws of your country.",
+  "auth.verification.proceedingNote": "By proceeding, you agree to our terms and confirm compliance with your local laws.",
+  
+  "admin.content.blogPosts": "Blog Posts",
+  "admin.content.news": "News",
+  "admin.content.systemLogs": "System Logs",
+  "admin.content.manageBlogContent": "Manage your blog content here",
+  "admin.content.editComingSoon": "Edit functionality coming soon",
+  "admin.content.newBlogPost": "New Blog Post",
+  
+  "common.edit": "Edit",
+  "common.yes": "Yes",
+  "common.no": "No",
+  "common.terms": "Terms",
+  "common.privacy": "Privacy",
 };
