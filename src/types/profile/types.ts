@@ -35,8 +35,6 @@ export interface Profile {
   messages_count?: number;
   average_rating?: number;
   membership_level?: 'basic' | 'premium' | 'vip';
-  working_hours?: any;
-  audit_log?: any[];
   hair_color?: string;
   hair_length?: string;
   hair_type?: string;
@@ -57,6 +55,43 @@ export interface Service {
   price?: number;
   category?: string;
   categories?: string[];
+}
+
+export interface ProfileFormValues {
+  fullName: string;
+  bio: string;
+  avatar?: File;
+  location: string;
+  interests: string;
+  occupation: string;
+  height: string;
+  weight: string;
+  languages: string[];
+  services: Service[];
+  priceRange: {
+    min: number;
+    max: number;
+  };
+  availabilityStatus: 'online' | 'offline' | 'busy';
+  serviceCategories: string[];
+  gender?: string;
+  age?: number;
+  gallery?: (string | File)[];
+  dateOfBirth?: string;
+  nationality?: string;
+  spokenLanguages?: string[];
+  preferredCommunication?: string;
+  nickname?: string;
+  emergencyContact?: {
+    name: string;
+    phoneNumber: string;
+    relationship: string;
+  };
+}
+
+export interface ProfilesResponse {
+  profiles: Profile[];
+  total: number;
 }
 
 export const MAX_GALLERY_IMAGES = 10;
