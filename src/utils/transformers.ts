@@ -1,8 +1,6 @@
 import { Database } from '@/integrations/supabase/types';
 import { Profile, Service } from '@/types/profile';
 import { Message } from '@/types/messages';
-import { BlogPost, NewsItem } from '@/types/cms';
-import { Rating } from '@/types/ratings';
 
 type ProfileRow = Database['public']['Tables']['profiles']['Row'];
 type MessageRow = Database['public']['Tables']['messages']['Row'];
@@ -28,14 +26,38 @@ export function transformProfile(row: ProfileRow): Profile {
     availability_status: (row.availability_status as 'online' | 'offline' | 'busy') || 'offline',
     gallery: row.gallery || [],
     languages: row.languages || [],
+    services: [],
     age: row.age || 0,
     gender: row.gender || '',
+    name: row.full_name || '',
+    image: row.avatar_url || '',
+    category: row.category || '',
+    coordinates: { lat: 0, lng: 0 },
+    status: row.availability_status || 'offline',
+    rating: 0,
+    reviews: 0,
+    spokenLanguages: row.languages || [],
+    serviceCategories: row.service_categories || [],
+    priceRange: row.price_range ? {
+      min: typeof row.price_range === 'object' ? (row.price_range as any).min || 0 : 0,
+      max: typeof row.price_range === 'object' ? (row.price_range as any).max || 0 : 0
+    } : { min: 0, max: 0 },
     user_type: (row.user_type as 'customer' | 'provider') || 'customer',
     last_seen: row.last_seen,
     is_verified: false,
     messages_count: 0,
     average_rating: 0,
-    membership_level: 'basic'
+    membership_level: 'basic',
+    hair_color: row.hair_color,
+    hair_length: row.hair_length,
+    hair_type: row.hair_type,
+    eye_color: row.eye_color,
+    skin_tone: row.skin_tone,
+    grooming: row.grooming,
+    body_type: row.body_type,
+    bust_size: row.bust_size,
+    dress_size: row.dress_size,
+    nickname: row.nickname
   };
 }
 
