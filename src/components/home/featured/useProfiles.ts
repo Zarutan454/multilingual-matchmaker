@@ -1,127 +1,88 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabase";
-import { Profile } from "@/components/profile/types";
-import { toast } from "sonner";
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/lib/supabase';
+import { toast } from 'sonner';
+import { Profile } from '@/types/profile/types';
 
 interface UseProfilesProps {
   page: number;
-  searchTerm: string;
-  location: string;
-  category: string;
-  orientation: string;
-  priceRange: {
+  searchTerm?: string;
+  location?: string;
+  category?: string;
+  orientation?: string;
+  priceRange?: {
     min: number;
     max: number;
   };
-  availability?: Date;
-  itemsPerPage: number;
+  availability?: string;
+  itemsPerPage?: number;
 }
 
 export const useProfiles = ({
-  page,
-  searchTerm,
-  location,
-  category,
-  orientation,
-  priceRange,
+  page = 0,
+  searchTerm = '',
+  location = '',
+  category = '',
+  orientation = '',
+  priceRange = { min: 0, max: 1000 },
   availability,
-  itemsPerPage
+  itemsPerPage = 12,
 }: UseProfilesProps) => {
   return useQuery({
     queryKey: ['profiles', page, searchTerm, location, category, orientation, priceRange, availability],
     queryFn: async () => {
-      try {
-        console.log('Fetching profiles with params:', {
-          page,
-          searchTerm,
-          location,
-          category,
-          orientation,
-          priceRange,
-          availability,
-          itemsPerPage
-        });
+      console.log('Fetching profiles with params:', {
+        page,
+        searchTerm,
+        location,
+        category,
+        orientation,
+        priceRange,
+        availability,
+        itemsPerPage
+      });
 
+      try {
         let query = supabase
           .from('profiles')
-          .select(`
-            id,
-            full_name,
-            avatar_url,
-            location,
-            category,
-            availability_status,
-            languages,
-            age,
-            service_categories,
-            price_range,
-            last_seen,
-            role,
-            likes_count,
-            user_type,
-            availability
-          `)
+          .select('*', { count: 'exact' })
           .eq('user_type', 'provider')
           .eq('is_active', true)
-          .range(page * itemsPerPage, (page + 1) * itemsPerPage - 1)
-          .order('created_at', { ascending: false });
+          .range(page * itemsPerPage, (page + 1) * itemsPerPage - 1);
 
         if (searchTerm) {
           query = query.ilike('full_name', `%${searchTerm}%`);
         }
+
         if (location) {
           query = query.ilike('location', `%${location}%`);
         }
+
         if (category) {
           query = query.contains('service_categories', [category]);
         }
+
         if (orientation) {
           query = query.contains('service_categories', [orientation]);
         }
-        if (priceRange) {
-          query = query.or(`and(price_range->min.gte.${priceRange.min},price_range->max.lte.${priceRange.max})`);
-        }
-        if (availability) {
-          const dateStr = availability.toISOString().split('T')[0];
-          query = query.contains('availability', [dateStr]);
-        }
 
-        const { data, error } = await query;
+        const { data, error, count } = await query;
 
         if (error) {
-          console.error('Error fetching profiles:', error);
-          toast.error('Fehler beim Laden der Profile');
           throw error;
         }
 
-        return data.map((profile: any): Profile => ({
-          id: profile.id,
-          name: profile.full_name || 'Anonymous',
-          image: profile.avatar_url || '/placeholder.svg',
-          category: profile.category || 'VIP Begleitung',
-          location: profile.location || 'Unknown',
-          coordinates: { lat: 0, lng: 0 },
-          status: profile.availability_status || 'offline',
-          rating: 4.8,
-          reviews: 0,
-          spokenLanguages: profile.languages || ['Deutsch'],
-          age: profile.age || 25,
-          serviceCategories: profile.service_categories || [],
-          priceRange: profile.price_range || { min: 0, max: 0 },
-          last_seen: profile.last_seen,
-          membership_level: profile.role === 'vip' ? 'vip' : 'bronze',
-          likes_count: profile.likes_count || 0
-        }));
-      } catch (error: any) {
-        console.error('Error in useProfiles:', error);
-        toast.error('Fehler beim Laden der Profile');
+        return {
+          profiles: data as Profile[],
+          total: count || 0,
+        };
+      } catch (error) {
+        console.error('Error fetching profiles:', error);
         throw error;
       }
     },
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    gcTime: 1000 * 60 * 30,   // 30 minutes
     retry: 3,
-    retryDelay: 1000,
-    staleTime: 30000,
-    gcTime: 300000,
     meta: {
       errorMessage: 'Fehler beim Laden der Profile'
     }
