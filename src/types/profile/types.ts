@@ -15,6 +15,7 @@ export interface Profile {
   availability_status: 'online' | 'offline' | 'busy';
   gallery: string[] | null;
   languages: string[];
+  services: Service[];
   age: number;
   gender?: string;
   name: string;
@@ -43,6 +44,7 @@ export interface Profile {
   body_type?: string;
   bust_size?: string;
   dress_size?: string;
+  nickname?: string;
 }
 
 export interface Service {
@@ -79,12 +81,20 @@ export interface ProfileFormValues {
   nationality?: string;
   spokenLanguages?: string[];
   preferredCommunication?: string;
+  nickname?: string;
   emergencyContact?: {
     name: string;
     phoneNumber: string;
     relationship: string;
   };
 }
+
+export interface ProfilesResponse {
+  profiles: Profile[];
+  total: number;
+}
+
+export const MAX_GALLERY_IMAGES = 10;
 
 export const castToProfile = (data: any): Profile => {
   return {
@@ -104,6 +114,7 @@ export const castToProfile = (data: any): Profile => {
     availability_status: data.availability_status || 'offline',
     gallery: data.gallery || [],
     languages: data.languages || [],
+    services: data.services || [],
     age: data.age || 0,
     gender: data.gender || '',
     name: data.full_name || '',
@@ -131,7 +142,8 @@ export const castToProfile = (data: any): Profile => {
     grooming: data.grooming,
     body_type: data.body_type,
     bust_size: data.bust_size,
-    dress_size: data.dress_size
+    dress_size: data.dress_size,
+    nickname: data.nickname
   };
 };
 
