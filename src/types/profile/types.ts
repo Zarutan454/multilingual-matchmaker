@@ -1,4 +1,3 @@
-import { Database } from "@/integrations/supabase/types";
 import { Json } from "@/integrations/supabase/generated.types";
 
 export interface Profile {
@@ -52,20 +51,6 @@ export interface Profile {
   membership_level?: string;
   reviews_count?: number;
   age?: number;
-  price_range?: {
-    min: number;
-    max: number;
-  };
-}
-
-export interface Service {
-  id: string;
-  name: string;
-  description: string | null;
-  duration: number;
-  price?: number;
-  category?: string;
-  categories?: string[];
 }
 
 export interface ProfileFormValues {
@@ -94,6 +79,17 @@ export interface ProfileFormValues {
   };
   availabilityStatus?: string;
   nickname?: string;
+  serviceCategories?: string[];
+}
+
+export interface Service {
+  id: string;
+  name: string;
+  description: string | null;
+  duration: number;
+  price?: number;
+  category?: string;
+  categories?: string[];
 }
 
 export interface ProfilesResponse {
@@ -103,7 +99,7 @@ export interface ProfilesResponse {
 
 export const MAX_GALLERY_IMAGES = 10;
 
-export const castToProfile = (data: Database['public']['Tables']['profiles']['Row']): Profile => {
+export const castToProfile = (data: any): Profile => {
   const priceRangeData = data.price_range as { min: number; max: number } | null;
   
   return {
@@ -131,24 +127,10 @@ export const castToProfile = (data: Database['public']['Tables']['profiles']['Ro
       max: priceRangeData?.max || 0
     },
     user_type: data.user_type as 'customer' | 'provider',
-    interests: [],
+    interests: data.interests ? [data.interests] : [],
     age: data.age || 0,
     gender: data.gender || '',
-    hair_color: data.hair_color || '',
-    hair_length: data.hair_length || '',
-    hair_type: data.hair_type || '',
-    eye_color: data.eye_color || '',
-    skin_tone: data.skin_tone || '',
-    grooming: data.grooming || '',
-    body_type: data.body_type || '',
-    bust_size: data.bust_size || '',
-    dress_size: data.dress_size || '',
-    is_verified: data.is_verified || false,
-    messages_count: 0,
-    average_rating: 0,
-    membership_level: 'basic',
-    reviews_count: data.reviews_count || 0,
-    price_range: priceRangeData || { min: 0, max: 0 }
+    reviews_count: data.reviews_count || 0
   };
 };
 

@@ -2,6 +2,8 @@ import { Profile } from '@/types/profile/types';
 import { ProfileRow } from '@/types/profile/supabaseTypes';
 
 export function transformProfile(profile: ProfileRow): Profile {
+  const priceRangeData = profile.price_range as { min: number; max: number } | null;
+  
   return {
     id: profile.id,
     full_name: profile.full_name || '',
@@ -16,29 +18,19 @@ export function transformProfile(profile: ProfileRow): Profile {
     height: profile.height || '',
     weight: profile.weight || '',
     availability: profile.availability || [],
-    service_categories: profile.service_categories || [],
-    price_range: profile.price_range ? {
-      min: typeof profile.price_range === 'object' ? (profile.price_range as any).min || 0 : 0,
-      max: typeof profile.price_range === 'object' ? (profile.price_range as any).max || 0 : 0
-    } : { min: 0, max: 0 },
-    availability_status: (profile.availability_status as 'online' | 'offline' | 'busy') || 'offline',
-    gallery: profile.gallery || [],
-    languages: profile.languages || [],
-    services: [],
-    age: Number(profile.age) || 0,
-    gender: profile.gender || '',
+    serviceCategories: profile.service_categories || [],
+    priceRange: {
+      min: priceRangeData?.min || 0,
+      max: priceRangeData?.max || 0
+    },
     category: profile.category || '',
     coordinates: { lat: 0, lng: 0 },
     status: profile.availability_status || 'offline',
     rating: 0,
     reviews: 0,
-    reviews_count: profile.reviews_count || 0,
+    languages: profile.languages || [],
     spokenLanguages: profile.languages || [],
-    serviceCategories: profile.service_categories || [],
-    priceRange: {
-      min: typeof profile.price_range === 'object' ? (profile.price_range as any).min || 0 : 0,
-      max: typeof profile.price_range === 'object' ? (profile.price_range as any).max || 0 : 0
-    },
+    age: Number(profile.age) || 0,
     user_type: (profile.user_type as 'customer' | 'provider') || 'customer'
   };
 }
