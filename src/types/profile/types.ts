@@ -26,8 +26,8 @@ export interface Profile {
     lng: number;
   };
   status: string;
-  rating?: number;
-  reviews?: number;
+  rating: number;
+  reviews: number;
   spokenLanguages: string[];
   serviceCategories: string[];
   priceRange: { min: number; max: number };
