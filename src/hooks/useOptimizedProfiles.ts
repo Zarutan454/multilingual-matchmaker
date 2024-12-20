@@ -2,6 +2,9 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { Profile, ProfilesResponse } from '@/types/profile/types';
 import { toast } from 'sonner';
+import { Database } from '@/integrations/supabase/types';
+
+type ProfileRow = Database['public']['Tables']['profiles']['Row'];
 
 interface UseProfilesProps {
   page: number;
@@ -52,7 +55,7 @@ export const useOptimizedProfiles = ({
 
         if (error) throw error;
 
-        const profiles: Profile[] = (data || []).map(profile => {
+        const profiles: Profile[] = (data || []).map((profile: ProfileRow) => {
           const priceRangeData = profile.price_range as { min: number; max: number } | null;
 
           return {
@@ -81,8 +84,8 @@ export const useOptimizedProfiles = ({
             },
             user_type: profile.user_type as 'customer' | 'provider',
             contact_info: {
-              phone: profile.phone || '',
-              email: profile.email || ''
+              phone: (profile as any).phone || '',
+              email: (profile as any).email || ''
             },
             service_info: {
               categories: profile.service_categories || [],
@@ -111,7 +114,7 @@ export const useOptimizedProfiles = ({
       }
     },
     staleTime: STALE_TIME,
-    gcTime: CACHE_TIME,
+    cacheTime: CACHE_TIME,
     enabled,
     meta: {
       errorMessage: 'Error loading profiles'
