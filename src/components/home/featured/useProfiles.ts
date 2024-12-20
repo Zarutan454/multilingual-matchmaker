@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
-import { Profile, ProfilesResponse, Coordinates } from '@/types/profile/types';
+import { Profile, ProfilesResponse } from '@/types/profile/types';
 
 interface UseProfilesProps {
   page: number;
@@ -61,13 +61,8 @@ export const useProfiles = ({
         }
 
         const profiles: Profile[] = (data || []).map(profile => {
-          const coordinates: Coordinates = {
-            lat: 0,
-            lng: 0
-          };
-
-          const priceRange = typeof profile.price_range === 'object' ? profile.price_range : { min: 0, max: 0 };
-
+          const priceRangeData = profile.price_range as { min: number; max: number } | null;
+          
           return {
             id: profile.id,
             full_name: profile.full_name || '',
@@ -78,7 +73,10 @@ export const useProfiles = ({
             banner_url: profile.banner_url || '',
             category: profile.category || '',
             location: profile.location || '',
-            coordinates,
+            coordinates: {
+              lat: 0,
+              lng: 0
+            },
             status: profile.availability_status || 'offline',
             rating: 0,
             reviews: 0,
@@ -86,8 +84,8 @@ export const useProfiles = ({
             spokenLanguages: profile.languages || [],
             serviceCategories: profile.service_categories || [],
             priceRange: {
-              min: priceRange.min || 0,
-              max: priceRange.max || 0
+              min: priceRangeData?.min || 0,
+              max: priceRangeData?.max || 0
             },
             user_type: profile.user_type as 'customer' | 'provider',
             contact_info: {
@@ -98,7 +96,7 @@ export const useProfiles = ({
               categories: profile.service_categories || [],
               description: profile.bio || '',
               pricing: {
-                hourly: priceRange.min || 0,
+                hourly: priceRangeData?.min || 0,
               },
               availability: {
                 days: profile.availability || [],
@@ -106,7 +104,7 @@ export const useProfiles = ({
               }
             },
             verification_status: 'pending',
-            age: profile.age
+            age: profile.age || 0
           };
         });
 

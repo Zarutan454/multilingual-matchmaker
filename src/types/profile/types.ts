@@ -56,7 +56,7 @@ export interface Profile {
   rating: number;
   reviews: number;
   languages: string[];
-  age?: number;
+  age: number;
   interests?: string;
   occupation?: string;
   availability?: string[];
