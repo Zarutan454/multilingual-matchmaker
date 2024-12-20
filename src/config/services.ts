@@ -31,6 +31,7 @@ export const config: Partial<Database> = {
           height: '',
           interests: '',
           is_active: true,
+          is_verified: false,
           languages: [],
           last_login: '',
           last_seen: '',
@@ -49,7 +50,9 @@ export const config: Partial<Database> = {
           weight: '',
           working_hours: null
         },
-        Insert: {},
+        Insert: {
+          id: ''
+        },
         Update: {}
       }
     }

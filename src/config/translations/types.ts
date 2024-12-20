@@ -8,7 +8,10 @@ export interface Translations {
   errorDeletingService: string;
   fillAllFields: string;
   pleaseLogin: string;
+  profileUpdated: string;
+  errorUpdatingProfile: string;
+  galleryUpdated: string;
+  imageDeleted: string;
+  errorDeletingImage: string;
   [key: string]: string;
 }
-
-export type TranslationKey = keyof Translations;
