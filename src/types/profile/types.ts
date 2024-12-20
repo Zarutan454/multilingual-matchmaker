@@ -1,9 +1,9 @@
 export interface Profile {
   id: string;
   full_name: string | null;
-  nickname?: string;
   bio: string | null;
   avatar_url: string | null;
+  banner_url: string | null;
   location: string | null;
   interests: string | null;
   occupation: string | null;
@@ -15,10 +15,30 @@ export interface Profile {
     min: number;
     max: number;
   } | null;
-  availability_status: string | null;
+  availability_status: 'online' | 'offline' | 'busy';
+  gallery: string[] | null;
   languages?: string[];
   services?: Service[];
   age?: number;
+  gender?: string;
+  name?: string; // Added for compatibility
+  image?: string; // Added for compatibility
+  category?: string; // Added for compatibility
+  coordinates?: { // Added for compatibility
+    lat: number;
+    lng: number;
+  };
+  status?: string; // Added for compatibility
+  rating?: number;
+  reviews?: number;
+  spokenLanguages?: string[];
+  serviceCategories?: string[];
+  user_type: 'customer' | 'provider';
+  last_seen: string | null;
+  is_verified?: boolean;
+  messages_count?: number;
+  average_rating?: number;
+  membership_level?: 'basic' | 'premium' | 'vip';
 }
 
 export interface ProfileFormValues {

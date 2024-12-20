@@ -3,50 +3,41 @@ import { ProfileRow } from '@/types/profile/supabaseTypes';
 
 export const transformProfile = (profile: ProfileRow): Profile => {
   const priceRangeData = profile.price_range as { min: number; max: number } | null;
-
+  
   return {
     id: profile.id,
     full_name: profile.full_name || '',
-    name: profile.full_name || '',
-    image: profile.avatar_url || '',
     bio: profile.bio || '',
     avatar_url: profile.avatar_url || '',
     banner_url: profile.banner_url || '',
     category: profile.category || '',
     location: profile.location || '',
+    interests: profile.interests || '',
+    occupation: profile.occupation || '',
+    height: profile.height || '',
+    weight: profile.weight || '',
+    availability: profile.availability || [],
+    service_categories: profile.service_categories || [],
+    price_range: priceRangeData || { min: 0, max: 0 },
+    availability_status: profile.availability_status as 'online' | 'offline' | 'busy' || 'offline',
+    gallery: profile.gallery || [],
+    languages: profile.languages || [],
+    age: profile.age || 0,
+    gender: profile.gender || '',
+    user_type: profile.user_type as 'customer' | 'provider' || 'customer',
+    last_seen: profile.last_seen,
     coordinates: {
-      lat: profile.lat || 0,
-      lng: profile.lng || 0
+      lat: 0,
+      lng: 0
     },
     status: profile.availability_status || 'offline',
     rating: 0,
     reviews: 0,
-    languages: profile.languages || [],
     spokenLanguages: profile.languages || [],
     serviceCategories: profile.service_categories || [],
-    priceRange: {
-      min: priceRangeData?.min || 0,
-      max: priceRangeData?.max || 0
-    },
-    user_type: (profile.user_type === 'provider' || profile.user_type === 'customer') 
-      ? profile.user_type 
-      : 'customer',
-    contact_info: {
-      phone: profile.contact_info?.phone || '',
-      email: profile.contact_info?.email || ''
-    },
-    service_info: {
-      categories: profile.service_categories || [],
-      description: profile.bio || '',
-      pricing: {
-        hourly: priceRangeData?.min || 0,
-      },
-      availability: {
-        days: profile.availability || [],
-        hours: ''
-      }
-    },
-    verification_status: 'pending',
-    age: profile.age || 0
+    is_verified: profile.is_verified || false,
+    messages_count: 0,
+    average_rating: 0,
+    membership_level: 'basic'
   };
 };
