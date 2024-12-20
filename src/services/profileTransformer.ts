@@ -22,7 +22,7 @@ export function transformProfile(profile: ProfileRow): Profile {
     availability_status: (profile.availability_status as 'online' | 'offline' | 'busy') || 'offline',
     gallery: profile.gallery || [],
     languages: profile.languages || [],
-    services: [],
+    services: profile.services || [],
     age: profile.age || 0,
     gender: profile.gender || '',
     name: profile.full_name || '',
@@ -39,7 +39,7 @@ export function transformProfile(profile: ProfileRow): Profile {
       min: typeof profile.price_range === 'object' ? (profile.price_range as any).min || 0 : 0,
       max: typeof profile.price_range === 'object' ? (profile.price_range as any).max || 0 : 0
     } : { min: 0, max: 0 },
-    user_type: profile.user_type as 'customer' | 'provider' || 'customer',
+    user_type: profile.user_type as 'customer' | 'provider',
     last_seen: profile.last_seen,
     is_verified: profile.is_verified || false,
     messages_count: 0,

@@ -38,4 +38,6 @@ export type ProfileRow = {
   reviews: number | null;
   audit_log: Json[];
   working_hours: Json;
+  membership_level: 'basic' | 'premium' | 'vip' | 'bronze' | 'silver' | 'gold' | null;
+  services: any[];
 };
