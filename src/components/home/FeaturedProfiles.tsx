@@ -5,7 +5,7 @@ import { ProfileGrid } from "../profile/ProfileGrid";
 import { usePresence } from "@/hooks/usePresence";
 import { ProfileFilters } from "./featured/ProfileFilters";
 import { ProfilePagination } from "./featured/ProfilePagination";
-import { useProfiles } from "./featured/useProfiles";
+import { useOptimizedProfiles } from "@/hooks/useOptimizedProfiles";
 import { toast } from "sonner";
 
 const ITEMS_PER_PAGE = 12;
@@ -23,15 +23,15 @@ export const FeaturedProfiles = () => {
 
   usePresence();
 
-  const { data, isLoading, error } = useProfiles({
+  const { data, isLoading, error } = useOptimizedProfiles({
     page,
-    searchTerm,
-    location,
-    category,
-    orientation,
-    priceRange,
-    availability,
-    itemsPerPage: ITEMS_PER_PAGE
+    pageSize: ITEMS_PER_PAGE,
+    filters: {
+      searchTerm,
+      location,
+      category,
+      orientation
+    }
   });
 
   const profiles = data?.profiles || [];

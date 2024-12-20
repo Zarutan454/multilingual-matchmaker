@@ -16,6 +16,11 @@ interface UseProfilesProps {
   enabled?: boolean;
 }
 
+interface ProfilesResponse {
+  profiles: Profile[];
+  total: number;
+}
+
 const CACHE_TIME = 1000 * 60 * 5; // 5 Minuten
 const STALE_TIME = 1000 * 30; // 30 Sekunden
 
@@ -25,44 +30,19 @@ export const useOptimizedProfiles = ({
   filters,
   enabled = true
 }: UseProfilesProps) => {
-  return useQuery({
+  return useQuery<ProfilesResponse>({
     queryKey: ['optimized-profiles', page, pageSize, filters],
     queryFn: async () => {
       try {
-        console.log('Lade Profile mit Parametern:', {
-          page,
-          pageSize,
-          filters
-        });
-
         let query = supabase
           .from('profiles')
-          .select(`
-            id,
-            full_name,
-            avatar_url,
-            location,
-            category,
-            availability_status,
-            languages,
-            age,
-            service_categories,
-            price_range,
-            last_seen,
-            role,
-            likes_count,
-            user_type
-          `, { count: 'exact' })
+          .select('*', { count: 'exact' })
           .eq('user_type', 'provider')
           .eq('is_active', true)
-          .order('last_seen', { ascending: false });
+          .range(page * pageSize, (page + 1) * pageSize - 1);
 
-        // Optimierte Filterlogik mit Index-Nutzung
         if (filters?.searchTerm) {
-          query = query.textSearch('full_name', filters.searchTerm, {
-            type: 'websearch',
-            config: 'german'
-          });
+          query = query.ilike('full_name', `%${filters.searchTerm}%`);
         }
 
         if (filters?.location) {
@@ -73,54 +53,41 @@ export const useOptimizedProfiles = ({
           query = query.contains('service_categories', [filters.category]);
         }
 
-        if (filters?.orientation) {
-          query = query.contains('service_categories', [filters.orientation]);
-        }
-
-        if (filters?.membershipLevel) {
-          query = query.eq('role', filters.membershipLevel);
-        }
-
-        // Optimierte Pagination
-        const from = page * pageSize;
-        const to = from + pageSize - 1;
-        query = query.range(from, to);
-
         const { data, error, count } = await query;
 
         if (error) throw error;
 
         return {
-          profiles: data.map((profile: any): Profile => ({
+          profiles: (data || []).map((profile): Profile => ({
             id: profile.id,
-            full_name: profile.full_name || 'Anonymous',
-            bio: null,
-            avatar_url: profile.avatar_url || '/placeholder.svg',
-            banner_url: null,
-            location: profile.location || 'Unknown',
-            interests: null,
-            occupation: null,
-            height: null,
-            weight: null,
-            availability: null,
+            full_name: profile.full_name || '',
+            bio: profile.bio || '',
+            avatar_url: profile.avatar_url || '',
+            banner_url: profile.banner_url || '',
+            location: profile.location || '',
+            interests: profile.interests || '',
+            occupation: profile.occupation || '',
+            height: profile.height || '',
+            weight: profile.weight || '',
+            availability: profile.availability || [],
             service_categories: profile.service_categories || [],
-            price_range: profile.price_range || { min: 0, max: 0 },
-            availability_status: profile.availability_status || 'offline',
-            gallery: null,
-            languages: profile.languages || ['Deutsch'],
-            contact_info: {},
+            price_range: profile.price_range ? {
+              min: typeof profile.price_range === 'object' ? (profile.price_range as any).min || 0 : 0,
+              max: typeof profile.price_range === 'object' ? (profile.price_range as any).max || 0 : 0
+            } : null,
+            availability_status: (profile.availability_status as 'online' | 'offline' | 'busy') || 'offline',
+            gallery: profile.gallery || [],
+            languages: profile.languages || [],
+            contact_info: profile.contact_info || {},
             service_info: {
               services: [],
               working_hours: {},
               rates: {}
             },
-            age: profile.age || null,
-            gender: null,
             last_seen: profile.last_seen,
-            user_type: profile.user_type || 'customer',
+            user_type: (profile.user_type as 'customer' | 'provider') || 'customer',
             is_verified: false,
-            verification_status: 'pending',
-            likes_count: profile.likes_count || 0
+            verification_status: 'pending'
           })),
           total: count || 0
         };
