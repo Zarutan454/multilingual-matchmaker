@@ -26,7 +26,6 @@ export const ProfileForm = ({ profile, userId, onProfileUpdate }: ProfileFormPro
   const { register, handleSubmit } = useForm<ProfileFormValues>({
     defaultValues: {
       fullName: profile?.full_name || "",
-      nickname: profile?.nickname || "",
       location: profile?.location || "",
       height: profile?.height || "",
       weight: profile?.weight || "",
@@ -83,7 +82,6 @@ export const ProfileForm = ({ profile, userId, onProfileUpdate }: ProfileFormPro
     try {
       const updateData = {
         full_name: data.fullName,
-        nickname: data.nickname,
         location: data.location,
         height: data.height,
         weight: data.weight,
@@ -149,17 +147,6 @@ export const ProfileForm = ({ profile, userId, onProfileUpdate }: ProfileFormPro
         <Input
           id="fullName"
           {...register("fullName")}
-          className="bg-black/50 border-[#FFD700]/30 text-white placeholder-neutral-400 focus:border-[#FFD700] transition-colors"
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="nickname" className="text-white text-sm">
-          {t("nickname")}
-        </Label>
-        <Input
-          id="nickname"
-          {...register("nickname")}
           className="bg-black/50 border-[#FFD700]/30 text-white placeholder-neutral-400 focus:border-[#FFD700] transition-colors"
         />
       </div>

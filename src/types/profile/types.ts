@@ -43,7 +43,6 @@ export interface Profile {
 
 export interface ProfileFormValues {
   fullName: string;
-  nickname?: string;
   bio: string;
   location: string;
   interests: string;
