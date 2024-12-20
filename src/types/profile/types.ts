@@ -18,19 +18,19 @@ export interface Profile {
   services?: Service[];
   age?: number;
   gender?: string;
-  name?: string;
-  image?: string;
-  category?: string;
-  coordinates?: {
+  name: string;
+  image: string;
+  category: string;
+  coordinates: {
     lat: number;
     lng: number;
   };
-  status?: string;
+  status: string;
   rating?: number;
   reviews?: number;
-  spokenLanguages?: string[];
-  serviceCategories?: string[];
-  priceRange?: { min: number; max: number };
+  spokenLanguages: string[];
+  serviceCategories: string[];
+  priceRange: { min: number; max: number };
   user_type: 'customer' | 'provider';
   last_seen: string | null;
   is_verified?: boolean;
