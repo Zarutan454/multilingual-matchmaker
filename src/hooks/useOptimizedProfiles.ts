@@ -29,7 +29,7 @@ export const useOptimizedProfiles = ({
     queryKey: ['optimized-profiles', page, pageSize, filters],
     queryFn: async () => {
       try {
-        console.log('Fetching profiles with params:', {
+        console.log('Lade Profile mit Parametern:', {
           page,
           pageSize,
           filters
@@ -125,7 +125,7 @@ export const useOptimizedProfiles = ({
           total: count || 0
         };
       } catch (error) {
-        console.error('Error fetching profiles:', error);
+        console.error('Fehler beim Laden der Profile:', error);
         toast.error('Fehler beim Laden der Profile');
         throw error;
       }

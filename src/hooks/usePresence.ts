@@ -31,9 +31,9 @@ export const usePresence = () => {
           .eq('id', user.id);
 
         lastUpdateRef.current = now;
-        console.log('Presence updated:', status);
+        console.log('Presence aktualisiert:', status);
       } catch (error) {
-        console.error('Error updating presence:', error);
+        console.error('Fehler beim Aktualisieren der Presence:', error);
       }
     }, PRESENCE_DEBOUNCE),
     [user]
@@ -51,8 +51,7 @@ export const usePresence = () => {
 
     channel
       .on('presence', { event: 'sync' }, () => {
-        const state = channel.presenceState();
-        console.log('Presence synced:', state);
+        console.log('Presence synchronisiert');
       })
       .subscribe(async (status) => {
         if (status === 'SUBSCRIBED') {
@@ -63,7 +62,6 @@ export const usePresence = () => {
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('beforeunload', () => updatePresence('offline'));
 
-    // Initial presence update
     updatePresence('online');
 
     return () => {
