@@ -33,7 +33,7 @@ export const RegisterFormFields = ({
           className={`flex-1 ${userType === "customer" ? "bg-[#9b87f5] hover:bg-[#7E69AB]" : "hover:bg-[#9b87f5]/10"}`}
           onClick={() => setUserType("customer")}
         >
-          {t("registerAsCustomer")}
+          Kunde
         </Button>
         <Button
           type="button"
@@ -41,7 +41,7 @@ export const RegisterFormFields = ({
           className={`flex-1 ${userType === "provider" ? "bg-[#9b87f5] hover:bg-[#7E69AB]" : "hover:bg-[#9b87f5]/10"}`}
           onClick={() => setUserType("provider")}
         >
-          {t("registerAsProvider")}
+          Dienstleister
         </Button>
       </div>
 

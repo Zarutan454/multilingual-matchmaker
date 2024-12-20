@@ -1,48 +1,60 @@
-import { BaseProfile } from './baseProfile';
-import { Appearance } from './appearance';
-import { Measurements } from './measurements';
-import { ContactInfo } from './contactInfo';
-import { ServiceInfo } from './serviceInfo';
-
-export interface Profile extends BaseProfile {
-  id: string;
-  name?: string;
-  image?: string;
-  avatar_url: string | null;
-  banner_url: string | null;
-  interests: string | null;
-  occupation: string | null;
-  availability: string[] | null;
-  service_categories: string[] | null;
-  price_range: PriceRange | null;
-  availability_status: AvailabilityStatus;
-  gallery: string[] | null;
-  languages: string[];
-  contact_info: ContactInfo;
-  service_info: ServiceInfo;
-  last_seen: string | null;
-  user_type: UserType;
-  is_verified: boolean;
-  verification_status: VerificationStatus;
-  appearance?: Appearance;
-  measurements?: Measurements;
-  likes_count?: number;
-  coordinates?: {
-    lat: number;
-    lng: number;
+export interface ContactInfo {
+  phone?: string;
+  email?: string;
+  website?: string;
+  social?: {
+    instagram?: string;
+    twitter?: string;
+    facebook?: string;
   };
-  category?: string;
-  rating?: number;
-  reviews?: number;
 }
 
-export type AvailabilityStatus = 'online' | 'offline' | 'busy';
-export type UserType = 'customer' | 'provider';
-export type VerificationStatus = 'pending' | 'approved' | 'rejected';
-
-export interface PriceRange {
-  min: number;
-  max: number;
+export interface ServiceInfo {
+  categories: string[];
+  description: string;
+  pricing: {
+    hourly?: number;
+    daily?: number;
+    custom?: string;
+  };
+  availability: {
+    days: string[];
+    hours: string;
+  };
 }
 
-export const MAX_GALLERY_IMAGES = 10;
+export interface Profile {
+  id: string;
+  full_name: string;
+  bio?: string;
+  avatar_url?: string;
+  banner_url?: string;
+  user_type: 'customer' | 'provider';
+  contact_info: ContactInfo;
+  service_info?: ServiceInfo;
+  verification_status: 'pending' | 'verified' | 'rejected';
+  created_at?: string;
+  updated_at?: string;
+  name: string;
+  image: string;
+  category: string;
+  coordinates: [number, number];
+  location: string;
+  status: string;
+  spokenLanguages: string[];
+  serviceCategories: string[];
+  priceRange: {
+    min: number;
+    max: number;
+  };
+  rating: number;
+  reviews: number;
+  languages: string[];
+  phone?: string;
+  email?: string;
+}
+
+export interface ProfilesResponse {
+  profiles: Profile[];
+  total: number;
+}
