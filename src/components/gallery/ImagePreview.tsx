@@ -2,20 +2,35 @@ import React from 'react';
 import { Button } from '../ui/button';
 import { ZoomIn, ZoomOut } from 'lucide-react';
 
-interface ImagePreviewProps {
+export interface ImagePreviewProps {
   imageUrl: string;
+  zoomLevel: number;
   onZoom: (direction: 'in' | 'out') => void;
+  index?: number;
+  totalImages?: number;
+  onNavigate?: (direction: 'prev' | 'next') => void;
 }
 
-export const ImagePreview: React.FC<ImagePreviewProps> = ({ imageUrl, onZoom }) => {
+export const ImagePreview: React.FC<ImagePreviewProps> = ({ 
+  imageUrl, 
+  zoomLevel, 
+  onZoom,
+  index,
+  totalImages,
+  onNavigate 
+}) => {
   return (
     <div className="relative">
-      <img src={imageUrl} alt="Preview" className="w-full h-auto" />
+      <img 
+        src={imageUrl} 
+        alt="Preview" 
+        className="w-full h-auto"
+        style={{ transform: `scale(${zoomLevel})` }}
+      />
       <div className="absolute top-4 right-4 flex space-x-2">
         <Button
           variant="outline"
           size="icon"
-          className="absolute bottom-4 left-4"
           onClick={() => onZoom('in')}
         >
           <ZoomIn className="h-4 w-4" />
@@ -23,7 +38,6 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({ imageUrl, onZoom }) 
         <Button
           variant="outline"
           size="icon"
-          className="absolute bottom-4 left-4"
           onClick={() => onZoom('out')}
         >
           <ZoomOut className="h-4 w-4" />
