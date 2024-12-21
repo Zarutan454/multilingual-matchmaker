@@ -48,7 +48,7 @@ export interface Profile {
   is_verified?: boolean;
   messages_count?: number;
   average_rating?: number;
-  membership_level?: string;
+  membership_level: 'basic' | 'premium' | 'vip' | 'bronze' | 'silver' | 'gold';
   reviews_count?: number;
   age?: number;
   price_range?: {
@@ -79,7 +79,7 @@ export interface Service {
 
 export interface ProfileFormValues {
   fullName: string;
-  bio: string;
+  bio?: string;
   location: string;
   interests: string[];
   occupation: string;
@@ -112,8 +112,6 @@ export interface ProfilesResponse {
   profiles: Profile[];
   total: number;
 }
-
-export const MAX_GALLERY_IMAGES = 10;
 
 export const castToProfile = (data: any): Profile => {
   const priceRangeData = data.price_range as { min: number; max: number } | null;

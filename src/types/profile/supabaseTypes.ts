@@ -1,4 +1,5 @@
 import { Json } from '@/integrations/supabase/generated.types';
+import { Service } from './types';
 
 export type ProfileRow = {
   id: string;
@@ -38,7 +39,7 @@ export type ProfileRow = {
   reviews: number | null;
   audit_log: Json[];
   working_hours: Json;
-  membership_level: 'basic' | 'premium' | 'vip' | 'bronze' | 'silver' | 'gold' | null;
+  membership_level: 'basic' | 'premium' | 'vip' | 'bronze' | 'silver' | 'gold';
   services: Service[];
   created_at?: string;
   updated_at?: string;
@@ -49,13 +50,6 @@ export type ProfileRow = {
   rates?: Json;
   role?: string;
   likes_count?: number;
+  services_offered?: string[];
+  verification_status?: string;
 };
-
-export interface Service {
-  id: string;
-  name: string;
-  description: string | null;
-  duration: number;
-  price?: number;
-  categories?: string[];
-}

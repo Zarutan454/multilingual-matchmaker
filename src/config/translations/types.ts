@@ -7,7 +7,11 @@ export type TranslationKey =
   | 'serviceDeleted'
   | 'errorDeletingService'
   | 'loading'
-  | 'errorLoadingData';
+  | 'errorLoadingData'
+  | 'profileUpdated'
+  | 'errorUpdatingProfile'
+  | 'saving'
+  | 'saveChanges';
 
 export interface Translations {
   save: string;
@@ -19,5 +23,9 @@ export interface Translations {
   errorDeletingService: string;
   loading: string;
   errorLoadingData: string;
+  profileUpdated: string;
+  errorUpdatingProfile: string;
+  saving: string;
+  saveChanges: string;
   [key: string]: string;
 }
