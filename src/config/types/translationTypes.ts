@@ -36,6 +36,11 @@ export interface TranslationKeys {
   loading: string;
   error: string;
   success: string;
+  profileUpdated: string;
+  errorUpdatingProfile: string;
+  saving: string;
+  saveChanges: string;
+  errorLoadingData: string;
 }
 
 export type Translations = {

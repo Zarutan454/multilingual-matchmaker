@@ -27,12 +27,11 @@ export const deTranslations: Translations = {
   loading: 'Laden...',
   error: 'Fehler',
   success: 'Erfolg',
-  errorLoadingData: 'Fehler beim Laden der Daten',
   profileUpdated: 'Profil aktualisiert',
   errorUpdatingProfile: 'Fehler beim Aktualisieren des Profils',
   saving: 'Speichern...',
   saveChanges: 'Änderungen speichern',
-  errorSavingService: 'Fehler beim Speichern der Dienstleistung'
+  errorLoadingData: 'Fehler beim Laden der Daten'
 };
 
 export default deTranslations;
