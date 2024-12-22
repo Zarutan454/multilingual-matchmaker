@@ -24,6 +24,7 @@ export interface TranslationKeys {
   errorAddingService: string;
   errorDeletingService: string;
   errorLoadingServices: string;
+  errorLoadingData: string;
   
   // Form fields
   fullName: string;
@@ -40,7 +41,6 @@ export interface TranslationKeys {
   errorUpdatingProfile: string;
   saving: string;
   saveChanges: string;
-  errorLoadingData: string;
 }
 
 export type Translations = {

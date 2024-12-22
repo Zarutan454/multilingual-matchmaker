@@ -19,6 +19,7 @@ export const deTranslations: Translations = {
   errorAddingService: 'Fehler beim Hinzufügen der Dienstleistung',
   errorDeletingService: 'Fehler beim Löschen der Dienstleistung',
   errorLoadingServices: 'Fehler beim Laden der Dienstleistungen',
+  errorLoadingData: 'Fehler beim Laden der Daten',
   fullName: 'Vollständiger Name',
   location: 'Standort',
   bio: 'Biografie',

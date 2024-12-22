@@ -31,7 +31,7 @@ export interface Profile {
   weight?: string;
   services?: Service[];
   gallery?: string[];
-  working_hours?: any;
+  working_hours?: Json;
   availability?: string[];
   availability_status?: string;
   audit_log?: Json[];
@@ -59,8 +59,8 @@ export interface Profile {
     phone?: string;
     email?: string;
   };
-  measurements?: any;
-  rates?: any;
+  measurements?: Json;
+  rates?: Json;
   role?: string;
   likes_count?: number;
   services_offered?: string[];
@@ -144,17 +144,6 @@ export const castToProfile = (data: any): Profile => {
     },
     user_type: data.user_type as 'customer' | 'provider',
     interests: Array.isArray(data.interests) ? data.interests : data.interests ? [data.interests] : [],
-    age: data.age || 0,
-    price_range: data.price_range || { min: 0, max: 0 },
-    is_verified: data.is_verified || false,
-    reviews_count: data.reviews_count || 0,
-    measurements: data.measurements || null,
-    rates: data.rates || null,
-    role: data.role || '',
-    likes_count: data.likes_count || 0,
-    services_offered: data.services_offered || [],
-    verification_status: data.verification_status || '',
-    nickname: data.nickname || '',
     membership_level: data.membership_level || 'basic'
   };
 };
