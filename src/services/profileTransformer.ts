@@ -31,6 +31,7 @@ export function transformProfile(profile: ProfileRow): Profile {
     languages: profile.languages || [],
     spokenLanguages: profile.languages || [],
     age: Number(profile.age) || 0,
-    user_type: (profile.user_type as 'customer' | 'provider') || 'customer'
+    user_type: (profile.user_type as 'customer' | 'provider') || 'customer',
+    membership_level: profile.membership_level || 'basic'
   };
 }
