@@ -26,7 +26,12 @@ export const enTranslations: Translations = {
   occupation: 'Occupation',
   loading: 'Loading...',
   error: 'Error',
-  success: 'Success'
+  success: 'Success',
+  profileUpdated: 'Profile updated successfully',
+  errorUpdatingProfile: 'Error updating profile',
+  saving: 'Saving...',
+  saveChanges: 'Save changes',
+  errorLoadingData: 'Error loading data'
 };
 
 export default enTranslations;
