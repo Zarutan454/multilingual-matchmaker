@@ -1,75 +1,63 @@
-import { HeroSection } from "../components/home/HeroSection";
-import { FeaturedProfiles } from "../components/home/FeaturedProfiles";
-import { InfoSection } from "../components/home/InfoSection";
-import { Navbar } from "../components/Navbar";
-import { Footer } from "../components/home/Footer";
-import { Helmet } from "react-helmet";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Index() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { t } = useLanguage();
+
+  useEffect(() => {
+    if (user) {
+      navigate(user.user_metadata?.user_type === 'provider' ? '/provider-dashboard' : '/dashboard');
+    }
+  }, [user, navigate]);
+
   return (
-    <>
-      <Helmet>
-        <title>Lovable - Premium Begleitservice & VIP Escort</title>
-        <meta name="description" content="Exklusiver Premium Begleitservice und VIP Escort Service. Diskrete und hochwertige Begleitung für jeden Anlass." />
-        <meta name="keywords" content="Premium Begleitservice, VIP Escort, Escort Service, Begleitung" />
-        
-        {/* Open Graph / Social Media Meta Tags */}
-        <meta property="og:title" content="Lovable - Premium Begleitservice & VIP Escort" />
-        <meta property="og:description" content="Exklusiver Premium Begleitservice und VIP Escort Service. Diskrete und hochwertige Begleitung für jeden Anlass." />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content={window.location.href} />
-        <meta property="og:image" content="/og-image.png" />
-        
-        {/* Schema.org markup für LocalBusiness */}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "LocalBusiness",
-            "name": "Lovable Premium Begleitservice",
-            "description": "Exklusiver Premium Begleitservice und VIP Escort Service",
-            "url": window.location.href,
-            "image": "/og-image.png",
-            "priceRange": "€€€",
-            "address": {
-              "@type": "PostalAddress",
-              "addressCountry": "DE"
-            }
-          })}
-        </script>
-
-        {/* Weitere wichtige Meta-Tags */}
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-        <meta name="theme-color" content="#1A1F2C" />
-        <link rel="canonical" href={window.location.href} />
-      </Helmet>
-
-      <div className="min-h-screen bg-gradient-to-b from-[#1A1F2C] to-black">
-        <div className="absolute inset-0">
-          {[...Array(50)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute animate-float"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                width: `${Math.random() * 4 + 1}px`,
-                height: `${Math.random() * 4 + 1}px`,
-                backgroundColor: '#9b87f5',
-                opacity: Math.random() * 0.5 + 0.2,
-                animationDelay: `${Math.random() * 5}s`,
-                animationDuration: `${Math.random() * 10 + 5}s`,
-              }}
-            />
-          ))}
+    <div className="min-h-screen bg-gradient-to-b from-[#1A1F2C] to-black">
+      <div className="container mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+            POPP<span className="text-[#9b87f5]">*</span>IN
+          </h1>
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+            {t("welcomeMessage")}
+          </p>
         </div>
-        <div className="relative z-10">
-          <Navbar />
-          <HeroSection />
-          <FeaturedProfiles />
-          <InfoSection />
-          <Footer />
+
+        <div className="flex flex-col items-center gap-4 mt-8">
+          <Button
+            onClick={() => navigate("/login")}
+            className="w-full max-w-sm bg-[#9b87f5] hover:bg-[#7E69AB] text-white"
+          >
+            {t("login")}
+          </Button>
+          <Button
+            onClick={() => navigate("/register")}
+            variant="outline"
+            className="w-full max-w-sm border-[#9b87f5] text-[#9b87f5] hover:bg-[#9b87f5] hover:text-white"
+          >
+            {t("register")}
+          </Button>
+        </div>
+
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="bg-black/50 backdrop-blur-sm p-6 rounded-lg border border-[#9b87f5]/30">
+            <h3 className="text-xl font-semibold text-white mb-4">{t("security")}</h3>
+            <p className="text-gray-300">{t("securityDescription")}</p>
+          </div>
+          <div className="bg-black/50 backdrop-blur-sm p-6 rounded-lg border border-[#9b87f5]/30">
+            <h3 className="text-xl font-semibold text-white mb-4">{t("privacy")}</h3>
+            <p className="text-gray-300">{t("privacyDescription")}</p>
+          </div>
+          <div className="bg-black/50 backdrop-blur-sm p-6 rounded-lg border border-[#9b87f5]/30">
+            <h3 className="text-xl font-semibold text-white mb-4">{t("quality")}</h3>
+            <p className="text-gray-300">{t("qualityDescription")}</p>
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

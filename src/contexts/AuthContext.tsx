@@ -13,7 +13,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        // Initial session check
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
         if (sessionError) {
@@ -24,14 +23,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         setUser(session?.user ?? null);
         
-        // Setup auth state change listener
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
           setUser(session?.user ?? null);
         });
 
         setIsInitialized(true);
 
-        // Cleanup subscription on unmount
         return () => {
           subscription.unsubscribe();
         };
@@ -44,11 +41,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     initializeAuth();
   }, []);
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string, metadata?: { user_type: 'customer' | 'provider' }) => {
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: metadata
+        }
       });
       return { data: { user: data.user }, error };
     } catch (error) {
@@ -129,7 +129,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // Don't render children until auth is initialized
   if (!isInitialized) {
     return null;
   }
