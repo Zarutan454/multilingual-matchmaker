@@ -133,8 +133,8 @@ export const castToProfile = (data: any): Profile => {
       lng: 0
     },
     status: data.availability_status || 'offline',
-    rating: data.rating || 0,
-    reviews: data.reviews_count || 0,
+    rating: Number(data.rating) || 0,
+    reviews: Number(data.reviews) || 0,
     languages: data.languages || [],
     spokenLanguages: data.languages || [],
     serviceCategories: data.service_categories || [],
@@ -144,7 +144,7 @@ export const castToProfile = (data: any): Profile => {
     },
     user_type: data.user_type as 'customer' | 'provider',
     interests: Array.isArray(data.interests) ? data.interests : data.interests ? [data.interests] : [],
-    membership_level: data.membership_level || 'basic'
+    membership_level: (data.membership_level as Profile['membership_level']) || 'basic'
   };
 };
 
