@@ -33,5 +33,3 @@ export const deTranslations: Translations = {
   saveChanges: 'Änderungen speichern',
   errorLoadingData: 'Fehler beim Laden der Daten'
 };
-
-export default deTranslations;

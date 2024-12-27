@@ -5,11 +5,11 @@ export interface Profile {
   full_name: string;
   name: string;
   image: string;
-  bio: string;
+  bio: string | null;
   avatar_url: string;
-  banner_url: string;
-  category: string;
-  location: string;
+  banner_url: string | null;
+  category: string | null;
+  location: string | null;
   coordinates: {
     lat: number;
     lng: number;
@@ -113,8 +113,6 @@ export interface ProfilesResponse {
   total: number;
 }
 
-export const MAX_GALLERY_IMAGES = 10;
-
 export const castToProfile = (data: any): Profile => {
   const priceRangeData = data.price_range as { min: number; max: number } | null;
   
@@ -144,7 +142,8 @@ export const castToProfile = (data: any): Profile => {
     },
     user_type: data.user_type as 'customer' | 'provider',
     interests: Array.isArray(data.interests) ? data.interests : data.interests ? [data.interests] : [],
-    membership_level: (data.membership_level as Profile['membership_level']) || 'basic'
+    membership_level: (data.membership_level as Profile['membership_level']) || 'basic',
+    contact_info: data.contact_info || { phone: '', email: '' }
   };
 };
 
