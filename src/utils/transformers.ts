@@ -20,8 +20,8 @@ export function transformProfile(row: ProfileRow): Profile {
     category: row.category || '',
     coordinates: { lat: 0, lng: 0 },
     status: row.availability_status || 'offline',
-    rating: 0,
-    reviews: 0,
+    rating: Number(row.rating) || 0,
+    reviews: Number(row.reviews) || 0,
     languages: row.languages || [],
     spokenLanguages: row.languages || [],
     serviceCategories: row.service_categories || [],
@@ -31,7 +31,7 @@ export function transformProfile(row: ProfileRow): Profile {
     },
     user_type: (row.user_type as 'customer' | 'provider') || 'customer',
     interests: Array.isArray(row.interests) ? row.interests : row.interests ? [row.interests] : [],
-    membership_level: row.membership_level || 'basic'
+    membership_level: (row.membership_level as Profile['membership_level']) || 'basic'
   };
 }
 
