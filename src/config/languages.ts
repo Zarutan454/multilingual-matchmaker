@@ -11,7 +11,7 @@ export * from "./languageTypes";
 
 export const languages: Record<
   Language,
-  { name: string; flag: string; translations: typeof enTranslations }
+  { name: string; flag: string; translations: typeof deTranslations }
 > = {
   de: {
     name: "Deutsch",

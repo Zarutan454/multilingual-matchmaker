@@ -113,6 +113,8 @@ export interface ProfilesResponse {
   total: number;
 }
 
+export const MAX_GALLERY_IMAGES = 10;
+
 export const castToProfile = (data: any): Profile => {
   const priceRangeData = data.price_range as { min: number; max: number } | null;
   

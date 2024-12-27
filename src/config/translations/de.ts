@@ -1,4 +1,4 @@
-import { Translations } from '../types/translationTypes';
+import { Translations } from './types';
 
 export const deTranslations: Translations = {
   login: 'Anmelden',
@@ -10,6 +10,7 @@ export const deTranslations: Translations = {
   settings: 'Einstellungen',
   services: 'Dienstleistungen',
   availability: 'Verfügbarkeit',
+  messages: 'Nachrichten',
   save: 'Speichern',
   cancel: 'Abbrechen',
   delete: 'Löschen',
